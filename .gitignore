@@ -1,0 +1,18 @@
+# Godot-specific files that should NOT be tracked
+.import/             # Generated import files
+.export/             # Exported game builds
+.sconsign.dblite     # Build system file
+godot.cfg            # Engine configuration (auto-generated)
+*.gen.*             # Auto-generated files
+.godot/
+/android/
+
+# Mono/C# specific (if using C# in Godot)
+.mono/
+mono_crash.*
+*.csproj
+*.sln
+
+# OS-specific files (Mac & Windows)
+.DS_Store
+Thumbs.db
