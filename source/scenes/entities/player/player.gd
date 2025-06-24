@@ -20,6 +20,7 @@ var _current_gun: Node2D             # set in _ready()
 
 
 func _ready() -> void:
+	add_to_group("Player")
 	if starting_gun != null:
 		_current_gun = starting_gun.instantiate()
 		weapon_holder.add_child(_current_gun)

@@ -35,4 +35,4 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		dir = dir.rotated(random_angle)
 
 	bullet.direction = dir
-	get_tree().current_scene.add_child(bullet)
+	get_tree().current_scene.get_node("Projectiles").add_child(bullet)

@@ -16,3 +16,4 @@ scale = Vector2(5, 5)
 texture = SubResource("AtlasTexture_5475d")
 
 [node name="gun_point" type="Marker2D" parent="."]
+position = Vector2(36, -10)

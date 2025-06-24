@@ -11,6 +11,8 @@ atlas = ExtResource("1_x0t0w")
 region = Rect2(160.671, 2.05124, 13.1077, 4.05392)
 
 [node name="bullet" type="Area2D"]
+collision_layer = 8
+collision_mask = 14
 script = ExtResource("1_77ngu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -19,3 +21,5 @@ shape = SubResource("RectangleShape2D_2vodp")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
 texture = SubResource("AtlasTexture_fsldw")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
