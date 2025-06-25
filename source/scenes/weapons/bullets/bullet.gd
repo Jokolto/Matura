@@ -16,6 +16,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if body is Enemy:
 		body.take_damage(1)
 	
+	ProjectileManager.proj_amount -= 1
 	queue_free()
 	
 

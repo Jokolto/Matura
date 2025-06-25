@@ -5,4 +5,5 @@ var proj_amount = 0
 func get_next_proj_id() -> int:
 	var id = next_proj_id
 	next_proj_id += 1
+	proj_amount += 1
 	return id

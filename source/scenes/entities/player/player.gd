@@ -1,26 +1,38 @@
 extends CharacterBody2D
+class_name Player
 
 # -------------------------
 # ─── Inspector Tweaks ──────────────────────────────────────────
 # -------------------------
 @export var move_speed: float = 200.0
 @export var dash_speed: float = 600.0
-@export var dash_duration: float = 0.2
+@export var dash_duration: float = 0.25
+@export var max_hp: float = 10.0
+@export var hp: float = 10.0
 var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  # drag Bullet.tscn here
 
 # -------------------------
 # ─── Private State ────────────────────────────────────────────
 # -------------------------
-var dash_timer: float = 0.0
+var dash_velocity = Vector2.ZERO
 var is_dashing: bool = false
+
+var vulnerable: bool = true
+var invulnerable_period: float = 0.5
 
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
 var _current_gun: Node2D             # set in _ready()
 
+# -------------------------
+# ─── Signals ────────────────────────────────────────────
+# -------------------------
+signal damaged(amount: int)
+signal died
 
 func _ready() -> void:
-	add_to_group("Player")
+	
+	PlayerManager.set_player(self)
 	if starting_gun != null:
 		_current_gun = starting_gun.instantiate()
 		weapon_holder.add_child(_current_gun)
@@ -32,21 +44,11 @@ func _physics_process(delta: float) -> void:
 		"move_up",     # negative Y
 		"move_down"    # positive Y
 	)
-	if is_dashing:
-		dash_timer -= delta
-		if dash_timer <= 0.0:
-			is_dashing = false
-	else:
-		velocity = input_vector * move_speed
-		if Input.is_action_just_pressed("dash"):
-			is_dashing = true
-			dash_timer = dash_duration
-			# If the player isn’t pressing a direction, dash forward
-			var dash_dir: Vector2 = input_vector if input_vector != Vector2.ZERO else Vector2.RIGHT
-			velocity = dash_dir * dash_speed
+	var dash_vel = _handle_dash(delta, input_vector)
+	
+	velocity = dash_vel if dash_vel != Vector2.ZERO else input_vector * move_speed
 	
 	_update_animation(input_vector)
-
 	move_and_slide()
 
 
@@ -77,6 +79,16 @@ func _handle_shoot(mouse: Vector2) -> void:
 		if _current_gun:
 			_current_gun.try_fire(mouse)
 
+func _handle_dash(delta: float, input_vector: Vector2) -> Vector2:
+	if is_dashing:
+		return dash_velocity
+
+	if Input.is_action_just_pressed("dash"):
+		$Timers/DashTimer.start(dash_duration)
+		is_dashing = true
+		dash_velocity = (input_vector.normalized() if input_vector != Vector2.ZERO else Vector2.RIGHT) * dash_speed
+		return dash_velocity
+	return Vector2.ZERO
 
 func _update_animation(input_vec: Vector2) -> void:
 	# ---- play the correct clip ----
@@ -91,3 +103,24 @@ func _update_animation(input_vec: Vector2) -> void:
 	#if input_vec.x != 0:
 		#body_sprite.flip_h = input_vec.x < 0
 		
+func take_damage(damage: float) -> void:
+	if vulnerable:
+		hp -= damage
+		damaged.emit(damage)
+		$Timers/InvulnerabilityTimer.start(invulnerable_period)
+		vulnerable = false
+	if hp <= 0:
+		_die()
+
+func _die() -> void:
+	print("died")
+	emit_signal("died")
+
+
+func _on_dash_timer_timeout() -> void:
+	is_dashing = false
+	dash_velocity = Vector2.ZERO
+
+
+func _on_invulnerability_timer_timeout() -> void:
+	vulnerable = true

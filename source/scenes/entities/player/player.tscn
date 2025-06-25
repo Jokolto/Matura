@@ -122,3 +122,12 @@ frame_progress = 0.15794
 
 [node name="Weaponholder" type="Node2D" parent="."]
 position = Vector2(26, 12)
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DashTimer" type="Timer" parent="Timers"]
+
+[node name="InvulnerabilityTimer" type="Timer" parent="Timers"]
+
+[connection signal="timeout" from="Timers/DashTimer" to="." method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="Timers/InvulnerabilityTimer" to="." method="_on_invulnerability_timer_timeout"]
