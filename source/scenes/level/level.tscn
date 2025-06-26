@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=4 uid="uid://dxsq06ltwf83t"]
+[gd_scene load_steps=11 format=4 uid="uid://dxsq06ltwf83t"]
 
 [ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_cp1lv"]
 [ext_resource type="Script" path="res://scenes/level/level.gd" id="1_tbp78"]
 [ext_resource type="PackedScene" uid="uid://v6hhvsyt2va3" path="res://scenes/objects/enemy_spawner/enemy_spawner.tscn" id="3_iwmw6"]
 [ext_resource type="Texture2D" uid="uid://bt5pgf2xt2lfb" path="res://assets/v1.1 dungeon crawler 16X16 pixel pack/full tilemap.png" id="4_bulvw"]
 [ext_resource type="PackedScene" uid="uid://c25l3kxm6g3wn" path="res://scenes/GUI/hud.tscn" id="5_ofqpp"]
+[ext_resource type="Script" path="res://scenes/level/projectiles/projectiles.gd" id="5_palfl"]
+[ext_resource type="Script" path="res://scenes/entities/entities.gd" id="6_f1o80"]
+[ext_resource type="PackedScene" uid="uid://cqxmmiyy1brb" path="res://scenes/GUI/menus/pause_menu.tscn" id="8_h1kyu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5nmku"]
 texture = ExtResource("4_bulvw")
@@ -115,7 +118,11 @@ position_smoothing_enabled = true
 position = Vector2(2833, 256)
 
 [node name="Projectiles" type="Node" parent="."]
+script = ExtResource("5_palfl")
 
 [node name="Entities" type="Node" parent="."]
+script = ExtResource("6_f1o80")
 
 [node name="HUD" parent="." instance=ExtResource("5_ofqpp")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("8_h1kyu")]

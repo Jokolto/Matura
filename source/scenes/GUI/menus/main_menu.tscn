@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://dksiy7ar1gm1v"]
+
+[ext_resource type="Script" path="res://scenes/GUI/menus/main_menu.gd" id="1_33kf0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rxqp4"]
+font_size = 24
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchor_left = 0.25
+anchor_top = 0.1
+anchor_right = 0.75
+anchor_bottom = 1.0
+grow_vertical = 2
+script = ExtResource("1_33kf0")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "The Game"
+label_settings = SubResource("LabelSettings_rxqp4")
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 20
+
+[node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer2/Buttons"]
+layout_mode = 2
+text = "Play"
+
+[node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer2/Buttons"]
+layout_mode = 2
+text = "Exit"

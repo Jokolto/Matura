@@ -5,7 +5,7 @@ extends CanvasLayer
 @onready var player = PlayerManager.get_player()
 
 func _ready() -> void:
-	GameManager.set_hud(self)
+	#GameManager.set_hud(self)
 	player.damaged.connect(_on_player_damaged)
 	set_health(player.hp, player.max_hp)
 	

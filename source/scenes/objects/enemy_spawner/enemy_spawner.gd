@@ -27,7 +27,7 @@ func spawn_enemy() -> void:
 	var enemy = enemy_scene.instantiate()
 	enemy.global_position = get_spawn_position()
 	enemy.player = player
-	get_tree().current_scene.get_node("Entities").add_child(enemy)
+	EntitiesManager.entities_node.add_child(enemy)
 	print("Enemy was spawned!")
 
 

@@ -31,7 +31,7 @@ signal damaged(amount: int)
 signal died
 
 func _ready() -> void:
-	
+	died.connect(_die)
 	PlayerManager.set_player(self)
 	if starting_gun != null:
 		_current_gun = starting_gun.instantiate()
@@ -79,7 +79,7 @@ func _handle_shoot(mouse: Vector2) -> void:
 		if _current_gun:
 			_current_gun.try_fire(mouse)
 
-func _handle_dash(delta: float, input_vector: Vector2) -> Vector2:
+func _handle_dash(_delta: float, input_vector: Vector2) -> Vector2:
 	if is_dashing:
 		return dash_velocity
 
@@ -110,11 +110,13 @@ func take_damage(damage: float) -> void:
 		$Timers/InvulnerabilityTimer.start(invulnerable_period)
 		vulnerable = false
 	if hp <= 0:
-		_die()
+		emit_signal("died")
 
 func _die() -> void:
-	print("died")
-	emit_signal("died")
+	pass
+	#GameManager.change_scene(GameManager.DeathScene)
+	#print("died")
+	
 
 
 func _on_dash_timer_timeout() -> void:
