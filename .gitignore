@@ -16,3 +16,7 @@ mono_crash.*
 # OS-specific files (Mac & Windows)
 .DS_Store
 Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
