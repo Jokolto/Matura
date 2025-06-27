@@ -6,6 +6,8 @@ var PlayingScene = preload("res://scenes/level/level.tscn")
 var PauseScene = preload("res://scenes/GUI/menus/pause_menu.tscn")
 var DeathScene = preload("res://scenes/GUI/menus/death_menu.tscn")
 
+var hud
+
 var state = GameState.MENU
 var current_scene: Node = null
 
@@ -24,3 +26,10 @@ func change_scene(to_scene: PackedScene):
 
 func _on_player_death():
 	GameManager.change_scene(GameManager.DeathScene)
+	
+	
+func _set_hud(thehud: Node):
+	hud = thehud
+	
+func _get_hud():
+	return hud

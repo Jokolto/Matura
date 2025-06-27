@@ -13,23 +13,57 @@ border_width_bottom = 1
 script = ExtResource("1_i64l7")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-anchors_preset = -1
-anchor_right = 0.25
-anchor_bottom = 0.025
-offset_right = 6.0
-offset_bottom = 22.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 57.0
+grow_horizontal = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="EnemiesVBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/EnemiesVBoxContainer"]
 layout_mode = 2
 
-[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/EnemiesVBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "Enemies: -1/-1"
+horizontal_alignment = 1
+
+[node name="EnemiesCountBar" type="ProgressBar" parent="MarginContainer/EnemiesVBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(500, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+value = 50.0
+rounded = true
+show_percentage = false
+
+[node name="Label" type="Label" parent="MarginContainer/EnemiesVBoxContainer"]
+layout_mode = 2
+text = "Wave: -1"
+horizontal_alignment = 1
+
+[node name="StatusVBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/StatusVBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/StatusVBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_vkr40")
 value = 50.0
 rounded = true
 show_percentage = false
+
+[node name="Label" type="Label" parent="MarginContainer/StatusVBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "-1/-1"
+horizontal_alignment = 1

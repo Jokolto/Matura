@@ -18,7 +18,7 @@ var dash_velocity = Vector2.ZERO
 var is_dashing: bool = false
 
 var vulnerable: bool = true
-var invulnerable_period: float = 0.5
+var invulnerable_period: float = 0.2
 
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -113,9 +113,7 @@ func take_damage(damage: float) -> void:
 		emit_signal("died")
 
 func _die() -> void:
-	pass
-	#GameManager.change_scene(GameManager.DeathScene)
-	#print("died")
+	print("died!")
 	
 
 

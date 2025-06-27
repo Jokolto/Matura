@@ -105,17 +105,33 @@ tile_set = SubResource("TileSet_6jeod")
 
 [node name="Player" parent="." instance=ExtResource("1_cp1lv")]
 z_index = 2
-position = Vector2(2621, 1110)
+position = Vector2(2888, 1872)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(0.5, 0.5)
 limit_left = 0
 limit_top = 0
 limit_right = 5850
 limit_bottom = 3500
 position_smoothing_enabled = true
 
-[node name="EnemySpawner" parent="." instance=ExtResource("3_iwmw6")]
-position = Vector2(2833, 256)
+[node name="Spawners" type="Node" parent="."]
+
+[node name="EnemySpawner" parent="Spawners" instance=ExtResource("3_iwmw6")]
+z_index = 1
+position = Vector2(2902, 466)
+
+[node name="EnemySpawner2" parent="Spawners" instance=ExtResource("3_iwmw6")]
+z_index = 1
+position = Vector2(297, 1862)
+rotation = 1.5708
+
+[node name="EnemySpawner3" parent="Spawners" instance=ExtResource("3_iwmw6")]
+position = Vector2(2988, 3240)
+
+[node name="EnemySpawner4" parent="Spawners" instance=ExtResource("3_iwmw6")]
+position = Vector2(5420, 2030)
+rotation = 1.5708
 
 [node name="Projectiles" type="Node" parent="."]
 script = ExtResource("5_palfl")
@@ -123,6 +139,13 @@ script = ExtResource("5_palfl")
 [node name="Entities" type="Node" parent="."]
 script = ExtResource("6_f1o80")
 
+[node name="Enemies" type="Node" parent="Entities"]
+
 [node name="HUD" parent="." instance=ExtResource("5_ofqpp")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("8_h1kyu")]
+
+[node name="WaveTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="WaveTimer" to="." method="_on_wave_timer_timeout"]
