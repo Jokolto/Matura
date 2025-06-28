@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c25l3kxm6g3wn"]
 
-[ext_resource type="Script" path="res://scenes/GUI/hud.gd" id="1_i64l7"]
+[ext_resource type="Script" path="res://scenes/GUI/hud/hud.gd" id="1_k5gjg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkr40"]
 bg_color = Color(1, 0, 0, 1)
@@ -10,7 +10,7 @@ border_width_right = 1
 border_width_bottom = 1
 
 [node name="HUD" type="CanvasLayer"]
-script = ExtResource("1_i64l7")
+script = ExtResource("1_k5gjg")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 10

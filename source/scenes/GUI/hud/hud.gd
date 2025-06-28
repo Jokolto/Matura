@@ -21,7 +21,6 @@ func _ready() -> void:
 	set_health(player.hp, player.max_hp)
 	
 	
-	
 func set_health(value: int, max_value: int) -> void:
 	health_bar.max_value = max_value
 	health_bar.value = value
@@ -48,5 +47,7 @@ func _on_wave_end():
 	wave_label.text = "Rest time"
 
 func _on_enemy_spawned():
-	
 	set_enemy_hud(EntitiesManager.enemies_alive, EntitiesManager.enemies_per_wave)
+	
+func _on_upgrade_selected():
+	set_health(player.hp, player.max_hp)

@@ -34,7 +34,7 @@ func spawn_enemy() -> void:
 	EntitiesManager.enemies_alive += 1
 	EntitiesManager.enemies_node.add_child(enemy)
 	enemy_spawned.emit()
-	print("Enemy was spawned!")
+	#print("Enemy was spawned!")
 
 func get_spawn_position() -> Vector2:
 	return spawn_area.get_random_position()

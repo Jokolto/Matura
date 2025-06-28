@@ -2,13 +2,13 @@ extends CharacterBody2D
 class_name Enemy
 
 @export var move_speed: float = 100.0
-@export var max_health: int = 3
+@export var max_health: float = 3
 @onready var player: CharacterBody2D = null  # assign this later
 @onready var body_sprite = $AnimatedSprite2D
 
 
 var enemy_id: int = -1
-var health: int = 3
+var health: float = 3
 var contact_damage: float = 1
 var player_inside_contact_range: bool = false
 
@@ -42,7 +42,7 @@ func _physics_process(_delta: float) -> void:
 	
 	_update_animation(dir)
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: float) -> void:
 	health -= amount
 	if health <= 0:
 		queue_free()

@@ -9,6 +9,9 @@ class_name Player
 @export var dash_duration: float = 0.25
 @export var max_hp: float = 10.0
 @export var hp: float = 10.0
+@export var fire_rate_multiplier: float = 1
+@export var damage_multiplier: float = 1
+@export var damage_flat_boost: float = 0
 var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  # drag Bullet.tscn here
 
 # -------------------------

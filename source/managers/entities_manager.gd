@@ -3,7 +3,7 @@ var next_enemy_id = 0
 var entities_node: Node = null
 var enemies_node: Node = null
 
-var enemies_per_wave: int = 10
+var enemies_per_wave: int = 0
 var wave_duration: float = -1.0 
 var enemies_spawned: int = 0
 var current_wave: int = 0
@@ -16,6 +16,15 @@ signal wave_end
 signal wave_start
 
 
+var upgrades = [
+	{ "name": "Move Speed +10%", "apply": func(): PlayerManager.player.move_speed *= 1.1 },
+	{ "name": "Max HP +2", "apply": func(): PlayerManager.player.max_hp += 2 },
+	{ "name": "Attack Speed +15%", "apply": func(): PlayerManager.player.fire_rate_multiplier *= 1.15 },
+	{ "name": "Damage + 1", "apply": func(): PlayerManager.player.damage_flat_boost += 1 },
+	{ "name": "Damage + 50%", "apply": func(): PlayerManager.player.damage_multiplier += 0.5 },
+	# ... add more as needed
+]
+
 func _ready() -> void:
 	pass
 	
@@ -27,9 +36,7 @@ func _process(delta):
 		wave_timer += delta
 		if wave_timer >= wave_duration:
 			if enemies_alive <= 0:
-				wave_active = false
-				print("Wave ended (enemies are dead)")
-				wave_end.emit()
+				end_wave()
 				return
 			
 			if spawn_active:
@@ -39,9 +46,7 @@ func _process(delta):
 
 	if (enemies_spawned >= enemies_per_wave):
 		if enemies_alive <= 0:
-			wave_active = false
-			print("Wave ended (enemies are dead)")
-			wave_end.emit()
+			end_wave()
 			return
 		
 		if spawn_active:
@@ -59,6 +64,12 @@ func start_wave():
 	spawn_active = true
 	print("Wave %d started" % current_wave)
 	wave_start.emit()
+	
+	
+func end_wave():
+	wave_active = false
+	print("Wave ended (enemies are dead)")
+	wave_end.emit()
 	
 	
 func get_next_enemy_id() -> int:
@@ -88,3 +99,7 @@ func _on_player_death():
 
 func _on_enemy_death():
 	enemies_alive -= 1
+
+func _on_upgrade_selected(upgrade):
+	upgrade["apply"].call()
+	
