@@ -1,7 +1,6 @@
-extends CharacterBody2D
-class_name Enemy
+class_name Enemy extends CharacterBody2D
 
-@export var move_speed: float = 100.0
+@export var move_speed: float = 50.0
 @export var max_health: float = 3
 @onready var player: CharacterBody2D = null  # assign this later
 @onready var body_sprite = $AnimatedSprite2D

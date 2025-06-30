@@ -12,7 +12,7 @@ class_name Player
 @export var fire_rate_multiplier: float = 1
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
-var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  # drag Bullet.tscn here
+var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  
 
 # -------------------------
 # ─── Private State ────────────────────────────────────────────
@@ -57,23 +57,8 @@ func _physics_process(delta: float) -> void:
 
 func _process(_delta: float) -> void:
 	var mouse_pos := get_global_mouse_position()
-	_aim_weapon(mouse_pos)
+	weapon_holder._aim_weapon(mouse_pos)
 	_handle_shoot(mouse_pos)
-
-
-func _aim_weapon(mouse: Vector2) -> void:
-	# 1) raw look-at
-	weapon_holder.look_at(mouse)
-
-	# 2) decide whether we’re ‘facing left’
-	var ang_deg : float = wrapf(weapon_holder.rotation_degrees, 0.0, 360.0)
-	var facing_left: bool = (ang_deg > 90.0 and ang_deg < 270.0)
-
-	# 3) flip body sprite
-	body_sprite.flip_h = facing_left
-
-	# 4) mirror the entire holder (gun + muzzle) on the Y-axis
-	weapon_holder.scale = Vector2(1, -1) if facing_left else Vector2(1, 1)
 
 
 func _handle_shoot(mouse: Vector2) -> void:

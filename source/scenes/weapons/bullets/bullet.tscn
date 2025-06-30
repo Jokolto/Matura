@@ -12,7 +12,7 @@ region = Rect2(160.671, 2.05124, 13.1077, 4.05392)
 
 [node name="bullet" type="Area2D"]
 collision_layer = 8
-collision_mask = 14
+collision_mask = 15
 script = ExtResource("1_77ngu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

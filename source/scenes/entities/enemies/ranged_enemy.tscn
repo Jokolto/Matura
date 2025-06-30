@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://q1yaqop55trx"]
+
+[ext_resource type="PackedScene" uid="uid://c50m7sd4fufhq" path="res://scenes/entities/enemies/enemy.tscn" id="1_4qi32"]
+[ext_resource type="Script" path="res://scenes/entities/enemies/ranged_enemy.gd" id="2_pu3vm"]
+[ext_resource type="Script" path="res://scenes/weapons/weaponholder.gd" id="3_k88h6"]
+
+[node name="RangedEnemy" instance=ExtResource("1_4qi32")]
+script = ExtResource("2_pu3vm")
+attack_range = 1000
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+animation = &"idle"
+autoplay = ""
+
+[node name="Weaponholder" type="Node2D" parent="." index="3"]
+position = Vector2(26, 12)
+script = ExtResource("3_k88h6")
