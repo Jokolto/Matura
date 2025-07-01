@@ -16,15 +16,6 @@ signal wave_end
 signal wave_start
 
 
-var upgrades = [
-	{ "name": "Move Speed +10%", "apply": func(): PlayerManager.player.move_speed *= 1.1 },
-	{ "name": "Max HP +2", "apply": func(): PlayerManager.player.max_hp += 2 },
-	{ "name": "Attack Speed +15%", "apply": func(): PlayerManager.player.fire_rate_multiplier *= 1.15 },
-	{ "name": "Damage + 1", "apply": func(): PlayerManager.player.damage_flat_boost += 1 },
-	{ "name": "Damage + 50%", "apply": func(): PlayerManager.player.damage_multiplier += 0.5 },
-	# ... add more as needed
-]
-
 func _ready() -> void:
 	pass
 	
@@ -99,7 +90,3 @@ func _on_player_death():
 
 func _on_enemy_death():
 	enemies_alive -= 1
-
-func _on_upgrade_selected(upgrade):
-	upgrade["apply"].call()
-	

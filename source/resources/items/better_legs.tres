@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bovif2q4nttd1"]
+
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_yjxbu"]
+
+[resource]
+script = ExtResource("1_yjxbu")
+name = "Better Legs"
+description = "Move Speed + 50"
+rarity = 1
+effect = "move_speed"
+effect_value = 50.0

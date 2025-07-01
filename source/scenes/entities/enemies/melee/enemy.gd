@@ -1,15 +1,17 @@
 class_name Enemy extends CharacterBody2D
 
-@export var move_speed: float = 50.0
-@export var max_health: float = 3
+@export var stats: Resource = preload("res://resources/enemies/general_enemy.tres")
+
 @onready var player: CharacterBody2D = null  # assign this later
 @onready var body_sprite = $AnimatedSprite2D
 
+var move_speed: float 
+var max_health: float 
+var health: float
+var contact_damage: float
 
-var enemy_id: int = -1
-var health: float = 3
-var contact_damage: float = 1
 var player_inside_contact_range: bool = false
+var enemy_id: int = -1
 
 signal enemy_death
 
@@ -25,7 +27,13 @@ func _ready() -> void:
 	player = PlayerManager.get_player()
 	if not player:
 		print("Warning: Enemy has no player reference!")
+	
+	move_speed = stats.move_speed
+	max_health = stats.max_health 
+	contact_damage = stats.contact_damage
 	health = max_health
+	
+	
 
 
 func _physics_process(_delta: float) -> void:

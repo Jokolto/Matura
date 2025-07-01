@@ -1,9 +1,9 @@
 extends Node2D
 
 
-func _aim_weapon(position: Vector2) -> void:
+func _aim_weapon(pos: Vector2) -> void:
 	# 1) raw look-at
-	look_at(position)
+	look_at(pos)
 
 	# 2) decide whether we’re ‘facing left’
 	var ang_deg : float = wrapf(rotation_degrees, 0.0, 360.0)

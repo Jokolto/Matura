@@ -1,17 +1,22 @@
 class_name RangedEnemy extends Enemy
 
 
-@export var attack_range = 1000
 @onready var weapon_holder = $Weaponholder
-var fire_rate_multiplier = 0.25
+
+var fire_rate_multiplier: float
+var attack_range: float
+var ranged_damage_multiplier: float
 
 var start_weapon: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn") 
 var _current_weapon: Node = null
 
 func _ready() -> void:
-	move_speed = 100
-	max_health = 2
+	stats = preload("res://resources/enemies/ranged_enemy.tres")
 	super._ready()
+	
+	fire_rate_multiplier = stats.fire_rate_multiplier
+	attack_range = stats.attack_range
+	
 	if start_weapon != null:
 		_current_weapon = start_weapon.instantiate()
 		weapon_holder.add_child(_current_weapon)

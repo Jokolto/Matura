@@ -17,10 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-EntitiesManager="*res://managers/entities_manager.gd"
-GameManager="*res://managers/game_manager.gd"
-ProjectileManager="*res://managers/projectile_manager.gd"
-PlayerManager="*res://managers/player_manager.gd"
+EntitiesManager="*res://managers/EntitiesManager.gd"
+GameManager="*res://managers/GameManager.gd"
+ProjectileManager="*res://managers/ProjectileManager.gd"
+PlayerManager="*res://managers/PlayerManager.gd"
+ItemManager="*res://managers/ItemManager.gd"
 
 [display]
 

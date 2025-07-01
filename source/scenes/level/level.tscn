@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://dxsq06ltwf83t"]
+[gd_scene load_steps=13 format=4 uid="uid://dxsq06ltwf83t"]
 
 [ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_cp1lv"]
 [ext_resource type="Script" path="res://scenes/level/level.gd" id="1_tbp78"]
@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://cqxmmiyy1brb" path="res://scenes/GUI/menus/pause_menu.tscn" id="8_h1kyu"]
 [ext_resource type="PackedScene" uid="uid://ctk8kojftcawm" path="res://scenes/GUI/hud/upgrade_panel.tscn" id="9_j1s7u"]
 [ext_resource type="Script" path="res://scenes/GUI/hud/upgrade_panel.gd" id="10_wqxkn"]
-[ext_resource type="PackedScene" uid="uid://q1yaqop55trx" path="res://scenes/entities/enemies/ranged_enemy.tscn" id="11_nqyit"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5nmku"]
 texture = ExtResource("4_bulvw")
@@ -158,10 +157,5 @@ visible = false
 process_mode = 2
 visible = false
 script = ExtResource("10_wqxkn")
-
-[node name="RangedEnemy" parent="." instance=ExtResource("11_nqyit")]
-z_index = 1
-position = Vector2(1715, 1392)
-attack_range = 1000
 
 [connection signal="timeout" from="WaveTimer" to="." method="_on_wave_timer_timeout"]

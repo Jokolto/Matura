@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RangedEnemyDataResource" load_steps=2 format=3 uid="uid://bbp3sjbm6au00"]
+
+[ext_resource type="Script" path="res://scenes/entities/enemies/ranged/RangedEnemyData.gd" id="1_ymjuj"]
+
+[resource]
+script = ExtResource("1_ymjuj")
+name = "goblin_ranged"
+contact_damage = 1.0
+ranged_damage = 0.0
+max_health = 3.0
+move_speed = 50.0
+attack_range = 750.0
+fire_rate_multiplier = 0.2

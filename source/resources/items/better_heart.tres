@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bnclyrvllybvk"]
+
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_n38v5"]
+
+[resource]
+script = ExtResource("1_n38v5")
+name = "Better Heart"
+description = "Max HP +2"
+rarity = 1
+effect = "max_hp"
+effect_value = 2.0
