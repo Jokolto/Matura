@@ -4,3 +4,8 @@ class_name GunData extends Resource
 @export var automatic: bool
 @export var spread_deg: float    # 0 = pinpoint
 @export var bullet_damage: float
+@export var bullets_amount: int
+@export var bullet_piercing: int
+@export var shooting_range: float
+@export var bullet_speed: float
+@export var sprite: Texture2D

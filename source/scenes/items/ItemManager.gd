@@ -4,12 +4,13 @@ var player: Node = null
 var held_items: Array = []
 
 
+func set_player(player_scene):
+	player = player_scene
+
 func apply_item(item: ItemData):
-	if player == null:
-		player = PlayerManager.get_player()
 	
 	match item.effect:
-		"fire_rate":
+		"fire_rate_up":
 			player.fire_rate_multiplier += item.effect_value
 		"damage_up":
 			player.damage_flat_boost += item.effect_value

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c25l3kxm6g3wn"]
+[gd_scene load_steps=5 format=3 uid="uid://c25l3kxm6g3wn"]
 
 [ext_resource type="Script" path="res://scenes/GUI/hud/hud.gd" id="1_k5gjg"]
+[ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/1.png" id="2_ua7wc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkr40"]
 bg_color = Color(1, 0, 0, 1)
@@ -9,13 +10,17 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0u0p"]
+atlas = ExtResource("2_ua7wc")
+region = Rect2(0.338522, 117.651, 13.3188, 10.5148)
+
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_k5gjg")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 57.0
+offset_bottom = 80.0
 grow_horizontal = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
@@ -67,3 +72,26 @@ show_percentage = false
 layout_mode = 2
 text = "-1/-1"
 horizontal_alignment = 1
+
+[node name="GunMarginContainer" type="MarginContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.9
+anchor_top = 0.9
+anchor_right = 0.975
+anchor_bottom = 0.975
+offset_bottom = 3.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Panel" type="Panel" parent="GunMarginContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="GunMarginContainer/Panel"]
+z_index = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+texture = SubResource("AtlasTexture_r0u0p")

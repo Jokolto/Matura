@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="GunData" load_steps=4 format=3 uid="uid://c770pty4kvkv"]
+
+[ext_resource type="Script" path="res://scenes/weapons/guns/GunData.gd" id="1_4fh37"]
+[ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/1.png" id="2_bl3ux"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eml6e"]
+atlas = ExtResource("2_bl3ux")
+region = Rect2(63.7421, 84.871, 32.3746, 12.2304)
+
+[resource]
+script = ExtResource("1_4fh37")
+fire_rate = 1.0
+automatic = false
+spread_deg = 40.0
+bullet_damage = 2.0
+bullets_amount = 5
+bullet_piercing = 0
+shooting_range = 500.0
+bullet_speed = 700.0
+sprite = SubResource("AtlasTexture_eml6e")

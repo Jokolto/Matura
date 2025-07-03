@@ -4,13 +4,15 @@ var entities_node: Node = null
 var enemies_node: Node = null
 
 var enemies_per_wave: int = 0
-var wave_duration: float = -1.0 
+
 var enemies_spawned: int = 0
 var current_wave: int = 0
-var wave_timer: float = 0.0
 var wave_active: bool = false
 var spawn_active: bool = false
 var enemies_alive: int = 0
+
+var wave_duration: float = -1.0 
+var wave_timer: float = 0.0
 
 signal wave_end
 signal wave_start
@@ -23,28 +25,21 @@ func _process(delta):
 	if not wave_active:
 		return
 
-	if wave_duration > 0:
+	if wave_duration > 0:  
 		wave_timer += delta
-		if wave_timer >= wave_duration:
-			if enemies_alive <= 0:
-				end_wave()
-				return
-			
-			if spawn_active:
-				spawn_active = false
-				print("spawn ended (duration)")
-			return
 
-	if (enemies_spawned >= enemies_per_wave):
+	if (enemies_spawned >= enemies_per_wave) or (wave_timer <= wave_duration):
 		if enemies_alive <= 0:
 			end_wave()
 			return
-		
-		if spawn_active:
-			spawn_active = false
-			print("Spawning ended (enemy count)")
-		return
-		
+		disable_spawning()
+
+
+func disable_spawning():
+	if spawn_active:
+		spawn_active = false
+		print("Spawning ended (enemy count)")
+
 
 func start_wave():
 	enemies_per_wave += 5
@@ -59,6 +54,7 @@ func start_wave():
 	
 func end_wave():
 	wave_active = false
+	
 	print("Wave ended (enemies are dead)")
 	wave_end.emit()
 	

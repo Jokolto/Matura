@@ -25,20 +25,19 @@ var invulnerable_period: float = 0.2
 
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
-var _current_gun: Node2D             # set in _ready()
+@onready var projectiles_node: Node = null
+var current_gun: Gun             
 
 # -------------------------
 # ─── Signals ────────────────────────────────────────────
 # -------------------------
 signal damaged(amount: int)
 signal died
+signal gun_equiped(gun_texture: Texture2D)
 
 func _ready() -> void:
 	died.connect(_die)
-	PlayerManager.set_player(self)
-	if starting_gun != null:
-		_current_gun = starting_gun.instantiate()
-		weapon_holder.add_child(_current_gun)
+	
 
 func _physics_process(delta: float) -> void:
 	var input_vector: Vector2 = Input.get_vector(
@@ -60,12 +59,21 @@ func _process(_delta: float) -> void:
 	weapon_holder._aim_weapon(mouse_pos)
 	_handle_shoot(mouse_pos)
 
+func set_projectiles_node(node: Node):
+	projectiles_node = node
+
 
 func _handle_shoot(mouse: Vector2) -> void:
 	# Handle shooting
-	if Input.is_action_just_pressed("shoot"):
-		if _current_gun:
-			_current_gun.try_fire(mouse)
+	if current_gun:
+		if current_gun.automatic:
+			if Input.is_action_pressed("shoot"):
+				current_gun.try_fire(mouse)
+		else:
+			if Input.is_action_just_pressed("shoot"):
+					current_gun.try_fire(mouse)
+	
+		
 
 func _handle_dash(_delta: float, input_vector: Vector2) -> Vector2:
 	if is_dashing:
@@ -103,6 +111,11 @@ func take_damage(damage: float) -> void:
 func _die() -> void:
 	print("died!")
 	
+func equip_gun(gun_scene: PackedScene = starting_gun):
+	current_gun = gun_scene.instantiate()
+	current_gun.set_projectiles_node(projectiles_node)
+	weapon_holder.add_child(current_gun)
+	gun_equiped.emit(current_gun.sprite)
 
 
 func _on_dash_timer_timeout() -> void:

@@ -9,7 +9,8 @@ func _ready():
 	quit_button.pressed.connect(on_quit_pressed)
 
 func on_start_pressed():
-	GameManager.change_scene(GameManager.PlayingScene)
+	GameManager.state = "PLAYING"
+	GameManager.change_scene()
 
 func on_quit_pressed():
 	get_tree().quit()

@@ -7,18 +7,21 @@ extends CanvasLayer
 @onready var enemies_label = $MarginContainer/EnemiesVBoxContainer/MarginContainer/Label
 @onready var wave_label = $MarginContainer/EnemiesVBoxContainer/Label
 @onready var enemies_bar_container = $MarginContainer/EnemiesVBoxContainer/MarginContainer
-@onready var player = PlayerManager.get_player()
+
+@onready var gun_container = $GunMarginContainer/Panel/TextureRect
+var player = null
+
+
 
 func _ready() -> void:
 	EntitiesManager.wave_start.connect(_on_wave_start)
 	EntitiesManager.wave_end.connect(_on_wave_end)
-	player.damaged.connect(_on_player_damaged)
+	
 	GameManager._set_hud(self)
 	
 	wave_label.text = "Rest time"
 	enemies_bar_container.visible = false
 	
-	set_health(player.hp, player.max_hp)
 	
 	
 func set_health(value: int, max_value: int) -> void:
@@ -31,7 +34,9 @@ func set_enemy_hud(value: int, max_value: int) -> void:
 	enemies_bar.value = value
 	enemies_label.text = "Enemies left: " + "%d / %d" % [value, max_value]
 	
-	
+func set_player(player_scene):
+	player = player_scene
+
 func _on_player_damaged(_damage):
 	set_health(player.hp, player.max_hp)
 
@@ -51,3 +56,8 @@ func _on_enemy_spawned():
 	
 func _on_upgrade_selected():
 	set_health(player.hp, player.max_hp)
+	
+func _on_player_gun_equiped(gun_texture):
+	print(gun_texture)
+	gun_container.texture = gun_texture
+	

@@ -20,4 +20,5 @@ func _on_resume_pressed():
 func _on_menu_pressed():
 	get_tree().paused = false
 	# Load your menu scene
-	GameManager.change_scene(GameManager.MenuScene)
+	GameManager.state = "MENU"
+	GameManager.change_scene()

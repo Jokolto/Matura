@@ -2,8 +2,12 @@ class_name Enemy extends CharacterBody2D
 
 @export var stats: Resource = preload("res://resources/enemies/general_enemy.tres")
 
-@onready var player: CharacterBody2D = null  # assign this later
+
 @onready var body_sprite = $AnimatedSprite2D
+
+
+var player: CharacterBody2D = null  # assigned from spawner
+var projectiles_node: Node = null # assigned from spawner
 
 var move_speed: float 
 var max_health: float 
@@ -24,9 +28,6 @@ func _ready() -> void:
 	
 	
 	generate_id()
-	player = PlayerManager.get_player()
-	if not player:
-		print("Warning: Enemy has no player reference!")
 	
 	move_speed = stats.move_speed
 	max_health = stats.max_health 
@@ -38,22 +39,32 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	var dir: Vector2 = Vector2.ZERO
-	#print(player)
 	if is_instance_valid(player):
 		dir = (player.global_position - global_position).normalized()
 		velocity = dir * move_speed
 		move_and_slide()
-	
 	if player_inside_contact_range:
 		_deal_damage(player)
 	
 	_update_animation(dir)
 
+
+func set_player(player_instance):
+	player = player_instance
+
+
+func set_projectiles_node(node: Node):
+	projectiles_node = node
+
 func take_damage(amount: float) -> void:
+	if health <= 0:   # multiple bullets could kill enemies multiple times without this
+		return 
+		
 	health -= amount
 	if health <= 0:
-		queue_free()
 		enemy_death.emit()
+		queue_free()
+		
 		
 
 func generate_id():

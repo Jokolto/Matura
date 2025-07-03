@@ -5,6 +5,7 @@ extends CanvasLayer
 @onready var blocker = $Panel/MouseBlocker
 var items_pool = []
 var input_ready = false
+var ItemManager = null
 
 func _ready():
 	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -14,6 +15,9 @@ func _ready():
 		button.pressed.connect(_on_upgrade_selected)
 		
 	hide()
+
+func set_item_manager(manager):
+	ItemManager = manager
 
 func show_upgrade_panel():
 	
@@ -48,13 +52,13 @@ func load_all_items() -> Array:
 		if file.ends_with(".tres"):
 			var item = load(path_to_items + file)
 			item_list.append(item)
-			print(item)
+			
 	return item_list
 
 func _on_wave_end():
 	blocker.visible = true
 	show_upgrade_panel()
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.7).timeout
 	blocker.visible = false
 	
 

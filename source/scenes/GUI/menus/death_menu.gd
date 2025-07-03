@@ -10,9 +10,11 @@ func _ready():
 
 
 func _on_try_again_pressed():
-	GameManager.change_scene(GameManager.PlayingScene)
+	GameManager.state = "PLAYING"
+	GameManager.change_scene()
 
 func _on_menu_pressed():
 	get_tree().paused = false
 	# Load your menu scene
-	GameManager.change_scene(GameManager.MenuScene)
+	GameManager.state = "MENU"
+	GameManager.change_scene()
