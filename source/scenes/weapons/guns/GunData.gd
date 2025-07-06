@@ -9,3 +9,8 @@ class_name GunData extends Resource
 @export var shooting_range: float
 @export var bullet_speed: float
 @export var sprite: Texture2D
+
+# sound
+@export var stream: AudioStream
+@export var pitch_randomness: float = 0.1
+@export var volume_db: float = 0.0

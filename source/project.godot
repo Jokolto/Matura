@@ -17,8 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-EntitiesManager="*res://managers/EntitiesManager.gd"
+AudioManager="*res://managers/AudioManager.gd"
 GameManager="*res://managers/GameManager.gd"
+EntitiesManager="*res://managers/EntitiesManager.gd"
 
 [display]
 

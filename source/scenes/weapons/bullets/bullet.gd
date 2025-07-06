@@ -11,14 +11,24 @@ var shooting_range: float # assigned by gun
 var piercing: int
 
 var shooter: CharacterBody2D = null # assigned by gun
+enum ShooterType { PLAYER, ENEMY }
+var shooter_type: ShooterType
+
 var projectiles_node: Node = null  # assigned by gun
 var gun_node: Node = null  # assigned by gun
+
 
 var friendly_fire = false
 var hit_entities = []
 
 
 func _ready() -> void:
+	match shooter:
+		Player:
+			shooter_type = ShooterType.PLAYER
+		Enemy:
+			shooter_type = ShooterType.ENEMY
+			
 	shot_at_pos = global_position
 	generate_id()
 
@@ -32,9 +42,9 @@ func _process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body != shooter:
-		if (body is CharacterBody2D):
-			if (shooter is Player or body is Player):
+	if body != shooter:    # ensure no self colision, can cause a one frame bug if entity is killed right as it shoots
+		if (body is CharacterBody2D):    # ensure colision with entities
+			if (shooter_type == ShooterType.PLAYER or body is Player):   # either player hitting enemy, or enemy hitting player
 				if not body in hit_entities:
 					hit_entities.append(body)
 					body.take_damage(damage)
@@ -43,9 +53,9 @@ func _on_body_entered(body: Node2D) -> void:
 						return
 					projectiles_node.proj_amount -= 1
 					queue_free()
-			elif (body is Enemy and shooter is Enemy and not friendly_fire): 
+			elif (body is Enemy and shooter_type == ShooterType.ENEMY and friendly_fire):     # enemy hitting enemy
 				body.take_damage(damage)
-		else: 
+		else:     # colision with some other object, e.g. wall
 			projectiles_node.proj_amount -= 1
 			queue_free()
 		

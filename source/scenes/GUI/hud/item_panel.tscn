@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddwv0va7wls5j"]
+
+[ext_resource type="Script" path="res://scenes/GUI/hud/item_panel.gd" id="1_1cg6u"]
+[ext_resource type="Texture2D" uid="uid://ds7o7afn2hjjn" path="res://assets/sprites/items/bullets.png" id="1_pt13j"]
+
+[node name="ItemPanel" type="Panel"]
+custom_minimum_size = Vector2(40, 0)
+script = ExtResource("1_1cg6u")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+texture = ExtResource("1_pt13j")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemAmountLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_top = 0.627
+anchor_right = 1.225
+anchor_bottom = 1.118
+offset_top = 0.0229988
+offset_bottom = -0.0180016
+text = "x1"

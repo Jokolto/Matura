@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bnclyrvllybvk"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://bnclyrvllybvk"]
 
+[ext_resource type="Texture2D" uid="uid://ds7o7afn2hjjn" path="res://assets/sprites/items/bullets.png" id="1_ibchi"]
 [ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_n38v5"]
 
 [resource]
@@ -7,5 +8,6 @@ script = ExtResource("1_n38v5")
 name = "Better Heart"
 description = "Max HP +2"
 rarity = 1
+icon = ExtResource("1_ibchi")
 effect = "max_hp"
 effect_value = 2.0

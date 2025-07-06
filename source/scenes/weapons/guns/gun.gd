@@ -12,6 +12,10 @@ class_name Gun extends Node2D
 @export var shooting_range: float
 @export var bullet_speed: float
 
+var on_shoot_sound: AudioStream
+var shoot_sound_volume: float
+var shoot_sound_pitch_randomness: float
+
 var final_damage: float = 0.0             # Calculated when shot 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
 @export var stats: Resource = preload("res://resources/guns/handgun.tres")
@@ -35,6 +39,10 @@ func _ready() -> void:
 	piercing = stats.bullet_piercing
 	sprite.texture = stats.sprite
 	
+	on_shoot_sound = stats.stream
+	shoot_sound_volume = stats.volume_db
+	shoot_sound_pitch_randomness = stats.pitch_randomness
+	
 	shooter = get_parent().get_parent()
 	fire_rate *= shooter.fire_rate_multiplier
 		
@@ -51,6 +59,8 @@ func try_fire(target_pos: Vector2) -> void:
 		return
 	for bullet in range(bullets_amount):
 		_spawn_bullet(target_pos)
+		
+	AudioManager.play_sfx_positional(on_shoot_sound, global_position, shoot_sound_volume, shoot_sound_pitch_randomness)
 	_cooldown = 1.0 / (fire_rate)
 
 

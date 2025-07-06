@@ -1,7 +1,7 @@
 extends Node
 
 var player: Node = null
-var held_items: Array = []
+var held_items: Dictionary = {}
 
 
 func set_player(player_scene):
@@ -29,5 +29,8 @@ func apply_item(item: ItemData):
 
 func _on_item_selected(item):
 	apply_item(item)
-	held_items.append(item)
+	if held_items.has(item):
+		held_items[item] += 1
+	else:
+		held_items[item] = 1
 	

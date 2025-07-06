@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cig4gnvon7fks"
+path="res://.godot/imported/Clement Panchout _ Unsettling victory _ 2019.ogg-983119af897cc5682df34399c632fcc0.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/audio/music/Clement Panchout _ Unsettling victory _ 2019.ogg"
+dest_files=["res://.godot/imported/Clement Panchout _ Unsettling victory _ 2019.ogg-983119af897cc5682df34399c632fcc0.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

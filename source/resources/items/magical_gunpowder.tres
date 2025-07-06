@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://naglg70ncek8"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://naglg70ncek8"]
 
+[ext_resource type="Texture2D" uid="uid://ds7o7afn2hjjn" path="res://assets/sprites/items/bullets.png" id="1_c3rrf"]
 [ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_h65sk"]
 
 [resource]
@@ -7,5 +8,6 @@ script = ExtResource("1_h65sk")
 name = "Magical Gunpowder"
 description = "Damage + 50%"
 rarity = 3
+icon = ExtResource("1_c3rrf")
 effect = "damage_multiply"
 effect_value = 0.5

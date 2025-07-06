@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://dxsq06ltwf83t"]
+[gd_scene load_steps=15 format=4 uid="uid://dxsq06ltwf83t"]
 
 [ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_cp1lv"]
 [ext_resource type="Script" path="res://scenes/level/level.gd" id="1_tbp78"]
@@ -11,7 +11,6 @@
 [ext_resource type="Script" path="res://scenes/GUI/ui.gd" id="8_c531d"]
 [ext_resource type="PackedScene" uid="uid://cqxmmiyy1brb" path="res://scenes/GUI/menus/pause_menu.tscn" id="8_h1kyu"]
 [ext_resource type="PackedScene" uid="uid://ctk8kojftcawm" path="res://scenes/GUI/hud/upgrade_panel.tscn" id="9_j1s7u"]
-[ext_resource type="Script" path="res://scenes/GUI/hud/upgrade_panel.gd" id="10_wqxkn"]
 [ext_resource type="Script" path="res://scenes/items/ItemManager.gd" id="11_53goj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5nmku"]
@@ -161,7 +160,6 @@ visible = false
 [node name="UpgradePanel" parent="UI" instance=ExtResource("9_j1s7u")]
 process_mode = 2
 visible = false
-script = ExtResource("10_wqxkn")
 
 [node name="ItemManager" type="Node" parent="."]
 script = ExtResource("11_53goj")

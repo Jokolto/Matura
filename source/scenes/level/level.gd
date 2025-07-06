@@ -15,10 +15,11 @@ extends Node2D
 
 @onready var ItemManager = $ItemManager
 
+signal pause
 var rest_time: float = 2.5
 
 func _ready() -> void:
-	
+	pause.connect(PauseMenu._on_pause)
 	EntitiesManager.wave_end.connect(_on_wave_end)
 	WaveTimer.start(rest_time)
 	
@@ -40,6 +41,7 @@ func _ready() -> void:
 	
 	# passing itemmanager reference
 	Upgradepanel.set_item_manager(ItemManager)
+	hud.set_item_manager(ItemManager)
 	
 	# passing projectiles_node reference 
 	spawners_node.set_projectiles_node(projectiles_node)
@@ -55,7 +57,8 @@ func set_default_nodes():
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"): # Typically Escape
-		PauseMenu.toggle_pause()
+		GameManager.toggle_pause()
+		pause.emit()
 
 
 func _on_wave_timer_timeout() -> void:

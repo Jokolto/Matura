@@ -12,7 +12,9 @@ class_name Player
 @export var fire_rate_multiplier: float = 1
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
+
 var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  
+var hurt_sound: AudioStream = preload("res://assets/audio/sfx/player/young-man-being-hurt-95628.mp3")
 
 # -------------------------
 # ─── Private State ────────────────────────────────────────────
@@ -33,7 +35,7 @@ var current_gun: Gun
 # -------------------------
 signal damaged(amount: int)
 signal died
-signal gun_equiped(gun_texture: Texture2D)
+signal gun_equiped(gun_texture)
 
 func _ready() -> void:
 	died.connect(_die)
@@ -104,7 +106,9 @@ func take_damage(damage: float) -> void:
 		hp -= damage
 		damaged.emit(damage)
 		$Timers/InvulnerabilityTimer.start(invulnerable_period)
+		AudioManager.play_sfx(hurt_sound)
 		vulnerable = false
+		
 	if hp <= 0:
 		emit_signal("died")
 
@@ -115,7 +119,7 @@ func equip_gun(gun_scene: PackedScene = starting_gun):
 	current_gun = gun_scene.instantiate()
 	current_gun.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(current_gun)
-	gun_equiped.emit(current_gun.sprite)
+	gun_equiped.emit(current_gun.sprite.texture)
 
 
 func _on_dash_timer_timeout() -> void:

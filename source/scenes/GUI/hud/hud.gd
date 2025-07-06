@@ -9,8 +9,14 @@ extends CanvasLayer
 @onready var enemies_bar_container = $MarginContainer/EnemiesVBoxContainer/MarginContainer
 
 @onready var gun_container = $GunMarginContainer/Panel/TextureRect
-var player = null
 
+@onready var item_container = $ItemsContainer/ItemsHBoxContainer
+
+var player = null # set by level node
+var ItemManager = null # set by level node
+
+var item_panels: Array = []
+var ItemPanel: PackedScene = preload("res://scenes/GUI/hud/item_panel.tscn")
 
 
 func _ready() -> void:
@@ -22,7 +28,9 @@ func _ready() -> void:
 	wave_label.text = "Rest time"
 	enemies_bar_container.visible = false
 	
-	
+func set_item_manager(manager):
+	ItemManager = manager
+
 	
 func set_health(value: int, max_value: int) -> void:
 	health_bar.max_value = max_value
@@ -54,10 +62,21 @@ func _on_wave_end():
 func _on_enemy_spawned():
 	set_enemy_hud(EntitiesManager.enemies_alive, EntitiesManager.enemies_per_wave)
 	
-func _on_upgrade_selected():
+func _on_upgrade_selected(item):
 	set_health(player.hp, player.max_hp)
+	if ItemManager.held_items.has(item):    # checking if item was registered successfully
+		for item_panel in item_container.get_children():   # checking if item is already there 
+			if item_panel.item_name == item["name"]:
+				item_panel.change_item_amount_label(ItemManager.held_items[item])
+				return	
+		var item_panel = ItemPanel.instantiate()
+	
+		item_container.add_child(item_panel)
+		item_panel.change_texture(item["icon"])
+		item_panel.change_item_amount_label(ItemManager.held_items[item])
+		item_panel.change_name(item['name'])
+		
 	
 func _on_player_gun_equiped(gun_texture):
-	print(gun_texture)
 	gun_container.texture = gun_texture
 	

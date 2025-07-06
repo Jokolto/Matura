@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@onready var upgrades_buttons = $Panel/VBoxContainer
+@onready var upgrades_buttons = $Panel/HBoxContainer
 @onready var buttons = upgrades_buttons.get_children()
 @onready var blocker = $Panel/MouseBlocker
 var items_pool = []
@@ -32,15 +32,16 @@ func show_upgrade_panel():
 	for i in range(len(buttons)):
 		var button: Button = buttons[i]
 		var first_click = not button.pressed.is_connected(ItemManager._on_item_selected)
-		var upgrade = options[i]
-		button.text = upgrade["name"] + "\n" + upgrade["description"]
+		var item = options[i]
+		button.text = item["name"] + "\n" + item["description"]
+		button.icon = item["icon"]
 		
 		if not first_click:  
 			button.pressed.disconnect(ItemManager._on_item_selected)
 			button.pressed.disconnect(GameManager.hud._on_upgrade_selected)  # redisconnecting, connecting just so that order stays
 			
-		button.pressed.connect(ItemManager._on_item_selected.bind(upgrade))
-		button.pressed.connect(GameManager.hud._on_upgrade_selected)
+		button.pressed.connect(ItemManager._on_item_selected.bind(item))
+		button.pressed.connect(GameManager.hud._on_upgrade_selected.bind(item))
 		
 	
 	

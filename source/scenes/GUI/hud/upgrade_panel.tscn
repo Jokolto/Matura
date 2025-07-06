@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctk8kojftcawm"]
+[gd_scene load_steps=4 format=3 uid="uid://ctk8kojftcawm"]
+
+[ext_resource type="Script" path="res://scenes/GUI/hud/upgrade_panel.gd" id="1_ji5cv"]
+[ext_resource type="Texture2D" uid="uid://ds7o7afn2hjjn" path="res://assets/sprites/items/bullets.png" id="2_id7xe"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sackt"]
 font_size = 32
 
 [node name="UpgradePanel" type="CanvasLayer"]
+script = ExtResource("1_ji5cv")
 
 [node name="Panel" type="Panel" parent="."]
 anchors_preset = 15
@@ -33,7 +37,7 @@ text = "Choose an item"
 label_settings = SubResource("LabelSettings_sackt")
 horizontal_alignment = 1
 
-[node name="VBoxContainer" type="HBoxContainer" parent="Panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.1
@@ -47,17 +51,29 @@ grow_vertical = 2
 theme_override_constants/separation = 24
 alignment = 1
 
-[node name="Button" type="Button" parent="Panel/VBoxContainer"]
+[node name="Button" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
 text = "Upgrade 1."
+icon = ExtResource("2_id7xe")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
-[node name="Button2" type="Button" parent="Panel/VBoxContainer"]
+[node name="Button2" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
-text = "Upgrade 2."
+text = "Upgrade 1."
+icon = ExtResource("2_id7xe")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
-[node name="Button3" type="Button" parent="Panel/VBoxContainer"]
+[node name="Button3" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
-text = "Upgrade 3."
+text = "Upgrade 1."
+icon = ExtResource("2_id7xe")
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bv4fss25gdwt1"
+path="res://.godot/imported/Modern _ Eastern _ Arabian Princess _ Clement Panchout 2019.wav-a6ece3b0933d7d9b88ac391cba7071ff.sample"
+
+[deps]
+
+source_file="res://assets/audio/music/bad_wavs/Modern _ Eastern _ Arabian Princess _ Clement Panchout 2019.wav"
+dest_files=["res://.godot/imported/Modern _ Eastern _ Arabian Princess _ Clement Panchout 2019.wav-a6ece3b0933d7d9b88ac391cba7071ff.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

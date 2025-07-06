@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://h6cyoa55m4j"
+path="res://.godot/imported/16-Bit RGP Music Ice Lands _Clement Panchout.wav-2549558572d80d682a65a41bbaa1dcc6.sample"
+
+[deps]
+
+source_file="res://assets/audio/music/bad_wavs/16-Bit RGP Music Ice Lands _Clement Panchout.wav"
+dest_files=["res://.godot/imported/16-Bit RGP Music Ice Lands _Clement Panchout.wav-2549558572d80d682a65a41bbaa1dcc6.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

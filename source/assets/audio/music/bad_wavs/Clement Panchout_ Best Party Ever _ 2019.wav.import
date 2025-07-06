@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cqjb7vtwfmlmt"
+path="res://.godot/imported/Clement Panchout_ Best Party Ever _ 2019.wav-626003cb94b08e5d4b3aef0eef792d09.sample"
+
+[deps]
+
+source_file="res://assets/audio/music/bad_wavs/Clement Panchout_ Best Party Ever _ 2019.wav"
+dest_files=["res://.godot/imported/Clement Panchout_ Best Party Ever _ 2019.wav-626003cb94b08e5d4b3aef0eef792d09.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

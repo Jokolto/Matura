@@ -8,17 +8,16 @@ func _ready():
 	menu_button.pressed.connect(_on_menu_pressed)
 	hide()
 
-func toggle_pause():
-	get_tree().paused = not get_tree().paused
-	visible = get_tree().paused
-	# If needed, stop input to the world:
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _on_resume_pressed():
-	toggle_pause()
+	GameManager.toggle_pause()
+	visible = false
 
 func _on_menu_pressed():
-	get_tree().paused = false
+	GameManager.toggle_pause()
 	# Load your menu scene
 	GameManager.state = "MENU"
 	GameManager.change_scene()
+
+func _on_pause():
+	visible = true
