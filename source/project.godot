@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 AudioManager="*res://managers/AudioManager.gd"
 GameManager="*res://managers/GameManager.gd"
 EntitiesManager="*res://managers/EntitiesManager.gd"
+QTableApproach="*res://scenes/entities/enemies/ai/q_table_approach.gd"
 
 [display]
 

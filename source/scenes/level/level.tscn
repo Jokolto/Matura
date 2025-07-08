@@ -110,6 +110,8 @@ tile_set = SubResource("TileSet_6jeod")
 [node name="Projectiles" type="Node" parent="."]
 script = ExtResource("5_palfl")
 
+[node name="PlayerProjectiles" type="Node" parent="Projectiles"]
+
 [node name="Entities" type="Node" parent="."]
 script = ExtResource("6_f1o80")
 

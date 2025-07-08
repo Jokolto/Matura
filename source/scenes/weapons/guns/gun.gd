@@ -76,7 +76,7 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 	bullet.speed = bullet_speed
 	bullet.piercing = piercing
 	
-	# Apply spread
+	# Apply spread of the gun
 	var dir: Vector2 = (target_pos - bullet.global_position).normalized()
 	bullet.rotation = dir.angle() 
 	if spread_deg > 0.0:
@@ -84,13 +84,17 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		var random_angle: float = randf_range(-half_rad, half_rad)
 		dir = dir.rotated(random_angle)
 
-	# Apply other stats 
+	bullet.direction = dir
+	
+	# Apply player boosts 
 	if shooter is Player:
 		final_damage = (bullet_damage + shooter.damage_flat_boost) * shooter.damage_multiplier
 		bullet.damage = final_damage
+		projectiles_node.player_projectile_node.add_child(bullet)
+		return
 		
 	#print(final_damage, PlayerManager.player.damage_flat_boost, PlayerManager.player.damage_multiplier)
 	
 	
-	bullet.direction = dir
+	
 	projectiles_node.add_child(bullet)

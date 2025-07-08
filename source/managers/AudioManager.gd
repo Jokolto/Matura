@@ -73,17 +73,17 @@ func play_sfx(stream: AudioStream, volume: float = 0.0, pitch_randomness: float 
 	if pitch_randomness > 0.0:
 		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
 
-	add_child(sfx_player)
+	parent.add_child(sfx_player)
 	sfx_player.play()
 	sfx_player.connect("finished", Callable(sfx_player, "queue_free"))
 	
 	
-func play_sfx_positional(stream: AudioStream, position: Vector2, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
+func play_sfx_positional(stream: AudioStream, play_at_position: Vector2, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
 	var sfx_player = AudioStreamPlayer2D.new()
 	sfx_player.bus = SFX_BUS
 	sfx_player.stream = stream
 	sfx_player.volume_db = volume
-	sfx_player.global_position = position
+	sfx_player.global_position = play_at_position
 
 	if pitch_randomness > 0.0:
 		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
