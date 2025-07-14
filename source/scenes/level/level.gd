@@ -21,9 +21,12 @@ var rest_time: float = 2.5
 func _ready() -> void:
 	pause.connect(PauseMenu._on_pause)
 	EntitiesManager.wave_end.connect(_on_wave_end)
+	EntitiesManager.wave_end.connect(player._on_wave_end)
+	
 	WaveTimer.start(rest_time)
 	
 	player.damaged.connect(hud._on_player_damaged)
+	player.healed.connect(hud._on_player_healed)
 	player.died.connect(EntitiesManager._on_player_death)
 	player.died.connect(GameManager._on_player_death)
 	player.gun_equiped.connect(hud._on_player_gun_equiped)

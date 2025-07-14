@@ -36,6 +36,4 @@ func get_shared_q_table() -> Dictionary:
 	
 
 func _on_wave_end():
-	
 	gather_enemy_brains(EntitiesManager.get_enemy_brains())
-	print(shared_q_table)

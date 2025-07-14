@@ -80,3 +80,6 @@ func _on_upgrade_selected(item):
 func _on_player_gun_equiped(gun_texture):
 	gun_container.texture = gun_texture
 	
+
+func _on_player_healed(_value):
+	set_health(player.hp, player.max_hp)

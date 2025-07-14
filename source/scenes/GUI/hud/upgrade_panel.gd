@@ -3,13 +3,15 @@ extends CanvasLayer
 @onready var upgrades_buttons = $Panel/HBoxContainer
 @onready var buttons = upgrades_buttons.get_children()
 @onready var blocker = $Panel/MouseBlocker
-var items_pool = []
+var rarity_namings: Dictionary = {1 : "common",  2 : "uncommon",  3 : "rare", 4 : "legendary"} 
 var input_ready = false
 var ItemManager = null
 
+
+var gun_wave = false
+
 func _ready():
 	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
-	items_pool = load_all_items()
 	EntitiesManager.wave_end.connect(_on_wave_end)
 	for button in buttons:
 		button.pressed.connect(_on_upgrade_selected)
@@ -20,41 +22,68 @@ func set_item_manager(manager):
 	ItemManager = manager
 
 func show_upgrade_panel():
-	
+	gun_wave = EntitiesManager.current_wave % ItemManager.gun_upgrade_frequency == 0
 	get_tree().paused = not get_tree().paused
 	visible = get_tree().paused
-	
-	var options = items_pool
-	options.shuffle()
-	options = options.slice(0, len(buttons))
-
-	
-	for i in range(len(buttons)):
+	var to_choose_amount = len(buttons) # 3 default
+	var options: Array
+	if gun_wave:  
+		options = ItemManager.get_random_guns(to_choose_amount) 
+	else:
+		options = ItemManager.get_random_items(to_choose_amount)
+		
+	# configuring the buttons and connecting the signals.
+	for i in range(to_choose_amount):
 		var button: Button = buttons[i]
 		var first_click = not button.pressed.is_connected(ItemManager._on_item_selected)
 		var item = options[i]
+		var icon: Texture2D
+		
+		if gun_wave:
+			var gun_sprite = item["sprite"]
+			#gun_sprite.rotation_degrees = -60    # rotation for better display
+			icon = gun_sprite
+		else:		
+			icon = item["icon"]
+			set_button_rarity_style(button, rarity_namings[item["rarity"]])
+	
 		button.text = item["name"] + "\n" + item["description"]
-		button.icon = item["icon"]
+		button.icon = icon
+		
 		
 		if not first_click:  
 			button.pressed.disconnect(ItemManager._on_item_selected)
 			button.pressed.disconnect(GameManager.hud._on_upgrade_selected)  # redisconnecting, connecting just so that order stays
 			
-		button.pressed.connect(ItemManager._on_item_selected.bind(item))
+		button.pressed.connect(ItemManager._on_item_selected.bind(item, gun_wave))
 		button.pressed.connect(GameManager.hud._on_upgrade_selected.bind(item))
+
+func set_button_rarity_style(button: Button, rarity: String) -> void:
+	var border_color: Color
+
+	match rarity:
+		"common":
+			border_color = Color.GRAY
+		"uncommon":
+			border_color = Color.LIME_GREEN
+		"rare":
+			border_color = Color.DODGER_BLUE
+		"epic":
+			border_color = Color.MEDIUM_PURPLE
+		"legendary":
+			border_color = Color.ORANGE
+		_:
+			border_color = Color.DIM_GRAY
+
+	var stylebox := StyleBoxFlat.new()
+	for side in ["left", "top", "right", "bottom"]:
+		stylebox.set("border_width_" + side, 1)
 		
-	
-	
-func load_all_items() -> Array:
-	var item_list = []
-	var path_to_items = "res://resources/items/"
-	var dir = DirAccess.open(path_to_items)
-	for file in dir.get_files():
-		if file.ends_with(".tres"):
-			var item = load(path_to_items + file)
-			item_list.append(item)
-			
-	return item_list
+	stylebox.border_color = border_color
+	stylebox.bg_color = Color.from_hsv(94, 0.06, 0.19) # Dark gray
+
+	button.add_theme_stylebox_override("normal", stylebox)
+	#button.add_theme_stylebox_override("hover", stylebox)
 
 func _on_wave_end():
 	blocker.visible = true

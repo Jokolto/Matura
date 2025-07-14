@@ -8,7 +8,10 @@ class_name GunData extends Resource
 @export var bullet_piercing: int
 @export var shooting_range: float
 @export var bullet_speed: float
+
 @export var sprite: Texture2D
+@export var name: String
+@export var description: String
 
 # sound
 @export var stream: AudioStream

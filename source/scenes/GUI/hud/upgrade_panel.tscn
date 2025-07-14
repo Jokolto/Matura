@@ -39,13 +39,15 @@ horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_top = 0.25
-anchor_right = 0.9
-anchor_bottom = 0.75
-offset_top = -4.0
-offset_bottom = 4.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -399.0
+offset_top = -200.0
+offset_right = 399.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 24
@@ -54,8 +56,9 @@ alignment = 1
 [node name="Button" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
-text = "Upgrade 1."
+text = "Upgrade 1. "
 icon = ExtResource("2_id7xe")
+autowrap_mode = 3
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
@@ -63,8 +66,9 @@ expand_icon = true
 [node name="Button2" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
-text = "Upgrade 1."
+text = "Upgrade 1. "
 icon = ExtResource("2_id7xe")
+autowrap_mode = 3
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
@@ -72,8 +76,9 @@ expand_icon = true
 [node name="Button3" type="Button" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(250, 400)
 layout_mode = 2
-text = "Upgrade 1."
+text = "Upgrade 1. "
 icon = ExtResource("2_id7xe")
+autowrap_mode = 3
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true

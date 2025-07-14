@@ -38,9 +38,7 @@ func _physics_process(_delta: float) -> void:
 			
 			_current_weapon.try_fire(pos)
 			
-		
-		velocity = dir * move_speed
-		move_and_slide()
+	super._physics_process(_delta)
 	
 	
 	if player_inside_contact_range:

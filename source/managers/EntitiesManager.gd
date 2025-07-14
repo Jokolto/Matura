@@ -16,7 +16,7 @@ var enemies_alive: int = 0
 
 var wave_duration: float = 1000000
 var wave_timer: float = 0.0
-
+var player_heal_after_wave_percentage: float = 0.2 
 
 signal wave_end
 signal wave_start

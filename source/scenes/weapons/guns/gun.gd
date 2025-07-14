@@ -18,6 +18,7 @@ var shoot_sound_pitch_randomness: float
 
 var final_damage: float = 0.0             # Calculated when shot 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
+
 @export var stats: Resource = preload("res://resources/guns/handgun.tres")
 
 var shooter: CharacterBody2D = null
@@ -28,6 +29,14 @@ var _cooldown: float = 0.0
 var projectiles_node: Node = null
 
 func _ready() -> void:
+	shooter = get_parent().get_parent()
+	import_res_stats()
+		
+func _process(delta: float) -> void:
+	if _cooldown > 0.0:
+		_cooldown -= delta
+		
+func import_res_stats():
 	# import stats from resource
 	fire_rate = stats.fire_rate
 	automatic = stats.automatic
@@ -42,14 +51,6 @@ func _ready() -> void:
 	on_shoot_sound = stats.stream
 	shoot_sound_volume = stats.volume_db
 	shoot_sound_pitch_randomness = stats.pitch_randomness
-	
-	shooter = get_parent().get_parent()
-	fire_rate *= shooter.fire_rate_multiplier
-		
-
-func _process(delta: float) -> void:
-	if _cooldown > 0.0:
-		_cooldown -= delta
 
 func set_projectiles_node(projectiles_node_passed):
 	projectiles_node = projectiles_node_passed
@@ -61,7 +62,7 @@ func try_fire(target_pos: Vector2) -> void:
 		_spawn_bullet(target_pos)
 		
 	AudioManager.play_sfx_positional(on_shoot_sound, global_position, shoot_sound_volume, shoot_sound_pitch_randomness)
-	_cooldown = 1.0 / (fire_rate)
+	_cooldown = 1.0 / (fire_rate*shooter.fire_rate_multiplier)
 
 
 func _spawn_bullet(target_pos: Vector2) -> void:
@@ -94,7 +95,4 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		return
 		
 	#print(final_damage, PlayerManager.player.damage_flat_boost, PlayerManager.player.damage_multiplier)
-	
-	
-	
 	projectiles_node.add_child(bullet)

@@ -13,7 +13,8 @@ class_name Player
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
 
-var starting_gun: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  
+var gun_scene: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn")  
+var default_gun_res: Resource = preload("res://resources/guns/handgun.tres")
 var hurt_sound: AudioStream = preload("res://assets/audio/sfx/player/young-man-being-hurt-95628.mp3")
 
 # -------------------------
@@ -28,12 +29,15 @@ var invulnerable_period: float = 0.2
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var projectiles_node: Node = null
-var current_gun: Gun             
+
+var gun_instance: Gun             
+var current_gun_res: Resource = null
 
 # -------------------------
 # ─── Signals ────────────────────────────────────────────
 # -------------------------
 signal damaged(amount: int)
+signal healed(amount: int)
 signal died
 signal gun_equiped(gun_texture)
 
@@ -67,13 +71,13 @@ func set_projectiles_node(node: Node):
 
 func _handle_shoot(mouse: Vector2) -> void:
 	# Handle shooting
-	if current_gun:
-		if current_gun.automatic:
+	if gun_instance:
+		if gun_instance.automatic:
 			if Input.is_action_pressed("shoot"):
-				current_gun.try_fire(mouse)
+				gun_instance.try_fire(mouse)
 		else:
 			if Input.is_action_just_pressed("shoot"):
-					current_gun.try_fire(mouse)
+					gun_instance.try_fire(mouse)
 	
 		
 
@@ -114,12 +118,20 @@ func take_damage(damage: float) -> void:
 
 func _die() -> void:
 	print("died!")
+
+
+func equip_gun(gun_res: Resource = null):
+	if gun_instance:
+		gun_instance.queue_free()
+	else:
+		gun_res = default_gun_res
 	
-func equip_gun(gun_scene: PackedScene = starting_gun):
-	current_gun = gun_scene.instantiate()
-	current_gun.set_projectiles_node(projectiles_node)
-	weapon_holder.add_child(current_gun)
-	gun_equiped.emit(current_gun.sprite.texture)
+	gun_instance = gun_scene.instantiate()
+	gun_instance.set_projectiles_node(projectiles_node)
+	weapon_holder.add_child(gun_instance)
+	gun_instance.stats = gun_res
+	gun_instance.import_res_stats()
+	gun_equiped.emit(gun_instance.sprite.texture)
 
 
 func _on_dash_timer_timeout() -> void:
@@ -129,3 +141,20 @@ func _on_dash_timer_timeout() -> void:
 
 func _on_invulnerability_timer_timeout() -> void:
 	vulnerable = true
+	
+
+func heal(heal_value: int):
+	var healable_hp = max_hp - hp
+	if healable_hp <= 0:
+		return
+	
+	if heal_value > healable_hp:
+		hp += healable_hp
+	else:
+		hp += heal_value
+		
+	healed.emit(heal_value)
+	
+
+func _on_wave_end():
+	heal(floor(EntitiesManager.player_heal_after_wave_percentage * max_hp))

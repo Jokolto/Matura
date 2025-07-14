@@ -19,19 +19,25 @@ var enemy_id: int = -1
 
 # AI PARAMETERS
 ## Rewards
-var hiting_player_reward: int = 5
-var geting_hit_reward: int = -7
-var dodging_reward: int = 6
+var hiting_player_reward: int = 10
+var geting_hit_reward: int = -5
+var dodging_reward: int = 5
 var wasting_movement_reward: int = -1
+var staying_alive_reward: float = 0
 
 ## State parameters
 var life_time_sec: float = 0
-var dodged_bullets: int = 0
-var player_shot_nearby: bool = 0
+var dodged_bullets: Array = []
+var dodged_bullet: bool = false
+var bullet_nearby_dist: float = 150
 var player_nearby_dist: float = 400
+var bullet_threat_timer := 0.0
+var dodge_reward_threshold_sec = 0.7
+var is_in_danger = false
+
 
 ## Constants
-const LEARNING_RATE = 1
+const LEARNING_RATE = 0.5
 const DISCOUNT_FACTOR = 0.9
 const EXPLORATION_RATE = 0.2
 var last_state := ""
@@ -83,11 +89,16 @@ func _physics_process(delta: float) -> void:
 	
 	if player_inside_contact_range:
 		_deal_damage(player)
-		apply_reward(5)
+		apply_reward(hiting_player_reward)
 
 func _process(delta: float) -> void:
 	life_time_sec += delta
-	
+	if is_in_danger:
+		bullet_threat_timer += delta
+		if bullet_threat_timer >= dodge_reward_threshold_sec:
+			apply_reward(dodging_reward)  # Survived close to a bullet for 1 second
+	apply_reward(staying_alive_reward)
+		
 	
 
 func set_player(player_instance):
@@ -158,15 +169,16 @@ func execute_action(action: String, _delta: float):
 			apply_reward(-3)
 		"strafe_left":
 			velocity = dir.rotated(-PI/2) * move_speed
-			#apply_reward(-1)
+			apply_reward(wasting_movement_reward)
 		"strafe_right":
 			velocity = dir.rotated(PI/2) * move_speed
-			#apply_reward(-1)	
+			apply_reward(wasting_movement_reward)	
 		_:
 			velocity = Vector2.ZERO
 	move_and_slide()
 
 func get_state() -> String:
+	
 	#var pos_x = floor(global_position.x / 50.0)
 	#var pos_y = floor(global_position.y / 50.0)
 	var dist = floor(global_position.distance_to(player.global_position) / 50.0)
@@ -178,8 +190,18 @@ func get_state() -> String:
 	if nearest_bullet:
 		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 50.0)
 		bullet_angle = floor(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 4))
-
-		
+		if (not (nearest_bullet.name in dodged_bullets)) and (global_position.distance_to(nearest_bullet.global_position) <= bullet_nearby_dist):
+			is_in_danger = true
+			
+			if bullet_threat_timer >= dodge_reward_threshold_sec:
+				dodged_bullets.append(nearest_bullet.name)
+				bullet_threat_timer = 0.0
+				is_in_danger = false
+		else:
+			# Not in danger
+			is_in_danger = false
+			bullet_threat_timer = 0.0
+				
 	dist = clamp(dist, 0, 4)
 	angle = clamp(angle, 0, 7)
 	return "d{d}a{a}bd{bd}ba{ba}".format({"d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle})
