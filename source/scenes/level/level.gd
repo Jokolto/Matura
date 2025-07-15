@@ -8,6 +8,7 @@ extends Node2D
 @onready var PauseMenu = $UI/PauseMenu
 @onready var hud = $UI/HUD
 
+
 @onready var projectiles_node: Node = $Projectiles
 @onready var entities_node: Node = $Entities
 @onready var player: Player = $Entities/Player
@@ -39,7 +40,7 @@ func _ready() -> void:
 	
 	
 	# passing player reference
-	for node in [ItemManager, hud, spawners_node]:
+	for node in [ItemManager, hud, Upgradepanel, spawners_node]:
 		node.set_player(player)
 	
 	# passing itemmanager reference

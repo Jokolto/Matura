@@ -8,7 +8,7 @@ var path_to_items_res = "res://resources/items/"
 var path_to_guns_res = "res://resources/guns/"
 
 var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
-var gun_upgrade_frequency = 5  # every n wave player gets a new gun instead of item
+var gun_upgrade_frequency = 1  # every n wave player gets a new gun instead of item
 
 func _ready() -> void:
 	 
@@ -48,13 +48,13 @@ func load_all_resources_from(path) -> Array:
 			
 	return item_list
 
-func get_random_items_from_pool(pool: Array, item_amount: int, rarity_distribution_for_items: Dictionary = {}) -> Array:
+func get_random_items_from_pool(pool: Array, item_amount: int, rarity_distribution_for_items: Dictionary = {}, minus_pool=[]) -> Array:
 	var options = pool
-	var chosen_items = []
+	var chosen_items = minus_pool
 	
 
 	if not rarity_distribution_for_items:  # not weighted random - used for guns
-		
+		options = options.filter(func(x): return not minus_pool.has(x))  # to remove held guns from options
 		options.shuffle()
 		return options.slice(0, item_amount)
 		
@@ -78,8 +78,8 @@ func get_random_item(options: Array, chosen_already: Array, rarity_distribution_
 func get_random_items(items_amount):
 	return get_random_items_from_pool(item_pool, items_amount, rarity_distribution)
 
-func get_random_guns(guns_amount):
-	return get_random_items_from_pool(gun_pool, guns_amount)
+func get_random_guns(guns_amount, held_guns):
+	return get_random_items_from_pool(gun_pool, guns_amount, {}, held_guns)
 
 func _on_item_selected(item, is_gun_update):
 	if is_gun_update:

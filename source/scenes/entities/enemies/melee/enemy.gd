@@ -17,13 +17,6 @@ var contact_damage: float
 var player_inside_contact_range: bool = false
 var enemy_id: int = -1
 
-# AI PARAMETERS
-## Rewards
-var hiting_player_reward: int = 10
-var geting_hit_reward: int = -5
-var dodging_reward: int = 5
-var wasting_movement_reward: int = -1
-var staying_alive_reward: float = 0
 
 ## State parameters
 var life_time_sec: float = 0
@@ -35,15 +28,8 @@ var bullet_threat_timer := 0.0
 var dodge_reward_threshold_sec = 0.7
 var is_in_danger = false
 
+var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat", "shoot", "idle"]
 
-## Constants
-const LEARNING_RATE = 0.5
-const DISCOUNT_FACTOR = 0.9
-const EXPLORATION_RATE = 0.2
-var last_state := ""
-var last_action := ""
-var brain = QTableApproach 
-var q_table: Dictionary = {}
 
 signal enemy_death(enemy)
 
@@ -53,8 +39,6 @@ func _ready() -> void:
 	#enemy_death.connect(_on_death)
 	enemy_death.connect(EntitiesManager._on_enemy_death)
 	enemy_death.connect(GameManager.hud._on_enemy_death)
-	
-	init_from_shared_brain(brain.shared_q_table)
 	generate_id()
 	
 	move_speed = stats.move_speed
@@ -62,44 +46,51 @@ func _ready() -> void:
 	contact_damage = stats.contact_damage
 	health = max_health
 	
-	
 
-
-#func _physics_process(_delta: float) -> void:   ## Already smart behavior, not using Ai
-	#var dir: Vector2 = Vector2.ZERO
-	#if is_instance_valid(player):
-		#dir = (player.global_position - global_position).normalized()
-		#velocity = dir * move_speed
-		#move_and_slide()
-	#if player_inside_contact_range:
-		#_deal_damage(player)
-	#
-	#_update_animation(dir)
 
 func _physics_process(delta: float) -> void:
 	if not player:
 		return
 
-	var state = get_state()
-	var action = choose_action(state)
-	last_state = state
-	last_action = action
-
+	var state: String = get_state() # returns something like "d20a90bd0ba0"
+	var state_msg: Dictionary = create_state_msg(enemy_id, state) 
+	var action = AiClient.get_ai_action(state_msg)
+	
 	execute_action(action, delta)
 	
 	if player_inside_contact_range:
 		_deal_damage(player)
-		apply_reward(hiting_player_reward)
+		#apply_reward(hiting_player_reward)
 
 func _process(delta: float) -> void:
 	life_time_sec += delta
 	if is_in_danger:
 		bullet_threat_timer += delta
 		if bullet_threat_timer >= dodge_reward_threshold_sec:
-			apply_reward(dodging_reward)  # Survived close to a bullet for 1 second
-	apply_reward(staying_alive_reward)
+			apply_reward(GlobalConfig.RewardEvents["DODGED_BULLET"])  # Survived close to a bullet for 1 second
+	apply_reward(GlobalConfig.RewardEvents["TIME_ALIVE"])
 		
-	
+
+func create_state_msg(id, state) -> Dictionary:
+	return {
+		"type": "STATE",
+		"enemy_id": id,
+		"data": {
+			"valid_actions": valid_actions,
+			"state": state
+			}
+		}
+
+func create_event_msg(id: int, event_type: String, new_state: String) -> Dictionary:
+	return {
+		"type": "REWARD",
+		"enemy_id": id,
+		"data": {
+			"event_type": event_type,
+			"new_state": new_state
+			}
+		}
+
 
 func set_player(player_instance):
 	player = player_instance
@@ -113,51 +104,11 @@ func take_damage(amount: float) -> void:
 		return 
 		
 	health -= amount
-	apply_reward(geting_hit_reward)
+	apply_reward(GlobalConfig.RewardEvents["TOOK_DAMAGE"])
 	if health <= 0:
-		enemy_death.emit(get_q_table())
+		enemy_death.emit()
 		queue_free()
 		
-# Ai 
-func choose_action(state: String) -> String:
-	const ACTIONS = ["move_forward", "strafe_left", "strafe_right", "retreat", "shoot"]
-	
-	var best_action = ACTIONS[0]
-	var best_value = -INF
-	if randf() < EXPLORATION_RATE or !q_table.has(state):
-		best_action = ACTIONS[randi() % ACTIONS.size()]
-		return best_action
-
-
-	for action in ACTIONS:
-		var value = get_q_value(state, action)
-		if value > best_value:
-			best_value = value
-			best_action = action
-	
-	#print(best_action)
-	return best_action
-	
-
-func get_q_value(state: String, action: String) -> float:
-	if !q_table.has(state):
-		q_table[state] = {}
-	if !q_table[state].has(action):
-		q_table[state][action] = 0.0
-	return q_table[state][action]
-	
-func update_q_value(state: String, action: String, reward: float, new_state: String) -> void:
-	var old_value = get_q_value(state, action)
-	var max_future_q = -INF
-
-	if q_table.has(new_state):
-		for next_action in q_table[new_state].keys():
-			max_future_q = max(max_future_q, get_q_value(new_state, next_action))
-	else:
-		max_future_q = 0.0
-
-	var new_value = old_value + LEARNING_RATE * (reward + DISCOUNT_FACTOR * max_future_q - old_value)
-	q_table[state][action] = new_value
 
 func execute_action(action: String, _delta: float):
 	var dir = (player.global_position - global_position).normalized()
@@ -166,13 +117,13 @@ func execute_action(action: String, _delta: float):
 			velocity = dir * move_speed
 		"retreat":
 			velocity = -dir * move_speed
-			apply_reward(-3)
+			apply_reward(GlobalConfig.RewardEvents["RETREATED"])
 		"strafe_left":
 			velocity = dir.rotated(-PI/2) * move_speed
-			apply_reward(wasting_movement_reward)
+			apply_reward(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"strafe_right":
 			velocity = dir.rotated(PI/2) * move_speed
-			apply_reward(wasting_movement_reward)	
+			apply_reward(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		_:
 			velocity = Vector2.ZERO
 	move_and_slide()
@@ -206,21 +157,12 @@ func get_state() -> String:
 	angle = clamp(angle, 0, 7)
 	return "d{d}a{a}bd{bd}ba{ba}".format({"d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle})
 
-func get_q_table() -> Dictionary:
-	return q_table
 
-func apply_reward(reward: float):
+func apply_reward(event_type: String):
 	var new_state = get_state()
-	update_q_value(last_state, last_action, reward, new_state)
+	var reward_msg = create_event_msg(enemy_id, event_type, new_state)
+	AiClient.send_json_from_dict_message(reward_msg)
 
-func init_from_shared_brain(shared_brain: Dictionary):
-	q_table = {}  # Make a deep copy to keep independence
-	for state in shared_brain.keys():
-		q_table[state] = {}
-		for action in shared_brain[state].keys():
-			q_table[state][action] = shared_brain[state][action]
-			
-			
 ## End AI
 
 func generate_id():

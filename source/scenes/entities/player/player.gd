@@ -130,6 +130,7 @@ func equip_gun(gun_res: Resource = null):
 	gun_instance.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(gun_instance)
 	gun_instance.stats = gun_res
+	current_gun_res = gun_res
 	gun_instance.import_res_stats()
 	gun_equiped.emit(gun_instance.sprite.texture)
 

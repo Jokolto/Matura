@@ -6,7 +6,7 @@ extends CanvasLayer
 var rarity_namings: Dictionary = {1 : "common",  2 : "uncommon",  3 : "rare", 4 : "legendary"} 
 var input_ready = false
 var ItemManager = null
-
+var player: Player = null
 
 var gun_wave = false
 
@@ -18,6 +18,9 @@ func _ready():
 		
 	hide()
 
+func set_player(player_instance: Player):
+	player = player_instance
+
 func set_item_manager(manager):
 	ItemManager = manager
 
@@ -28,7 +31,8 @@ func show_upgrade_panel():
 	var to_choose_amount = len(buttons) # 3 default
 	var options: Array
 	if gun_wave:  
-		options = ItemManager.get_random_guns(to_choose_amount) 
+		options = ItemManager.get_random_guns(to_choose_amount, [player.current_gun_res]) 
+		ItemManager.gun_upgrade_frequency += 2
 	else:
 		options = ItemManager.get_random_items(to_choose_amount)
 		

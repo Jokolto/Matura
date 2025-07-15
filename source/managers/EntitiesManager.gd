@@ -4,8 +4,6 @@ var next_enemy_id = 0
 var entities_node: Node = null
 var enemies_node: Node = null
 
-var enemy_brains: Array = []
-
 var enemies_per_wave: int = 0
 
 var enemies_spawned: int = 0
@@ -52,7 +50,6 @@ func start_wave():
 	wave_timer = 0.0
 	wave_active = true
 	spawn_active = true
-	enemy_brains = []
 	print("Wave %d started" % current_wave)
 	wave_start.emit()
 	
@@ -81,8 +78,6 @@ func set_entities_node(node: Node):
 func get_enemies():
 	return enemies_node.get_children()
 
-func get_enemy_brains():
-	return enemy_brains
 
 func set_enemies_node(node: Node):
 	enemies_node = node
@@ -91,6 +86,5 @@ func _on_player_death():
 	wave_active = false
 	spawn_active = false
 
-func _on_enemy_death(enemy_q_table):
-	enemy_brains.append(enemy_q_table)
+func _on_enemy_death():
 	enemies_alive -= 1
