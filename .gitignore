@@ -7,11 +7,10 @@ godot.cfg            # Engine configuration (auto-generated)
 .godot/
 /android/
 
-# Mono/C# specific (if using C# in Godot)
-.mono/
-mono_crash.*
-*.csproj
-*.sln
+# Python-specific files
+*.pyc               # Compiled Python files
+__pycache__/        # Python cache directories
+
 
 # OS-specific files (Mac & Windows)
 .DS_Store
