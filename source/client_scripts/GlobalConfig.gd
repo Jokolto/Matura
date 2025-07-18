@@ -12,9 +12,16 @@ var RewardEvents = {
 	"TIME_ALIVE": "TIME_ALIVE",
 	"DODGED_BULLET": "DODGED_BULLET",
 	"RETREATED": "RETREATED",
-	"WASTED_MOVEMENT": "WASTED_MOVEMENT"
+	"WASTED_MOVEMENT": "WASTED_MOVEMENT",
+	"MOVED_CLOSER": "MOVED_CLOSER"
 }
 
+
+var GameConfig = {
+	"MAP_SIZE" = null
+}
+
+# not doing anything yet
 var DisplayConfig = {
 	"RESOLUTION": Vector2i(1280, 720),
 	"SHOW_DEBUG_UI": true

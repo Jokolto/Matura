@@ -22,6 +22,7 @@ GameManager="*res://managers/GameManager.gd"
 EntitiesManager="*res://managers/EntitiesManager.gd"
 AiClient="*res://client_scripts/AI_CLIENT.gd"
 GlobalConfig="*res://client_scripts/GlobalConfig.gd"
+Logger="*res://managers/Logger.gd"
 
 [display]
 

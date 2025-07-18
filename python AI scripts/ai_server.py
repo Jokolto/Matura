@@ -19,11 +19,16 @@ REWARD_MAP = {
     "DODGED_BULLET": RewardConfig.BULLET_DODGE,
     "HIT_PLAYER": RewardConfig.HIT_PLAYER,
     "TIME_ALIVE": RewardConfig.TIME_ALIVE,
+    "RETREATED": RewardConfig.RETREATED,
+    "WASTED_MOVEMENT": RewardConfig.WASTED_MOVEMENT,
+    "MOVED_CLOSER": RewardConfig.MOVED_CLOSER
 }
 
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="[%(asctime)s] [%(levelname)s] [%(threadName)s] %(message)s",
+    datefmt="%H:%M:%S",
     handlers=[
         logging.FileHandler(LOG_FILENAME, mode='w'),
         logging.StreamHandler()
@@ -35,75 +40,90 @@ fitnesses = {}  # enemy_id -> float
 shared_brain = SharedQLearner()
 running = True
 
+
+
 def handle_client(conn, addr):
     with conn:
         logging.info(f"[Connection] Accepted connection from {addr}")
+        buffer = ""
         while True:
-            try:
-                data = conn.recv(ServerConfig.BUFFER_SIZE)
-                if not data:
-                    break
-                try:
-                    message = json.loads(data.decode())
-                except Exception as e:
-                    logging.warning("[Error] Got Bad JSON:", e)
+            data = conn.recv(ServerConfig.BUFFER_SIZE)
+            if not data:
+                break  # Client closed
+
+            buffer += data.decode("utf-8")
+
+            # Try splitting full messages
+            while "\n" in buffer:
+                line, buffer = buffer.split("\n", 1)
+                if line.strip() == "":
                     continue
 
-                msg_type = message.get("type")
-                enemy_id = message.get("enemy_id")
-                content = message.get("data")
-
-                if enemy_id not in agents:
-                    # Start with clone of shared brain
-                    agent = copy.deepcopy(shared_brain)
-                    agent.enemy_id = enemy_id
-                    agents[enemy_id] = agent
-
-                agent = agents[enemy_id]
-
-                if msg_type == "STATE":
-                    state = content["state"]
-                    logging.debug(f"New state received from enemy {enemy_id}: {state}")
-                    valid_actions = content["valid_actions"]
-                    action = agent.choose_action(
-                        state, valid_actions, ServerConfig.EPSILON
-                    )
-
-                    conn.sendall(json.dumps({
-                        "type": "ACTION",
-                        "enemy_id": enemy_id,
-                        "data": { "action": action }
-                    }).encode())
-
-                    logging.debug(f"Action chosen for enemy {enemy_id}: {action}")
-                
-                elif msg_type == "REWARD":
-                    event_type = content["event_type"]
-                    logging.debug(f"New event received from enemy {enemy_id}: {event_type}")
-                    reward = REWARD_MAP.get(event_type, 0.0)
-                    new_state = content["new_state"]
-                    agent.apply_reward(
-                        reward, new_state,
-                        ServerConfig.LEARNING_RATE,
-                        ServerConfig.DISCOUNT_FACTOR
-                    )
-                    logging.debug(f"Reward applied for enemy {enemy_id} for event {event_type}: {reward}")
-
-                elif msg_type == "FITNESS":
-                    fitness = content["fitness"]
-                    fitnesses[enemy_id] = fitness
-
-                elif msg_type == "WAVE_END":
-                    learners = [(agent, fitnesses.get(agent.enemy_id, 0.0)) for agent in agents.values()]
-                    shared_brain.average_all(learners)
-                    agents.clear()
-                    fitnesses.clear()
-                    logging.debug(f"Shared brain updated from wave.")
+                try:
+                    message = json.loads(line)
+                    
+                    msg_type = message.get("type", "UNKNOWN")
+                    enemy_id = message.get("enemy_id", "UNKNOWN")
+                    content = message.get("data", {})
                 
 
-            except Exception as e:
-                logging.warning(f"Exception from {addr}: {e}")
-                break
+
+                    if enemy_id not in agents:
+                        # Start with clone of shared brain
+                        agent = copy.deepcopy(shared_brain)
+                        agent.enemy_id = enemy_id
+                        agents[enemy_id] = agent
+
+                    agent = agents[enemy_id]
+
+                    if msg_type == "STATE":
+                        state = content["state"] 
+                        logging.debug(f"New state received from enemy {enemy_id}: {state}")
+                        valid_actions = content["valid_actions"] 
+                        action = agent.choose_action(
+                            state, valid_actions, ServerConfig.EPSILON
+                        )
+
+                        message = json.dumps({
+                            "type": "ACTION",
+                            "enemy_id": enemy_id,
+                            "data": { "action": action }
+                        }) + "\n"   # Ensure newline at end of message to separate messages on client side
+                        conn.sendall(message.encode())
+
+                        logging.debug(f"Action chosen for enemy {enemy_id}: {action}")
+                    
+                    elif msg_type == "REWARD":
+                        event_type = content["event_type"] 
+                        logging.debug(f"New event received from enemy {enemy_id}: {event_type}")
+                        reward = REWARD_MAP.get(event_type, None)
+                        new_state = content["new_state"]  
+                        if reward is None:
+                            logging.warning(f"Unknown event type '{event_type}' for enemy {enemy_id}, no reward applied.")
+                        else:
+                            agent.apply_reward(
+                                reward, 
+                                new_state
+                            )
+                            logging.debug(f"Reward applied for enemy {enemy_id} for event {event_type}: {reward}. Pending Actions: {agent.pending_actions}")
+
+                    elif msg_type == "FITNESS":
+                        fitness = content["fitness"]
+                        fitnesses[enemy_id] = fitness
+
+                    elif msg_type == "WAVE_END":
+                        learners = [(agent, fitnesses.get(agent.enemy_id, 0.0)) for agent in agents.values()]
+                        shared_brain.average_all(learners)
+                        agents.clear()
+                        fitnesses.clear()
+                        logging.debug(f"Shared brain updated from wave.")
+
+                        
+                except json.JSONDecodeError as e:
+                    print("JSON error:", e, "In message:", repr(line))
+    
+
+
 
 def run_server():
     running = True

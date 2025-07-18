@@ -48,7 +48,7 @@ func set_player(player_scene):
 func _on_player_damaged(_damage):
 	set_health(player.hp, player.max_hp)
 
-func _on_enemy_death(_enemy_q_table):
+func _on_enemy_death():
 	set_enemy_hud(EntitiesManager.enemies_alive, EntitiesManager.enemies_per_wave)
 	
 func _on_wave_start():

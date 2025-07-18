@@ -17,6 +17,9 @@ class RewardConfig:
     DAMAGE_TAKEN = -10.0
     BULLET_DODGE = 2.0
     TIME_ALIVE = 0.05
-    HIT_PLAYER = 5.0
+    HIT_PLAYER = 15.0
+    RETREATED = -2.0  # Penalty for retreating
+    WASTED_MOVEMENT = -1.0  # Penalty for wasted movement
+    MOVED_CLOSER = 1.0  # Reward for moving closer to the player
 
 

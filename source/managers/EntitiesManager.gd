@@ -4,7 +4,7 @@ var next_enemy_id = 0
 var entities_node: Node = null
 var enemies_node: Node = null
 
-var enemies_per_wave: int = 0
+var enemies_per_wave: int = 1
 
 var enemies_spawned: int = 0
 var current_wave: int = 0

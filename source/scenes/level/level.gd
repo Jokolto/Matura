@@ -10,9 +10,9 @@ extends Node2D
 
 
 @onready var projectiles_node: Node = $Projectiles
-@onready var entities_node: Node = $Entities
+@onready var entities_node: Node2D = $Entities
 @onready var player: Player = $Entities/Player
-@onready var spawners_node: Node = $Spawners
+@onready var spawners_node: Node2D = $Objects/Spawners
 
 @onready var ItemManager = $ItemManager
 

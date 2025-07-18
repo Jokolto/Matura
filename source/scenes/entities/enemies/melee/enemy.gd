@@ -28,10 +28,13 @@ var bullet_threat_timer := 0.0
 var dodge_reward_threshold_sec = 0.7
 var is_in_danger = false
 
-var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat", "shoot", "idle"]
+### Batch sizes
+var dist_batch_size = null
+
+var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat"]
 
 
-signal enemy_death(enemy)
+signal enemy_death()
 
 func _ready() -> void:
 	$Area2D.body_entered.connect(_on_body_entered)
@@ -51,13 +54,23 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not player:
 		return
-
+	
+	# Sending data to server
 	var state: String = get_state() # returns something like "d20a90bd0ba0"
 	var state_msg: Dictionary = create_state_msg(enemy_id, state) 
-	var action = AiClient.get_ai_action(state_msg)
 	
-	execute_action(action, delta)
+	# Receiving data from server
+	var action_msg: Dictionary = AiClient.get_ai_action(state_msg)
+	var msg_to_enemy_id = action_msg.get("enemy_id", -1)
+	var msg_type = action_msg.get("type", "")
+	var msg_data = action_msg.get("data", {})
+	if msg_type == "ACTION":
+		if msg_to_enemy_id == enemy_id:
+			var action: String = msg_data.get("action")  
+			Logger.log("Enemy %s executing action %s " % [enemy_id, action], "DEBUG")
+			execute_action(action, delta)
 	
+	# Attacking
 	if player_inside_contact_range:
 		_deal_damage(player)
 		#apply_reward(hiting_player_reward)
@@ -68,7 +81,7 @@ func _process(delta: float) -> void:
 		bullet_threat_timer += delta
 		if bullet_threat_timer >= dodge_reward_threshold_sec:
 			apply_reward(GlobalConfig.RewardEvents["DODGED_BULLET"])  # Survived close to a bullet for 1 second
-	apply_reward(GlobalConfig.RewardEvents["TIME_ALIVE"])
+	#apply_reward(GlobalConfig.RewardEvents["TIME_ALIVE"])
 		
 
 func create_state_msg(id, state) -> Dictionary:
@@ -115,6 +128,7 @@ func execute_action(action: String, _delta: float):
 	match action:
 		"move_forward":
 			velocity = dir * move_speed
+			apply_reward(GlobalConfig.RewardEvents["MOVED_CLOSER"])
 		"retreat":
 			velocity = -dir * move_speed
 			apply_reward(GlobalConfig.RewardEvents["RETREATED"])
@@ -132,7 +146,7 @@ func get_state() -> String:
 	
 	#var pos_x = floor(global_position.x / 50.0)
 	#var pos_y = floor(global_position.y / 50.0)
-	var dist = floor(global_position.distance_to(player.global_position) / 50.0)
+	var dist = floor(global_position.distance_to(player.global_position) / 100.0)
 	var angle = floor(global_position.angle_to_point(player.global_position) / (PI / 4))
 	
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position)
@@ -152,7 +166,9 @@ func get_state() -> String:
 			# Not in danger
 			is_in_danger = false
 			bullet_threat_timer = 0.0
-				
+	
+	bullet_dist = clamp(dist, 0, 4)
+	bullet_angle = clamp(angle, 0, 7)			
 	dist = clamp(dist, 0, 4)
 	angle = clamp(angle, 0, 7)
 	return "d{d}a{a}bd{bd}ba{ba}".format({"d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle})
@@ -161,6 +177,7 @@ func get_state() -> String:
 func apply_reward(event_type: String):
 	var new_state = get_state()
 	var reward_msg = create_event_msg(enemy_id, event_type, new_state)
+	Logger.log("Sending the reward request of enemy %s to server of event: %s" % [enemy_id, event_type], "DEBUG")
 	AiClient.send_json_from_dict_message(reward_msg)
 
 ## End AI
