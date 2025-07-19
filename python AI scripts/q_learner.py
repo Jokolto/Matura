@@ -9,6 +9,8 @@ class QLearner:
         self.enemy_id = enemy_id
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
+        self.last_state = ""
+        self.last_action = ""
         self.pending_actions = deque()  # queue of (state, action)
 
 
@@ -20,12 +22,15 @@ class QLearner:
         return self.q_table[state][action]
 
     def apply_reward(self, reward, new_state):
+        
         if not self.pending_actions:
+            print("No pending actions to apply reward to.", self.pending_actions)
             return  # Nothing to apply reward to
 
+        # state, action = self.last_state, self.last_action
         state, action = self.pending_actions.popleft()
         old_value = self.get_q_value(state, action)
-
+        
         # Calculate max future Q-value for the new state
         if new_state in self.q_table and self.q_table[new_state]:
             max_future_q = max(self.q_table[new_state].values())
@@ -33,6 +38,7 @@ class QLearner:
             max_future_q = 0.0
 
         new_value = old_value + self.learning_rate * (reward + self.discount_factor * max_future_q - old_value) # Update Q-value according to Q-learning formula
+        
         self.q_table[state][action] = new_value
 
     def choose_action(self, state: str, valid_actions: list[str], epsilon: float = 0.1) -> str:
@@ -43,11 +49,14 @@ class QLearner:
             action = random.choice(valid_actions)
         else:
             action = max(self.q_table[state], key=self.q_table[state].get)
-            
+        
+        self.last_action = action
         # Store for later reward
         self.pending_actions.append((state, action))
+        
         if len(self.pending_actions) > MAX_PENDING:
             self.pending_actions.popleft()
+        print(self.pending_actions)
         return action
 
        

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://dxsq06ltwf83t"]
+[gd_scene load_steps=17 format=4 uid="uid://dxsq06ltwf83t"]
 
 [ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_cp1lv"]
 [ext_resource type="Script" path="res://scenes/level/level.gd" id="1_tbp78"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://scenes/GUI/ui.gd" id="8_c531d"]
 [ext_resource type="PackedScene" uid="uid://cqxmmiyy1brb" path="res://scenes/GUI/menus/pause_menu.tscn" id="8_h1kyu"]
 [ext_resource type="PackedScene" uid="uid://ctk8kojftcawm" path="res://scenes/GUI/hud/upgrade_panel.tscn" id="9_j1s7u"]
+[ext_resource type="Script" path="res://scenes/level/enemies.gd" id="9_wvilj"]
 [ext_resource type="Script" path="res://scenes/items/ItemManager.gd" id="11_53goj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5nmku"]
@@ -159,6 +160,7 @@ zoom = Vector2(0.5, 0.5)
 position_smoothing_enabled = true
 
 [node name="Enemies" type="Node" parent="Entities"]
+script = ExtResource("9_wvilj")
 
 [node name="WaveTimer" type="Timer" parent="."]
 one_shot = true

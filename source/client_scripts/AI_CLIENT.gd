@@ -4,6 +4,7 @@ var client : StreamPeerTCP = StreamPeerTCP.new()
 var connected := false
 var buffer : String = ""
 var trying_to_connect := false
+var waiting_for_actions := false
 
 func _ready():
 	connect_to_server()
@@ -52,21 +53,33 @@ func send_json_from_dict_message(msg: Dictionary):
 	#print("[Debug] Tried to send following data to server: %s, result: %s" % [msg, err])
 
 
-func get_ai_action(msg: Dictionary) -> Dictionary:
+func get_ai_actions(states_msg: Dictionary) -> Dictionary:
 	if not connected:
 		return {} # fallback action if server is unreachable
-
+	
 	# Send message to Python AI as a JSON 
-	send_json_from_dict_message(msg)
+	Logger.log("Sent states of enemies to the server", "DEBUG")
+	send_json_from_dict_message(states_msg)
+	waiting_for_actions = true
+	
 	# Read response from Python
-	if client.get_available_bytes() > 0:
-		var msg_in_bytes = client.get_data(client.get_available_bytes())[1]
-		buffer += msg_in_bytes.get_string_from_utf8()
-		while "\n" in buffer:
-			var msg_and_new_buffer: Array = buffer.split("\n", true, 1) # should return an array with two elements
-			var individual_json_msg = msg_and_new_buffer[0]
-			buffer = msg_and_new_buffer[1]
-			var response = JSON.parse_string(individual_json_msg)
-			return response
+	while waiting_for_actions:
+		
+		if client.get_available_bytes() > 0:
+			waiting_for_actions = false
+			return get_actions_from_server()
+	
+	return {}
+
+
+func get_actions_from_server() -> Dictionary:
+	var msg_in_bytes = client.get_data(client.get_available_bytes())[1]
+	buffer += msg_in_bytes.get_string_from_utf8()
+	while "\n" in buffer:
+		var msg_and_new_buffer: Array = buffer.split("\n", true, 1) # should return an array with two elements
+		var individual_json_msg = msg_and_new_buffer[0]
+		buffer = msg_and_new_buffer[1]
+		var response = JSON.parse_string(individual_json_msg)
+		return response
 
 	return {} # fallback if nothing was returned

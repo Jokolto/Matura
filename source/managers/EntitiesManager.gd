@@ -1,8 +1,5 @@
 extends Node
-var next_enemy_id = 0
 
-var entities_node: Node = null
-var enemies_node: Node = null
 
 var enemies_per_wave: int = 1
 
@@ -60,27 +57,7 @@ func end_wave():
 	print("Wave ended (enemies are dead)")
 	wave_end.emit()
 	
-	
-func get_next_enemy_id() -> int:
-	var id = next_enemy_id
-	next_enemy_id += 1
-	return id
 
-func get_entities():
-	return entities_node.get_children()
-
-func get_entities_amount():
-	return entities_node.get_child_count()
-	
-func set_entities_node(node: Node):
-	entities_node = node
-
-func get_enemies():
-	return enemies_node.get_children()
-
-
-func set_enemies_node(node: Node):
-	enemies_node = node
 
 func _on_player_death():
 	wave_active = false

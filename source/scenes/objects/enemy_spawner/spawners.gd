@@ -4,7 +4,7 @@ extends Node
 @export var enemy_scene: PackedScene = preload("res://scenes/entities/enemies/melee/enemy.tscn")
 @export var ranged_enemy_scene: PackedScene = preload("res://scenes/entities/enemies/ranged/ranged_enemy.tscn")
 
-
+@onready var enemies_node = $"../../Entities/Enemies"
 @onready var level_node = $"../.."
 
 var player = null  # set in level
@@ -46,10 +46,11 @@ func spawn_enemy() -> void:
 	enemy.global_position = get_spawn_position()
 	enemy.set_player(player)
 	enemy.set_projectiles_node(projectiles_node)
+	enemy.set_enemies_node(enemies_node)
 
 	EntitiesManager.enemies_spawned += 1
 	EntitiesManager.enemies_alive += 1
-	EntitiesManager.enemies_node.add_child(enemy)
+	enemies_node.add_child(enemy)
 	enemy_spawned.emit()
 	#print("Enemy was spawned!")
 
