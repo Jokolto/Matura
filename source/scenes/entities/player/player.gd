@@ -157,5 +157,5 @@ func heal(heal_value: int):
 	healed.emit(heal_value)
 	
 
-func _on_wave_end():
+func _on_wave_end(_fitness_dict):
 	heal(floor(EntitiesManager.player_heal_after_wave_percentage * max_hp))

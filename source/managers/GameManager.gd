@@ -5,7 +5,9 @@ var Scenes = {
 	"MENU": preload("res://scenes/GUI/menus/main_menu.tscn"),
 	"PLAYING": preload("res://scenes/level/level.tscn"),
 	"PAUSED": preload("res://scenes/GUI/menus/pause_menu.tscn"),
-	"GAME_OVER": preload("res://scenes/GUI/menus/death_menu.tscn")
+	"GAME_OVER": preload("res://scenes/GUI/menus/death_menu.tscn"),
+	"OPTIONS": preload("res://scenes/GUI/menus/options_menu.tscn"),
+	"CREDITS": preload("res://scenes/GUI/menus/credits_menu.tscn")
 }
 
 var hud

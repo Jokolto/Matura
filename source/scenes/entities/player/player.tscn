@@ -1,8 +1,8 @@
 [gd_scene load_steps=19 format=3 uid="uid://yx2fv6w22r1u"]
 
 [ext_resource type="Script" path="res://scenes/entities/player/player.gd" id="1_exasv"]
-[ext_resource type="Texture2D" uid="uid://nfh88bb46hea" path="res://assets/v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_idle_spritesheet.png" id="2_phb6u"]
-[ext_resource type="Texture2D" uid="uid://clsms3mhnqx8q" path="res://assets/v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_run_spritesheet.png" id="3_3udhk"]
+[ext_resource type="Texture2D" uid="uid://nfh88bb46hea" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_idle_spritesheet.png" id="2_phb6u"]
+[ext_resource type="Texture2D" uid="uid://clsms3mhnqx8q" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_run_spritesheet.png" id="3_3udhk"]
 [ext_resource type="Script" path="res://scenes/weapons/weaponholder.gd" id="4_ydqxy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kc7ve"]

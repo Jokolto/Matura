@@ -34,7 +34,7 @@ func _ready() -> void:
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
-	EntitiesManager.enemies_per_wave = 0
+	EntitiesManager.enemies_per_wave = 1
 	EntitiesManager.enemies_alive = 0
 	EntitiesManager.enemies_spawned = 0
 	
@@ -68,5 +68,5 @@ func _unhandled_input(event):
 func _on_wave_timer_timeout() -> void:
 	EntitiesManager.start_wave()
 	
-func _on_wave_end():
+func _on_wave_end(_fitness_dict):
 	WaveTimer.start(rest_time)

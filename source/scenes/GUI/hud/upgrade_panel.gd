@@ -89,7 +89,7 @@ func set_button_rarity_style(button: Button, rarity: String) -> void:
 	button.add_theme_stylebox_override("normal", stylebox)
 	#button.add_theme_stylebox_override("hover", stylebox)
 
-func _on_wave_end():
+func _on_wave_end(_fitness_dict):
 	blocker.visible = true
 	show_upgrade_panel()
 	await get_tree().create_timer(0.7).timeout

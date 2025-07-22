@@ -22,7 +22,7 @@ var enemy_id: int = -1
 ## State parameters
 var current_state = ""
 
-var life_time_sec: float = 0
+
 var dodged_bullets: Array = []
 var dodged_bullet: bool = false
 var bullet_nearby_dist: float = 150
@@ -31,13 +31,26 @@ var bullet_threat_timer := 0.0
 var dodge_reward_threshold_sec = 0.7
 var is_in_danger = false
 
+# for fitness calculation
+var fitness: float = 0.0
+var life_time_sec: float = 0
+var damage_dealt: float = 0
+var min_dist_to_player: float = INF
+
+var fitness_damage_priority_formula = func(life_time, dmg_dealt, min_distance): 
+	return dmg_dealt * 2.0 + life_time * 0.5 - min_distance * 0.1
+
+var fitness_survivability_priority = func(life_time, dmg_dealt, min_distance): 
+	return life_time * 2.0 + dmg_dealt * 0.5 - min_distance * 0.1
+
+
 ### Batch sizes
 var dist_batch_size = 1000 
 var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat"]
 var last_action = ""
 var event_buffer := []
 
-signal enemy_death()
+signal enemy_death(enemy)
 
 func _ready() -> void:
 	$Area2D.body_entered.connect(_on_body_entered)
@@ -56,7 +69,10 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not player:
 		return
-		
+	
+	if velocity > Vector2.ZERO:
+		body_sprite.play("run")
+	
 	current_state = get_state() # returns something like "d20a90bd0ba0"
 	
 	# Attacking
@@ -85,7 +101,8 @@ func take_damage(amount: float) -> void:
 	health -= amount
 	add_reward_event(GlobalConfig.RewardEvents["TOOK_DAMAGE"])
 	if health <= 0:
-		enemy_death.emit()
+		fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
+		enemy_death.emit(self)
 		queue_free()
 		
 
@@ -111,7 +128,10 @@ func execute_action(action: String):
 func get_state() -> String:
 	#var pos_x = floor(global_position.x / 50.0)
 	#var pos_y = floor(global_position.y / 50.0)
-	var dist = floor(global_position.distance_to(player.global_position) / 200.0)
+	var dist_not_batch = global_position.distance_to(player.global_position)
+	if min_dist_to_player > dist_not_batch:
+		min_dist_to_player = dist_not_batch
+	var dist = floor(dist_not_batch / 200.0)
 	var angle = floor(global_position.angle_to_point(player.global_position) / (PI / 2))
 	
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position)
@@ -166,7 +186,7 @@ func cleanup_old_events():
 	# Optional: call this every few seconds
 	event_buffer = event_buffer.filter(func(ev): return not ev["sent"] or is_still_relevant(ev))
 
-func is_still_relevant(event):
+func is_still_relevant(_event):
 	return false
 
 ## End AI
@@ -195,6 +215,7 @@ func _update_animation(input_vec: Vector2) -> void:
 
 func _deal_damage(body: Node) -> void:
 	body.take_damage(contact_damage)
+	damage_dealt += contact_damage
 	
 
 
@@ -210,6 +231,3 @@ func _on_body_exited(body: Node) -> void:
 		
 func set_enemies_node(node: Node):
 	enemies_node = node
-
-#func _on_death():
-	#queue_free()

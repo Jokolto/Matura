@@ -15,7 +15,6 @@ func _on_resume_pressed():
 
 func _on_menu_pressed():
 	GameManager.toggle_pause()
-	# Load your menu scene
 	GameManager.state = "MENU"
 	GameManager.change_scene()
 

@@ -1,13 +1,14 @@
 extends Node
 
+const PRINT_DEBUG = false
 var log_path: String = "user://logs/godot.log"
 var log_file: FileAccess
 
 func _ready():
 	log_file = FileAccess.open(log_path, FileAccess.WRITE_READ)	
 
-func log(msg: String, level: String, printdebug=true) -> void:
-	if not printdebug and level == "DEBUG":
+func log(msg: String, level: String) -> void:
+	if not PRINT_DEBUG and (level == "DEBUG"):
 		return
 	var now = Time.get_datetime_dict_from_system()
 	var timestamp = "%s:%s:%s" % [now.hour, now.minute, now.second]

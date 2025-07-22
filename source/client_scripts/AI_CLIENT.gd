@@ -7,6 +7,7 @@ var trying_to_connect := false
 var waiting_for_actions := false
 
 func _ready():
+	
 	connect_to_server()
 	trying_to_connect = true
 
@@ -58,7 +59,7 @@ func get_ai_actions(states_msg: Dictionary) -> Dictionary:
 		return {} # fallback action if server is unreachable
 	
 	# Send message to Python AI as a JSON 
-	Logger.log("Sent states of enemies to the server", "DEBUG")
+	#Logger.log("Sent states of enemies to the server", "DEBUG")
 	send_json_from_dict_message(states_msg)
 	waiting_for_actions = true
 	

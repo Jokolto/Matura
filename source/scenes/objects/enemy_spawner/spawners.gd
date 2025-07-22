@@ -29,8 +29,8 @@ func set_player(player_scene):
 
 func spawn_enemy() -> void:
 	enemy_pool = {
-	enemy_scene: func(wave): return 100, #max(100 - wave * 10, 20)
-	ranged_enemy_scene: func(wave): return 0 #min(wave * 10, 80)
+	enemy_scene: func(_wave): return 100, #max(100 - wave * 10, 20)
+	ranged_enemy_scene: func(_wave): return 0 #min(wave * 10, 80)
 	}
 	
 	if not is_instance_valid(player):

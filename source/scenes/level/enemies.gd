@@ -3,13 +3,16 @@ extends Node
 var next_enemy_id = 0
 var tick = 0
 
-func _process(delta: float) -> void:
+func _ready() -> void:
+	EntitiesManager.wave_end.connect(_on_wave_end)
+
+func _process(_delta: float) -> void:
 	if len(get_enemies()) == 0:
 		return
 	
 	var states_msg = create_states_msg(get_all_states())
 	var actions = get_actions_from_server(states_msg)
-	Logger.log("Got actions from server: %s" % [actions], "Debug")
+	Logger.log("Got actions from server: %s" % [actions], "DEBUG")
 	process_actions(actions)
 	send_reward_requests_for_events(get_all_events())
 	
@@ -55,7 +58,7 @@ func send_reward_requests_for_events(events: Dictionary) -> void:
 	if events.size() == 0:
 		return
 	var msg = create_event_msg(events)
-	Logger.log("Sent reward to Server: %s" % [msg], "DEBUG")
+	#Logger.log("Sent reward to Server: %s" % [msg], "DEBUG")
 	AiClient.send_json_from_dict_message(msg)
 
 
@@ -80,10 +83,15 @@ func create_event_msg(event_bundle: Dictionary) -> Dictionary:
 				"action_to_reward": ev["action_to_reward"],
 				"new_state": ev['new_state']
 			})
-
 	return {
 		"type": "REWARD",
 		"data": reward_data
+	}
+	
+func create_fitness_msg(fitness_per_enemy: Dictionary) -> Dictionary:
+	return {
+		"type": "FITNESS",
+		"data": fitness_per_enemy
 	}
 
 func get_enemy_by_id(id: int) -> Enemy:
@@ -99,3 +107,9 @@ func process_actions(data_with_actions):
 		var action = data.get(str(enemy.enemy_id), "idle")
 		enemy.last_action = action
 		enemy.execute_action(action)
+
+
+func _on_wave_end(fitness_per_enemy):
+	var fitness_msg = create_fitness_msg(fitness_per_enemy)
+	AiClient.send_json_from_dict_message(fitness_msg)
+	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "INFO")

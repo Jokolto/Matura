@@ -48,14 +48,14 @@ func set_player(player_scene):
 func _on_player_damaged(_damage):
 	set_health(player.hp, player.max_hp)
 
-func _on_enemy_death():
+func _on_enemy_death(_enemy):
 	set_enemy_hud(EntitiesManager.enemies_alive, EntitiesManager.enemies_per_wave)
 	
 func _on_wave_start():
 	enemies_bar_container.visible = true
 	wave_label.text = "Wave: " + str(EntitiesManager.current_wave)
 
-func _on_wave_end():
+func _on_wave_end(_fitness_dict):
 	enemies_bar_container.visible = false
 	wave_label.text = "Rest time"
 
