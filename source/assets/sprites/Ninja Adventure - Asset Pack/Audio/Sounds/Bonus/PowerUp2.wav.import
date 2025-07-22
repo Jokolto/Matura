@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://d0niighpl0ejp"
+path="res://.godot/imported/PowerUp2.wav-a5a1ebc59762f1c837fcfc1940127d02.sample"
+
+[deps]
+
+source_file="res://assets/sprites/Ninja Adventure - Asset Pack/Audio/Sounds/Bonus/PowerUp2.wav"
+dest_files=["res://.godot/imported/PowerUp2.wav-a5a1ebc59762f1c837fcfc1940127d02.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://qn4q73g81sd1"
+path="res://.godot/imported/11 - Clearing.ogg-c281c68aa92359b5cf0c8e480eaf79af.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sprites/Ninja Adventure - Asset Pack/Audio/Musics/11 - Clearing.ogg"
+dest_files=["res://.godot/imported/11 - Clearing.ogg-c281c68aa92359b5cf0c8e480eaf79af.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

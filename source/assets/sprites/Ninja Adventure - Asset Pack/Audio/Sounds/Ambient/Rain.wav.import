@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cde35jw7rd0ch"
+path="res://.godot/imported/Rain.wav-554ee579c39ac51cbe8ad8cd0987aa79.sample"
+
+[deps]
+
+source_file="res://assets/sprites/Ninja Adventure - Asset Pack/Audio/Sounds/Ambient/Rain.wav"
+dest_files=["res://.godot/imported/Rain.wav-554ee579c39ac51cbe8ad8cd0987aa79.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
