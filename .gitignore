@@ -10,7 +10,7 @@ godot.cfg            # Engine configuration (auto-generated)
 # Python-specific files
 *.pyc               # Compiled Python files
 __pycache__/        # Python cache directories
-.cpython*          # Python bytecode files
+          
 
 
 # OS-specific files (Mac & Windows)
