@@ -1,5 +1,5 @@
 # Godot-specific files that should NOT be tracked
-.import/             # Generated import files
+*.import/             # Generated import files
 .export/             # Exported game builds
 .sconsign.dblite     # Build system file
 godot.cfg            # Engine configuration (auto-generated)
@@ -10,6 +10,7 @@ godot.cfg            # Engine configuration (auto-generated)
 # Python-specific files
 *.pyc               # Compiled Python files
 __pycache__/        # Python cache directories
+.cpython*          # Python bytecode files
 
 
 # OS-specific files (Mac & Windows)
