@@ -112,4 +112,4 @@ func process_actions(data_with_actions):
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)
 	AiClient.send_json_from_dict_message(fitness_msg)
-	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "INFO")
+	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "DEBUG")

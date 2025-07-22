@@ -15,6 +15,5 @@ func _on_try_again_pressed():
 
 func _on_menu_pressed():
 	get_tree().paused = false
-	# Load your menu scene
 	GameManager.state = "MENU"
 	GameManager.change_scene()

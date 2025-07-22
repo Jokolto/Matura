@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxrxx16e4sw1p"]
+
+[ext_resource type="Script" path="res://scenes/components/hp_component.gd" id="1_xrgxr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugk3b"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+
+[node name="HpComponent" type="Node2D"]
+script = ExtResource("1_xrgxr")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer"]
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_ugk3b")
+value = 100.0
+rounded = true
+show_percentage = false
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+text = "100/100
+"
+horizontal_alignment = 1

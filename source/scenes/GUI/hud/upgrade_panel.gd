@@ -25,14 +25,14 @@ func set_item_manager(manager):
 	ItemManager = manager
 
 func show_upgrade_panel():
-	gun_wave = EntitiesManager.current_wave % ItemManager.gun_upgrade_frequency == 0
+	gun_wave = EntitiesManager.current_wave == ItemManager.gun_wave_n
 	get_tree().paused = not get_tree().paused
 	visible = get_tree().paused
 	var to_choose_amount = len(buttons) # 3 default
 	var options: Array
 	if gun_wave:  
 		options = ItemManager.get_random_guns(to_choose_amount, [player.current_gun_res]) 
-		ItemManager.gun_upgrade_frequency += 2
+		
 	else:
 		options = ItemManager.get_random_items(to_choose_amount)
 		

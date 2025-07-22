@@ -8,7 +8,7 @@ var path_to_items_res = "res://resources/items/"
 var path_to_guns_res = "res://resources/guns/"
 
 var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
-var gun_upgrade_frequency = 1  # every n wave player gets a new gun instead of item
+var gun_wave_n = 1 # after this wave player gets a gun
 
 func _ready() -> void:
 	 

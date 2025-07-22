@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=3 uid="uid://bbbfspwmc0l6u"]
+
+[ext_resource type="Script" path="res://scenes/objects/gate.gd" id="1_2t0t8"]
+[ext_resource type="Texture2D" uid="uid://crrjf4alsmroj" path="res://assets/sprites/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetHouse.png" id="1_p5ydm"]
+[ext_resource type="PackedScene" uid="uid://cxrxx16e4sw1p" path="res://scenes/components/hp_component.tscn" id="2_3ftpx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ogb5"]
+atlas = ExtResource("1_p5ydm")
+region = Rect2(352, 163.6, 48.3, 28.5)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xtsq5"]
+atlas = ExtResource("1_p5ydm")
+region = Rect2(352, 116.678, 48.3, 28.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rj8r4"]
+size = Vector2(28.3333, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0loir"]
+size = Vector2(9.66667, 27.6667)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f58e6"]
+atlas = ExtResource("1_p5ydm")
+region = Rect2(352, 149.6, 48.922, 13.7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v3p62"]
+atlas = ExtResource("1_p5ydm")
+region = Rect2(352, 163.6, 48.3, 28.5)
+
+[node name="gate" type="Node2D"]
+scale = Vector2(3, 3)
+script = ExtResource("1_2t0t8")
+intact_texture = SubResource("AtlasTexture_4ogb5")
+broken_texture = SubResource("AtlasTexture_xtsq5")
+
+[node name="HpComponent" parent="." instance=ExtResource("2_3ftpx")]
+z_index = 6
+position = Vector2(-9.33333, -26.3333)
+scale = Vector2(0.2, 0.2)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-0.166667, 5.16667)
+shape = SubResource("RectangleShape2D_rj8r4")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-19.1667, 6.5)
+shape = SubResource("RectangleShape2D_0loir")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(19, 6.33333)
+shape = SubResource("RectangleShape2D_0loir")
+
+[node name="TopSprite" type="Sprite2D" parent="."]
+z_index = 4
+position = Vector2(0, -14)
+texture = SubResource("AtlasTexture_f58e6")
+
+[node name="BotomSprite" type="Sprite2D" parent="."]
+z_index = -4
+position = Vector2(0, 6.333)
+texture = SubResource("AtlasTexture_v3p62")

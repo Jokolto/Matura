@@ -1,5 +1,5 @@
 extends Area2D
-
+class_name Bullet
 
 var direction: Vector2 = Vector2.ZERO
 var bullet_id = 0
@@ -55,9 +55,13 @@ func _on_body_entered(body: Node2D) -> void:
 					queue_free()
 			elif (body is Enemy and shooter_type == ShooterType.ENEMY and friendly_fire):     # enemy hitting enemy
 				body.take_damage(damage)
-		else:     # colision with some other object, e.g. wall
-			projectiles_node.proj_amount -= 1
-			queue_free()
+		elif body.get_parent() is Gate:
+			body.get_parent().take_damage(damage)
+		
+		# colision with some other object, e.g. wall
+		
+		projectiles_node.proj_amount -= 1
+		queue_free()
 		
 		
 	

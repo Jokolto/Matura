@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scenes/weapons/weaponholder.gd" id="4_ydqxy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kc7ve"]
-size = Vector2(40.5, 54.125)
+size = Vector2(43.25, 70)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_88sd2"]
 atlas = ExtResource("2_phb6u")
@@ -110,6 +110,7 @@ collision_mask = 15
 script = ExtResource("1_exasv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.375, -5)
 shape = SubResource("RectangleShape2D_kc7ve")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=3 uid="uid://lfrw4y57bq50"]
+
+[ext_resource type="Script" path="res://scenes/GUI/menus/win_menu.gd" id="1_kh7fg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kde6k"]
+font_size = 24
+
+[node name="win_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kh7fg")
+
+[node name="VboxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.33
+anchor_top = 0.1
+anchor_right = 0.67
+anchor_bottom = 0.95
+offset_left = -63.0
+offset_right = 63.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="Title" type="Label" parent="VboxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "You won!"
+label_settings = SubResource("LabelSettings_kde6k")
+horizontal_alignment = 1
+
+[node name="HboxContainer" type="HBoxContainer" parent="VboxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="Buttons" type="VBoxContainer" parent="VboxContainer/HboxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 36
+
+[node name="PlayAgainButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
+layout_mode = 2
+text = "Play Again
+"
+
+[node name="CreditsButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
+layout_mode = 2
+text = "Credits
+"
+
+[node name="MenuButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
+layout_mode = 2
+text = "Go to menu
+"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VboxContainer/HboxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="VboxContainer/HboxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stats:"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="VboxContainer/HboxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+text = "Damageup = 1
+firerate = 0
+enemies killed = 1
+huhhahah = 0
+idiot = true"
+horizontal_alignment = 1
