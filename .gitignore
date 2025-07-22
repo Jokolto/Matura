@@ -1,5 +1,6 @@
 # Godot-specific files that should NOT be tracked
 *.import/             # Generated import files
+.import
 .export/             # Exported game builds
 .sconsign.dblite     # Build system file
 godot.cfg            # Engine configuration (auto-generated)
