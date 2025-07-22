@@ -1,10 +1,15 @@
 import random
 from collections import deque
+from config import Logger
 
 MAX_PENDING = 100
 
+Logger.init()
+logging = Logger.get_logger(__name__) 
+
+
 class QLearner:
-    def __init__(self, enemy_id=None, learning_rate=0.1, discount_factor=0.95):
+    def __init__(self, enemy_id:str="", learning_rate=0.1, discount_factor=0.95):
         self.q_table = {}
         self.enemy_id = enemy_id
         self.learning_rate = learning_rate
@@ -24,10 +29,10 @@ class QLearner:
     def apply_reward(self, reward, new_state):
         
         if not self.pending_actions:
-            print("No pending actions to apply reward to.", self.pending_actions)
+            logging.debug("No pending actions to apply reward to.", self.pending_actions)
             return  # Nothing to apply reward to
 
-        # state, action = self.last_state, self.last_action
+
         state, action = self.pending_actions.popleft()
         old_value = self.get_q_value(state, action)
         
@@ -56,9 +61,11 @@ class QLearner:
         
         if len(self.pending_actions) > MAX_PENDING:
             self.pending_actions.popleft()
-        print(self.pending_actions)
-        return action
 
+        return action
+    
+    def __repr__(self) -> str:
+        return f"QLearner(enemy_id={self.enemy_id})"
        
 
 
@@ -80,9 +87,8 @@ class SharedQLearner(QLearner):
     def average_all(self, learners_with_fitness):
         total_fitness = sum(f for _, f in learners_with_fitness)
         if total_fitness == 0:
+            logging.warning("No fitness data to average, skipping merge.")
             return  # Avoid div-by-zero
-
-        self.q_table = {}  # Reset shared brain
 
         for learner, fitness in learners_with_fitness:
             self.merge_from(learner, weight=(fitness / total_fitness))
