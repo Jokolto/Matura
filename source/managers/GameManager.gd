@@ -15,6 +15,7 @@ var hud
 
 var state = "MENU"
 var current_scene: Node = null
+var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 
 signal state_changed(state)
 
@@ -26,6 +27,10 @@ func _ready() -> void:
 func change_scene():
 	var new_scene = Scenes[state].instantiate()
 	get_tree().get_root().add_child(new_scene)
+	if state == "PLAYING":
+		Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )
+	else:
+		Input.set_custom_mouse_cursor(null)
 	if current_scene:
 		#print(str(current_scene) + "deleted")
 		current_scene.queue_free()
@@ -41,9 +46,12 @@ func toggle_pause():
 	var bus_index = AudioServer.get_bus_index("Music")
 
 	if get_tree().paused:
+		Input.set_custom_mouse_cursor(null)
 		AudioServer.set_bus_effect_enabled(bus_index, 0, true)
 		AudioServer.set_bus_volume_db(bus_index, -12) # lower volume too
 	else:
+		if state == "PLAYING":
+			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )
 		AudioServer.set_bus_effect_enabled(bus_index, 0, false)
 		AudioServer.set_bus_volume_db(bus_index, 0)
 

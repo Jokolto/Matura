@@ -106,7 +106,7 @@ animations = [{
 }]
 
 [node name="Player" type="CharacterBody2D"]
-collision_mask = 15
+collision_mask = 47
 script = ExtResource("1_exasv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -123,7 +123,7 @@ frame = 5
 frame_progress = 0.15794
 
 [node name="Weaponholder" type="Node2D" parent="."]
-position = Vector2(26, 12)
+position = Vector2(28, 8)
 script = ExtResource("4_ydqxy")
 
 [node name="Timers" type="Node" parent="."]

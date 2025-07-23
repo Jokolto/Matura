@@ -1,98 +1,62 @@
-class_name Gun extends Node2D
+# gun.gd
+class_name Gun
+extends Weapon
 
 @onready var _gun_point: Marker2D = $gun_point
 @onready var sprite: Sprite2D = $Sprite2D
 
-@export var fire_rate: float   # shots per second
-@export var automatic: bool
-@export var spread_deg: float    # 0 = pinpoint
-@export var bullet_damage: float
-@export var bullets_amount: int
-@export var piercing: int
-@export var shooting_range: float
-@export var bullet_speed: float
-
-var on_shoot_sound: AudioStream
-var shoot_sound_volume: float
-var shoot_sound_pitch_randomness: float
-
-var final_damage: float = 0.0             # Calculated when shot 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
-
-@export var stats: Resource = preload("res://resources/guns/handgun.tres")
-
-var shooter: CharacterBody2D = null
-
-
-var _cooldown: float = 0.0
-
 var projectiles_node: Node = null
+var final_damage: float = 0.0
 
-func _ready() -> void:
-	shooter = get_parent().get_parent()
-	import_res_stats()
-		
-func _process(delta: float) -> void:
-	if _cooldown > 0.0:
-		_cooldown -= delta
-		
-func import_res_stats():
-	# import stats from resource
-	fire_rate = stats.fire_rate
-	automatic = stats.automatic
-	spread_deg = stats.spread_deg
-	bullet_damage = stats.bullet_damage
-	bullets_amount = stats.bullets_amount
-	shooting_range = stats.shooting_range
-	bullet_speed = stats.bullet_speed
-	piercing = stats.bullet_piercing
-	sprite.texture = stats.sprite
-	
-	on_shoot_sound = stats.stream
-	shoot_sound_volume = stats.volume_db
-	shoot_sound_pitch_randomness = stats.pitch_randomness
+func _ready():
+	holder = get_holder()
+	weapon_type = WeaponType.RANGED
 
-func set_projectiles_node(projectiles_node_passed):
-	projectiles_node = projectiles_node_passed
+func set_projectiles_node(node: Node) -> void:
+	projectiles_node = node
+
+func use_weapon(target_pos: Vector2) -> void:
+	try_fire(target_pos)
 
 func try_fire(target_pos: Vector2) -> void:
-	if _cooldown > 0.0:                     # still cooling
+	if not is_ready():
 		return
-	for bullet in range(bullets_amount):
-		_spawn_bullet(target_pos)
-		
-	AudioManager.play_sfx_positional(on_shoot_sound, global_position, shoot_sound_volume, shoot_sound_pitch_randomness)
-	_cooldown = 1.0 / (fire_rate*shooter.fire_rate_multiplier)
 
+	for bullet in range(stats.bullets_amount):
+		_spawn_bullet(target_pos)
+
+	AudioManager.play_sfx_positional(
+		stats.on_shoot_sound, global_position,
+		stats.shoot_sound_volume_db, stats.shoot_sound_pitch_randomness
+	)
+
+	trigger_cooldown(holder.fire_rate_multiplier)
 
 func _spawn_bullet(target_pos: Vector2) -> void:
-	var bullet := bullet_scene.instantiate()
+	var bullet = bullet_scene.instantiate()
 	bullet.projectiles_node = projectiles_node
 	bullet.global_position = _gun_point.global_position
 	bullet.gun_node = self
-	bullet.shooter = shooter
-	
-	bullet.damage = bullet_damage
-	bullet.shooting_range = shooting_range
-	bullet.speed = bullet_speed
-	bullet.piercing = piercing
-	
-	# Apply spread of the gun
+	bullet.shooter = holder
+
 	var dir: Vector2 = (target_pos - bullet.global_position).normalized()
-	bullet.rotation = dir.angle() 
-	if spread_deg > 0.0:
-		var half_rad: float = deg_to_rad(spread_deg) * 0.5
-		var random_angle: float = randf_range(-half_rad, half_rad)
+	bullet.rotation = dir.angle()
+
+	if stats.spread_deg > 0.0:
+		var half_rad = deg_to_rad(stats.spread_deg) * 0.5
+		var random_angle = randf_range(-half_rad, half_rad)
 		dir = dir.rotated(random_angle)
 
 	bullet.direction = dir
-	
-	# Apply player boosts 
-	if shooter is Player:
-		final_damage = (bullet_damage + shooter.damage_flat_boost) * shooter.damage_multiplier
+	bullet.damage = stats.bullet_damage
+	bullet.shooting_range = stats.shooting_range
+	bullet.speed = stats.bullet_speed
+	bullet.piercing = stats.bullet_piercing
+
+	if holder is Player:
+		final_damage = (stats.bullet_damage + holder.damage_flat_boost) * holder.damage_multiplier
 		bullet.damage = final_damage
 		projectiles_node.player_projectile_node.add_child(bullet)
-		return
-		
-	#print(final_damage, PlayerManager.player.damage_flat_boost, PlayerManager.player.damage_multiplier)
-	projectiles_node.add_child(bullet)
+	else:
+		projectiles_node.add_child(bullet)

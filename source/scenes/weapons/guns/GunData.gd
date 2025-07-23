@@ -1,5 +1,6 @@
 class_name GunData extends Resource
 
+@export var scene_path: String = "res://scenes/weapons/guns/gun1.tscn"
 @export var fire_rate: float   # shots per second
 @export var automatic: bool
 @export var spread_deg: float    # 0 = pinpoint
@@ -14,6 +15,6 @@ class_name GunData extends Resource
 @export var description: String
 
 # sound
-@export var stream: AudioStream
-@export var pitch_randomness: float = 0.1
-@export var volume_db: float = 0.0
+@export var on_shoot_sound: AudioStream
+@export var shoot_sound_pitch_randomness: float = 0.1
+@export var shoot_sound_volume_db: float = 0.0

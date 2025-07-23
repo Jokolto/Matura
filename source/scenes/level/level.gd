@@ -16,10 +16,13 @@ extends Node2D
 
 @onready var ItemManager = $ItemManager
 
-signal pause
+var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 var rest_time: float = 2.5
 
+signal pause
+
 func _ready() -> void:
+	
 	pause.connect(PauseMenu._on_pause)
 	EntitiesManager.wave_end.connect(_on_wave_end)
 	EntitiesManager.wave_end.connect(player._on_wave_end)
@@ -30,7 +33,7 @@ func _ready() -> void:
 	player.healed.connect(hud._on_player_healed)
 	player.died.connect(EntitiesManager._on_player_death)
 	player.died.connect(GameManager._on_player_death)
-	player.gun_equiped.connect(hud._on_player_gun_equiped)
+	player.weapon_equipped.connect(hud._on_player_weapon_equiped)
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
@@ -55,7 +58,7 @@ func _ready() -> void:
 
 func set_default_nodes():
 	player.set_projectiles_node(projectiles_node)
-	player.equip_gun()
+	player._equip_weapon(null)
 	
 	hud.set_health(player.hp, player.max_hp)
 

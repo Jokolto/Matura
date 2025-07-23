@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 		queue_free()
 	
 
-
+# quite a bad handling, but i don't care
 func _on_body_entered(body: Node2D) -> void:
 	if body != shooter:    # ensure no self colision, can cause a one frame bug if entity is killed right as it shoots
 		if (body is CharacterBody2D):    # ensure colision with entities

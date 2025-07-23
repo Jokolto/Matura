@@ -83,7 +83,7 @@ func get_random_guns(guns_amount, held_guns):
 
 func _on_item_selected(item, is_gun_update):
 	if is_gun_update:
-		player.equip_gun(item)
+		player._equip_weapon(item)
 		return
 		
 	apply_item(item)

@@ -31,7 +31,7 @@ func show_upgrade_panel():
 	var to_choose_amount = len(buttons) # 3 default
 	var options: Array
 	if gun_wave:  
-		options = ItemManager.get_random_guns(to_choose_amount, [player.current_gun_res]) 
+		options = ItemManager.get_random_guns(to_choose_amount, [player.weapon_res]) 
 		
 	else:
 		options = ItemManager.get_random_items(to_choose_amount)

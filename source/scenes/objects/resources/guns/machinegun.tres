@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="GunData" load_steps=5 format=3 uid="uid://bassd60cjuxd1"]
+
+[ext_resource type="Script" path="res://scenes/weapons/guns/GunData.gd" id="1_s5wke"]
+[ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_qq7ni"]
+[ext_resource type="AudioStream" uid="uid://dk1b0icay1sya" path="res://assets/audio/sfx/guns_shooting/machinegun.wav" id="3_ovkg5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pww37"]
+atlas = ExtResource("2_qq7ni")
+region = Rect2(95.4327, 101.231, 21.7629, 11.475)
+
+[resource]
+script = ExtResource("1_s5wke")
+fire_rate = 15.0
+automatic = true
+spread_deg = 20.0
+bullet_damage = 0.5
+bullets_amount = 1
+bullet_piercing = 0
+shooting_range = 1000.0
+bullet_speed = 700.0
+sprite = SubResource("AtlasTexture_pww37")
+name = "SMG"
+description = "Fast-firing and lightweight, the SMG shreds close targets but lacks stopping power and control at range."
+stream = ExtResource("3_ovkg5")
+pitch_randomness = 0.1
+volume_db = 0.0

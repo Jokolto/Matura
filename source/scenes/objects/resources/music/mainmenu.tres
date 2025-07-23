@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MusicData" load_steps=3 format=3 uid="uid://db3rlrontx83r"]
+
+[ext_resource type="Script" path="res://misc/MusicData.gd" id="1_8e40c"]
+[ext_resource type="AudioStream" uid="uid://cyiq64vkipoaq" path="res://assets/audio/music/Clement Panchout - Sweet 70s.ogg" id="2_ocx5w"]
+
+[resource]
+script = ExtResource("1_8e40c")
+stream = ExtResource("2_ocx5w")
+fade_in_time = 1.5
+fade_out_time = 1.5
+volume_db = 0.0
+loop = true
+tag = ""

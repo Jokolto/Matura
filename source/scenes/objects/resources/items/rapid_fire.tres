@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://jp62d31gqfqn"]
+
+[ext_resource type="Texture2D" uid="uid://45giqy480vu2" path="res://icon.svg" id="1_o0esw"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_v46wr"]
+
+[resource]
+script = ExtResource("1_v46wr")
+name = "Rapid Fire"
+description = "Attack Speed +15%"
+rarity = 1
+icon = ExtResource("1_o0esw")
+effect = "fire_rate_up"
+effect_value = 0.15

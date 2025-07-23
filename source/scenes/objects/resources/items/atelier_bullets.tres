@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://2h3ybrakl436"]
+
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_1ppid"]
+[ext_resource type="Texture2D" uid="uid://ds7o7afn2hjjn" path="res://assets/sprites/items/bullets.png" id="1_7w1dp"]
+
+[resource]
+script = ExtResource("1_1ppid")
+name = "Atelier Bullets"
+description = "damage + 1"
+rarity = 2
+icon = ExtResource("1_7w1dp")
+effect = "damage_up"
+effect_value = 1.0

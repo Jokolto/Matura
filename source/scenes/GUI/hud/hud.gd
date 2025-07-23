@@ -77,7 +77,7 @@ func _on_upgrade_selected(item):
 		item_panel.change_name(item['name'])
 		
 	
-func _on_player_gun_equiped(gun_texture):
+func _on_player_weapon_equiped(gun_texture):
 	gun_container.texture = gun_texture
 	
 

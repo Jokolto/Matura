@@ -12,8 +12,9 @@ scale = Vector2(0.5, 0.5)
 script = ExtResource("1_ynd5q")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(30, -5)
 scale = Vector2(5, 5)
 texture = SubResource("AtlasTexture_5475d")
 
 [node name="gun_point" type="Marker2D" parent="."]
-position = Vector2(36, -10)
+position = Vector2(66, -15)

@@ -14,6 +14,7 @@ func _on_resume_pressed():
 	visible = false
 
 func _on_menu_pressed():
+	Input.set_custom_mouse_cursor(null)
 	GameManager.toggle_pause()
 	GameManager.state = "MENU"
 	GameManager.change_scene()
