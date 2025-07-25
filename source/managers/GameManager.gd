@@ -8,11 +8,14 @@ var Scenes = {
 	"GAME_OVER": preload("res://scenes/GUI/menus/death_menu.tscn"),
 	"OPTIONS": preload("res://scenes/GUI/menus/options_menu.tscn"),
 	"CREDITS": preload("res://scenes/GUI/menus/credits_menu.tscn"),
-	"WIN": preload("res://scenes/GUI/menus/win_menu.tscn")
+	"WIN": preload("res://scenes/GUI/menus/win_menu.tscn"),
+	"CUTSCENE": preload("res://scenes/GUI/menus/cutscene.tscn")
 }
 
 var hud
 
+var tutorial_enabled = true
+var cutscene_enabled = true
 var state = "MENU"
 var current_scene: Node = null
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")

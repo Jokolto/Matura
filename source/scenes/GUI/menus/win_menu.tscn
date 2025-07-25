@@ -1,9 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://lfrw4y57bq50"]
+[gd_scene load_steps=8 format=3 uid="uid://lfrw4y57bq50"]
 
 [ext_resource type="Script" path="res://scenes/GUI/menus/win_menu.gd" id="1_kh7fg"]
+[ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="2_plrhb"]
+[ext_resource type="Texture2D" uid="uid://cmuwdtjw3y1ll" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_press.png" id="3_ar8de"]
+[ext_resource type="Texture2D" uid="uid://cwr303sdoy3f6" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_hovered.png" id="4_vjqdr"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_kde6k"]
+[sub_resource type="LabelSettings" id="LabelSettings_to1vb"]
+font_size = 52
+
+[sub_resource type="LabelSettings" id="LabelSettings_ojffo"]
 font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_hdshm"]
+font_size = 40
 
 [node name="win_menu" type="Control"]
 layout_mode = 3
@@ -14,68 +23,136 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_kh7fg")
 
-[node name="VboxContainer" type="VBoxContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.33
-anchor_top = 0.1
-anchor_right = 0.67
-anchor_bottom = 0.95
-offset_left = -63.0
-offset_right = 63.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 50
 
-[node name="Title" type="Label" parent="VboxContainer"]
+[node name="Buttons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.24
+anchor_top = 0.427
+anchor_right = 0.459
+anchor_bottom = 0.722
+offset_left = 4.0
+offset_top = -48.6
+offset_right = -108.8
+offset_bottom = -127.6
+scale = Vector2(1.75, 1.5)
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+
+[node name="PlayButton" type="TextureButton" parent="Buttons"]
 layout_mode = 2
-size_flags_vertical = 0
-text = "You won!"
-label_settings = SubResource("LabelSettings_kde6k")
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_plrhb")
+texture_pressed = ExtResource("3_ar8de")
+texture_hover = ExtResource("4_vjqdr")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Buttons/PlayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play again
+"
 horizontal_alignment = 1
 
-[node name="HboxContainer" type="HBoxContainer" parent="VboxContainer"]
+[node name="CreditsButton" type="TextureButton" parent="Buttons"]
 layout_mode = 2
-size_flags_vertical = 2
-theme_override_constants/separation = 6
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_plrhb")
+texture_pressed = ExtResource("3_ar8de")
+texture_hover = ExtResource("4_vjqdr")
+stretch_mode = 3
 
-[node name="Buttons" type="VBoxContainer" parent="VboxContainer/HboxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_constants/separation = 36
-
-[node name="PlayAgainButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
-layout_mode = 2
-text = "Play Again
-"
-
-[node name="CreditsButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
-layout_mode = 2
+[node name="Label" type="Label" parent="Buttons/CreditsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Credits
 "
-
-[node name="MenuButton" type="Button" parent="VboxContainer/HboxContainer/Buttons"]
-layout_mode = 2
-text = "Go to menu
-"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VboxContainer/HboxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label2" type="Label" parent="VboxContainer/HboxContainer/VBoxContainer"]
-layout_mode = 2
-text = "Stats:"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="VboxContainer/HboxContainer/VBoxContainer"]
+[node name="MenuButton" type="TextureButton" parent="Buttons"]
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_plrhb")
+texture_pressed = ExtResource("3_ar8de")
+texture_hover = ExtResource("4_vjqdr")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Buttons/MenuButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Main menu
+"
+horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.233
+anchor_top = 0.28
+anchor_right = 0.44
+anchor_bottom = 0.37
+offset_left = 12.4
+offset_top = -77.0
+offset_right = 18.9999
+offset_bottom = -37.0
+size_flags_vertical = 0
+text = "You won"
+label_settings = SubResource("LabelSettings_to1vb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.483
+anchor_top = 0.334
+anchor_right = 0.902
+anchor_bottom = 0.624
+offset_left = 91.4
+offset_top = 184.8
+offset_right = -205.4
+offset_bottom = 184.8
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
 size_flags_vertical = 0
 text = "Damageup = 1
 firerate = 0
 enemies killed = 1
 huhhahah = 0
 idiot = true"
-horizontal_alignment = 1
+label_settings = SubResource("LabelSettings_ojffo")
+
+[node name="Title3" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.484
+anchor_top = 0.197
+anchor_right = 0.883
+anchor_bottom = 0.316
+offset_left = 91.2
+offset_top = 187.4
+offset_right = 89.4
+offset_bottom = 185.2
+size_flags_vertical = 0
+text = "Stats"
+label_settings = SubResource("LabelSettings_hdshm")

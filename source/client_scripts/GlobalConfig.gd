@@ -16,13 +16,13 @@ var RewardEvents = {
 	"MOVED_CLOSER": "MOVED_CLOSER"
 }
 
-
+# not doing anything yet
 var GameConfig = {
 	"MAP_SIZE" = null
 }
 
 # not doing anything yet
 var DisplayConfig = {
-	"RESOLUTION": Vector2i(1280, 720),
-	"SHOW_DEBUG_UI": true
+	"RESOLUTION": Vector2i(1200, 800),
+	"SHOW_DEBUG_UI": false
 }

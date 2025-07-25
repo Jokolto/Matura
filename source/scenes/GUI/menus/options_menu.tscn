@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://by8rn1mnutgph"]
+[gd_scene load_steps=7 format=3 uid="uid://by8rn1mnutgph"]
 
 [ext_resource type="Script" path="res://scenes/GUI/menus/options_menu.gd" id="1_jw3vh"]
+[ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="2_duue8"]
+[ext_resource type="Texture2D" uid="uid://bw7vb3es4sn5x" path="res://assets/sprites/funny.png" id="2_osr0p"]
+[ext_resource type="Texture2D" uid="uid://cmuwdtjw3y1ll" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_press.png" id="3_7xmjl"]
+[ext_resource type="Texture2D" uid="uid://cwr303sdoy3f6" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_hovered.png" id="4_i6ltk"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_kx8tn"]
-font_size = 24
+[sub_resource type="LabelSettings" id="LabelSettings_101ip"]
+font_size = 52
 
 [node name="Options" type="Control"]
 layout_mode = 3
@@ -14,38 +18,126 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jw3vh")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_right = 0.75
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -56.0
-offset_right = 56.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+texture = ExtResource("2_osr0p")
+expand_mode = 3
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 100
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_right = 0.1
+anchor_bottom = 1.0
+offset_right = 500.0
+grow_vertical = 2
 
-[node name="Title" type="Label" parent="MarginContainer/VBoxContainer2"]
-layout_mode = 2
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.15
+anchor_right = 0.55
+anchor_bottom = 0.4
+offset_left = 20.4
+offset_right = 43.4
+offset_bottom = -118.4
 size_flags_vertical = 0
 text = "Options"
-label_settings = SubResource("LabelSettings_kx8tn")
+label_settings = SubResource("LabelSettings_101ip")
+
+[node name="Buttons" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.4
+anchor_right = 0.3
+anchor_bottom = 0.4
+offset_left = 30.0
+offset_top = 15.0
+offset_right = 76.0
+offset_bottom = 316.0
+scale = Vector2(1.75, 1.5)
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+
+[node name="PlayButton" type="TextureButton" parent="Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_duue8")
+texture_pressed = ExtResource("3_7xmjl")
+texture_hover = ExtResource("4_i6ltk")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Panel/Buttons/PlayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "...
+
+"
 horizontal_alignment = 1
 
-[node name="Buttons" type="VBoxContainer" parent="MarginContainer/VBoxContainer2"]
+[node name="OptionsButton" type="TextureButton" parent="Panel/Buttons"]
 layout_mode = 2
-size_flags_vertical = 8
-theme_override_constants/separation = 20
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_duue8")
+texture_pressed = ExtResource("3_7xmjl")
+texture_hover = ExtResource("4_i6ltk")
+stretch_mode = 3
 
-[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer2/Buttons"]
-layout_mode = 2
-text = "Back
+[node name="Label" type="Label" parent="Panel/Buttons/OptionsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "...
 "
+horizontal_alignment = 1
+
+[node name="CreditsButton" type="TextureButton" parent="Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_duue8")
+texture_pressed = ExtResource("3_7xmjl")
+texture_hover = ExtResource("4_i6ltk")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Panel/Buttons/CreditsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "...
+"
+horizontal_alignment = 1
+
+[node name="BackButton" type="TextureButton" parent="Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_duue8")
+texture_pressed = ExtResource("3_7xmjl")
+texture_hover = ExtResource("4_i6ltk")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Panel/Buttons/BackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Back"
+horizontal_alignment = 1

@@ -1,10 +1,10 @@
 extends CanvasLayer
 
-@onready var resume_button: Button = $Panel/VBoxContainer/TryAgain
-@onready var menu_button: Button = $Panel/VBoxContainer/MainMenu
+@onready var try_again_button: TextureButton = $Panel/Buttons/PlayButton
+@onready var menu_button: Button = $Panel/Buttons/MenuButton
 
 func _ready():
-	resume_button.pressed.connect(_on_try_again_pressed)
+	try_again_button.pressed.connect(_on_try_again_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
 	#hide()
 

@@ -1,10 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://lp5xmyief1ij"]
+[gd_scene load_steps=8 format=3 uid="uid://lp5xmyief1ij"]
 
 [ext_resource type="Script" path="res://scenes/GUI/menus/death_menu.gd" id="1_capo8"]
+[ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="2_ygwxt"]
+[ext_resource type="Texture2D" uid="uid://cmuwdtjw3y1ll" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_press.png" id="3_g5t6f"]
+[ext_resource type="Texture2D" uid="uid://cwr303sdoy3f6" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_hovered.png" id="4_7fnvi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_nq7u8"]
-line_spacing = 16.0
+[sub_resource type="LabelSettings" id="LabelSettings_2x622"]
+font_size = 52
+
+[sub_resource type="LabelSettings" id="LabelSettings_livq0"]
 font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_io5jf"]
+font_size = 40
 
 [node name="DeathMenu" type="CanvasLayer"]
 script = ExtResource("1_capo8")
@@ -16,32 +24,116 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="TextureRect" type="TextureRect" parent="Panel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.25
-anchor_right = 0.75
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -48.0
-offset_top = 48.0
-offset_right = 48.0
-offset_bottom = -48.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 26
 
-[node name="Label" type="Label" parent="Panel/VBoxContainer"]
+[node name="Buttons" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.24
+anchor_top = 0.427
+anchor_right = 0.459
+anchor_bottom = 0.722
+offset_left = 4.0
+offset_top = -48.6
+offset_right = -108.8
+offset_bottom = -127.6
+scale = Vector2(1.75, 1.5)
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+
+[node name="PlayButton" type="TextureButton" parent="Panel/Buttons"]
 layout_mode = 2
-text = "You died"
-label_settings = SubResource("LabelSettings_nq7u8")
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_ygwxt")
+texture_pressed = ExtResource("3_g5t6f")
+texture_hover = ExtResource("4_7fnvi")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Panel/Buttons/PlayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Try Again"
 horizontal_alignment = 1
 
-[node name="TryAgain" type="Button" parent="Panel/VBoxContainer"]
+[node name="MenuButton" type="TextureButton" parent="Panel/Buttons"]
 layout_mode = 2
-text = "Try Again
-"
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_ygwxt")
+texture_pressed = ExtResource("3_g5t6f")
+texture_hover = ExtResource("4_7fnvi")
+stretch_mode = 3
 
-[node name="MainMenu" type="Button" parent="Panel/VBoxContainer"]
+[node name="Label" type="Label" parent="Panel/Buttons/MenuButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Main menu
+"
+horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.233
+anchor_top = 0.28
+anchor_right = 0.44
+anchor_bottom = 0.37
+offset_left = 12.4
+offset_top = -77.0
+offset_right = 18.9999
+offset_bottom = -37.0
+size_flags_vertical = 0
+text = "Died"
+label_settings = SubResource("LabelSettings_2x622")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.483
+anchor_top = 0.334
+anchor_right = 0.902
+anchor_bottom = 0.624
+offset_left = 91.4
+offset_top = 184.8
+offset_right = -205.4
+offset_bottom = 184.8
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer2"]
 layout_mode = 2
-text = "Main Menu"
+size_flags_horizontal = 10
+size_flags_vertical = 0
+text = "Damageup = 1
+firerate = 0
+enemies killed = 1
+huhhahah = 0
+idiot = true"
+label_settings = SubResource("LabelSettings_livq0")
+
+[node name="Title3" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.484
+anchor_top = 0.197
+anchor_right = 0.883
+anchor_bottom = 0.316
+offset_left = 91.2
+offset_top = 187.4
+offset_right = 89.4
+offset_bottom = 185.2
+size_flags_vertical = 0
+text = "Stats"
+label_settings = SubResource("LabelSettings_io5jf")

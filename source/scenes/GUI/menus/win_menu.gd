@@ -1,8 +1,8 @@
 extends Control
 
-@onready var play_again_button: Button = $VboxContainer/HboxContainer/Buttons/PlayAgainButton
-@onready var credits_button: Button = $VboxContainer/HboxContainer/Buttons/CreditsButton
-@onready var menu_button: Button = $VboxContainer/HboxContainer/Buttons/MenuButton
+@onready var play_again_button: TextureButton = $Buttons/PlayButton
+@onready var credits_button: TextureButton = $Buttons/CreditsButton
+@onready var menu_button: TextureButton = $Buttons/MenuButton
 
 func _ready():
 	play_again_button.pressed.connect(_on_play_again_pressed)
