@@ -10,9 +10,9 @@ class_name Player
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
 
-var weapon_scene: PackedScene
-var default_weapon_res: Resource = preload("res://resources/guns/melee/sword.tres")
-
+var weapon_scene: PackedScene # will be assigned automatically from resource
+var default_weapon_res: Resource = preload("res://resources/weapons/melee/hammer.tres")
+var nearby_pickups: Array[Weapon] = []
 
 var hurt_sound: AudioStream = preload("res://assets/audio/sfx/player/young-man-being-hurt-95628.mp3")
 
@@ -32,13 +32,14 @@ signal damaged(amount: int)
 signal healed(amount: int)
 signal died
 signal weapon_equipped(texture)
+signal weapon_nearby
 
 func _ready() -> void:
 	died.connect(_die)
-	_equip_weapon(default_weapon_res)
+	#_equip_weapon(default_weapon_res)
 
 func _physics_process(delta: float) -> void:
-	var input_vector = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	var input_vector = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var dash_vel = _handle_dash(delta, input_vector)
 	velocity = dash_vel if dash_vel != Vector2.ZERO else input_vector * move_speed
 	_update_animation(input_vector)
@@ -48,9 +49,24 @@ func _process(_delta: float) -> void:
 	var mouse_pos = get_global_mouse_position()
 	weapon_holder._aim_weapon(mouse_pos)
 	_handle_weapon_use(mouse_pos)
+	_handle_pickups()
 
 func set_projectiles_node(node: Node):
 	projectiles_node = node
+
+func _handle_pickups():
+	if nearby_pickups.size() > 0:
+		weapon_nearby.emit()
+		if Input.is_action_just_pressed("interact"):
+			# Pick the closest one
+			var nearest = nearby_pickups[0]
+			var dist = global_position.distance_squared_to(nearest.global_position)
+			for pickup in nearby_pickups:
+				var d = global_position.distance_squared_to(pickup.global_position)
+				if d < dist:
+					nearest = pickup
+					dist = d
+			nearest.on_pickup(self)
 
 func _handle_weapon_use(target_pos: Vector2) -> void:
 	if weapon_instance and weapon_instance.is_ready():
@@ -135,3 +151,4 @@ func heal(heal_value: int):
 
 func _on_wave_end(_fitness_dict):
 	heal(floor(EntitiesManager.player_heal_after_wave_percentage * max_hp))
+	

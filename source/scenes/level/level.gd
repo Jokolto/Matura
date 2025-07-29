@@ -7,13 +7,14 @@ extends Node2D
 @onready var Upgradepanel = $UI/UpgradePanel
 @onready var PauseMenu = $UI/PauseMenu
 @onready var hud = $UI/HUD
-
+@onready var tutorial = $UI/TutorialPanel
 
 @onready var projectiles_node: Node = $Projectiles
 @onready var entities_node: Node2D = $Entities
 @onready var player: Player = $Entities/Player
 @onready var spawners_node: Node2D = $Objects/Spawners
 
+@onready var starting_weapon: Node2D = $Objects/StartingWeapon
 @onready var ItemManager = $ItemManager
 
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
@@ -34,6 +35,7 @@ func _ready() -> void:
 	player.died.connect(EntitiesManager._on_player_death)
 	player.died.connect(GameManager._on_player_death)
 	player.weapon_equipped.connect(hud._on_player_weapon_equiped)
+	player.weapon_nearby.connect(tutorial._on_player_weapon_nearby)
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
@@ -54,11 +56,11 @@ func _ready() -> void:
 	spawners_node.set_projectiles_node(projectiles_node)
 	
 	set_default_nodes()
-	
+	tutorial.show_tutorial_piece("move")
 
 func set_default_nodes():
 	player.set_projectiles_node(projectiles_node)
-	player._equip_weapon(null)
+	
 	
 	hud.set_health(player.hp, player.max_hp)
 

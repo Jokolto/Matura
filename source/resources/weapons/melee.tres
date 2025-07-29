@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://bk5okmdrnh7l1"]
+
+[ext_resource type="Script" path="res://addons/godot_resource_groups/resource_group.gd" id="1_f8ngu"]
+
+[resource]
+script = ExtResource("1_f8ngu")
+base_folder = "res://resources/weapons/melee"
+includes = Array[String](["*.tres"])
+excludes = Array[String](["res://resources/weapons/melee/melee.tres"])
+paths = Array[String](["res://resources/weapons/melee/hammer.tres", "res://resources/weapons/melee/katana.tres", "res://resources/weapons/melee/stick.tres", "res://resources/weapons/melee/sword.tres"])

@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://btwyoixtrfuwu"]
+
+[ext_resource type="Script" path="res://scenes/GUI/hud/tutorial_panel.gd" id="1_vg2rr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_eajg5"]
+line_spacing = 16.0
+font_size = 24
+
+[node name="TutorialPanel" type="CanvasLayer"]
+script = ExtResource("1_vg2rr")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 0.731
+offset_left = 96.0
+offset_top = 43.0
+offset_right = -102.0
+offset_bottom = 5.60001
+text = "TUTORIAL TEXT"
+label_settings = SubResource("LabelSettings_eajg5")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Resume" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.16
+anchor_top = 0.797
+anchor_right = 0.828
+anchor_bottom = 0.896
+text = "GOT IT"
+
+[connection signal="pressed" from="Panel/Resume" to="." method="_on_resume_pressed"]

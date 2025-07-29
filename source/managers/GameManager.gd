@@ -43,15 +43,14 @@ func change_scene():
 
 func toggle_pause():
 	get_tree().paused = not get_tree().paused
-	# If needed, stop input to the world:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
 	var bus_index = AudioServer.get_bus_index("Music")
 
 	if get_tree().paused:
+		
 		Input.set_custom_mouse_cursor(null)
 		AudioServer.set_bus_effect_enabled(bus_index, 0, true)
-		AudioServer.set_bus_volume_db(bus_index, -12) # lower volume too
+		AudioServer.set_bus_volume_db(bus_index, -12) # lower volume 
 	else:
 		if state == "PLAYING":
 			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )

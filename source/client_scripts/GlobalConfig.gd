@@ -6,6 +6,7 @@ var ClientConfig = {
 	"PORT": 9000,
 }
 
+# looks braindead, but it is the way
 var RewardEvents = {
 	"TOOK_DAMAGE": "TOOK_DAMAGE",
 	"HIT_PLAYER": "HIT_PLAYER",
@@ -13,12 +14,14 @@ var RewardEvents = {
 	"DODGED_BULLET": "DODGED_BULLET",
 	"RETREATED": "RETREATED",
 	"WASTED_MOVEMENT": "WASTED_MOVEMENT",
-	"MOVED_CLOSER": "MOVED_CLOSER"
+	"MOVED_CLOSER": "MOVED_CLOSER",
+	"MISSED": "MISSED"
 }
 
-# not doing anything yet
+
 var GameConfig = {
-	"MAP_SIZE" = null
+	"X_MAP_SIZE" : 3000,  # very approximately 
+	"Y_MAP_SIZE" : 2000,  # also /
 }
 
 # not doing anything yet

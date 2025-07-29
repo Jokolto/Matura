@@ -17,18 +17,25 @@ var shooter_type: ShooterType
 var projectiles_node: Node = null  # assigned by gun
 var gun_node: Node = null  # assigned by gun
 
-
-var friendly_fire = false
 var hit_entities = []
 
+# enemy specific
+var hit_player = false
+var friendly_fire = false
+var shot_at_state = ""
+var stored_action = "use_weapon"
 
-func _ready() -> void:
-	match shooter:
-		Player:
-			shooter_type = ShooterType.PLAYER
-		Enemy:
-			shooter_type = ShooterType.ENEMY
-			
+
+func _ready() -> void: 
+	# match does not work with types in gdscript, hence if elif...
+	if shooter is Player:
+		shooter_type = ShooterType.PLAYER
+	elif shooter is Enemy:
+		shooter_type = ShooterType.ENEMY
+	elif shooter is RangedEnemy:
+		shooter_type = ShooterType.ENEMY
+	else:
+		shooter_type = ShooterType.ENEMY
 	shot_at_pos = global_position
 	generate_id()
 
@@ -42,27 +49,42 @@ func _process(delta: float) -> void:
 
 # quite a bad handling, but i don't care
 func _on_body_entered(body: Node2D) -> void:
-	if body != shooter:    # ensure no self colision, can cause a one frame bug if entity is killed right as it shoots
-		if (body is CharacterBody2D):    # ensure colision with entities
-			if (shooter_type == ShooterType.PLAYER or body is Player):   # either player hitting enemy, or enemy hitting player
-				if not body in hit_entities:
-					hit_entities.append(body)
-					body.take_damage(damage)
-					if piercing >= 1:
-						piercing -= 1
-						return
-					projectiles_node.proj_amount -= 1
-					queue_free()
-			elif (body is Enemy and shooter_type == ShooterType.ENEMY and friendly_fire):     # enemy hitting enemy
+	hit_player = false
+	hit_entities = []
+	if body == shooter:   
+		return  # ensure no self colision
+		
+	if (body is CharacterBody2D):    # colision with entities
+		if (shooter_type == ShooterType.PLAYER):   # player hitting enemy
+			if not body in hit_entities:
+				hit_entities.append(body)
 				body.take_damage(damage)
-		elif body.get_parent() is Gate:
-			body.get_parent().take_damage(damage)
-		
-		# colision with some other object, e.g. wall
-		
-		projectiles_node.proj_amount -= 1
-		queue_free()
-		
+				if piercing >= 1:
+					piercing -= 1
+					return
+				projectiles_node.proj_amount -= 1
+				queue_free()
+		elif shooter_type == ShooterType.ENEMY: # enemy hitting player or another enemy
+			if body is Player:
+				body.take_damage(damage)
+				hit_player = true
+				
+			if body is Enemy and friendly_fire: # enemy hitting enemy
+				body.take_damage(damage)
+			
+	elif body.get_parent() is Gate:
+		body.get_parent().take_damage(damage)
+	
+	if is_instance_valid(shooter):
+		if hit_player:
+			if shot_at_state:
+				shooter.add_reward_event("HIT_PLAYER", shot_at_state, stored_action)
+		else:
+			shooter.add_reward_event("MISSED", shot_at_state, stored_action)
+	
+	projectiles_node.proj_amount -= 1
+	queue_free()
+	
 		
 	
 

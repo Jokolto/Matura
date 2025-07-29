@@ -22,7 +22,7 @@ func _fade_out():
 	anim_player.play("fade_out")  # fade_rect modulate.a from 0 to 1
 
 func _on_fade_complete():
-	Logger.log("Switched to game", "Debug")
+	Logger.log("Switched to game", "DEBUG")
 	GameManager.state = "PLAYING"
 	GameManager.change_scene()
 

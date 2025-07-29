@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MeleeData" load_steps=4 format=3 uid="uid://cbr1fsuab4hxx"]
+
+[ext_resource type="Script" path="res://scenes/weapons/melee/MeleeData.gd" id="1_mttof"]
+[ext_resource type="Texture2D" uid="uid://druopjjffki06" path="res://assets/sprites/weapons/32x32pixelmeleeweapon.png" id="2_iyifq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_00ilm"]
+atlas = ExtResource("2_iyifq")
+region = Rect2(32, 96, 32, 32)
+
+[resource]
+script = ExtResource("1_mttof")
+scene_path = "res://scenes/weapons/melee/melee_weapon.tscn"
+fire_rate = 10.0
+attack_damage = 1.0
+reach = 20.0
+swing_angle = 180.0
+swing_speed = 1440.0
+knockback = 10.0
+automatic = true
+sprite = SubResource("AtlasTexture_00ilm")
+volume_db = 0.0
+pitch_randomness = 0.0

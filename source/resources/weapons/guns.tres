@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceGroup" load_steps=2 format=3 uid="uid://dtihl7ltkkg4o"]
+
+[ext_resource type="Script" path="res://addons/godot_resource_groups/resource_group.gd" id="1_7xlxi"]
+
+[resource]
+script = ExtResource("1_7xlxi")
+base_folder = "res://resources/weapons/guns"
+includes = Array[String](["*.tres"])
+excludes = Array[String](["res://resources/weapons/guns/guns.tres"])
+paths = Array[String](["res://resources/weapons/guns/handgun.tres", "res://resources/weapons/guns/machinegun.tres", "res://resources/weapons/guns/shotgun.tres", "res://resources/weapons/guns/sniperrifle.tres"])

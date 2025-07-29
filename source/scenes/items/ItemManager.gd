@@ -2,18 +2,20 @@ extends Node
 
 var player: Player = null
 var held_items: Dictionary = {}
-var item_pool = []
-var gun_pool = []
-var path_to_items_res = "res://resources/items/"
-var path_to_guns_res = "res://resources/guns/"
+var item_pool: Array[ItemData] = []
+var gun_pool: Array[GunData] = []
+
+@export var items_resources_paths: ResourceGroup = preload("res://resources/items.tres")
+@export var guns_resources_paths: ResourceGroup = preload("res://resources/weapons/guns.tres")
+@export var melee_resources_paths: ResourceGroup
 
 var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
-var gun_wave_n = 1 # after this wave player gets a gun
+var gun_wave_n = -1 # after this wave player gets a gun
 
 func _ready() -> void:
 	 
-	item_pool = load_all_resources_from(path_to_items_res)
-	gun_pool = load_all_resources_from(path_to_guns_res)
+	items_resources_paths.load_all_into(item_pool)
+	guns_resources_paths.load_all_into(gun_pool)
 	
 
 func set_player(player_scene):
@@ -37,16 +39,6 @@ func apply_item(item: ItemData):
 		_:
 			print("Unknown upgrade type: ", item.effect)
 		
-
-func load_all_resources_from(path) -> Array:
-	var item_list = []
-	var dir = DirAccess.open(path)
-	for file in dir.get_files():
-		if file.ends_with(".tres"):
-			var item = load(path + file)
-			item_list.append(item)
-			
-	return item_list
 
 func get_random_items_from_pool(pool: Array, item_amount: int, rarity_distribution_for_items: Dictionary = {}, minus_pool=[]) -> Array:
 	var options = pool

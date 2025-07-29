@@ -22,10 +22,11 @@ func use_weapon(target_pos: Vector2) -> void:
 func try_fire(target_pos: Vector2) -> void:
 	if not is_ready():
 		return
-
+	
+	
 	for bullet in range(stats.bullets_amount):
 		_spawn_bullet(target_pos)
-
+	
 	AudioManager.play_sfx_positional(
 		stats.on_shoot_sound, global_position,
 		stats.shoot_sound_volume_db, stats.shoot_sound_pitch_randomness
@@ -59,4 +60,6 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		bullet.damage = final_damage
 		projectiles_node.player_projectile_node.add_child(bullet)
 	else:
+		bullet.shot_at_state = stored_state
+		bullet.stored_action = stored_action
 		projectiles_node.add_child(bullet)

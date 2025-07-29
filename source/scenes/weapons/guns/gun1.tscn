@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://ckcrbfrj73qt3"]
+[gd_scene load_steps=5 format=3 uid="uid://ckcrbfrj73qt3"]
 
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="1_vt1sm"]
 [ext_resource type="Script" path="res://scenes/weapons/guns/gun.gd" id="1_ynd5q"]
+[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://scenes/objects/resources/guns/handgun.tres" id="2_bhpbx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5475d"]
 atlas = ExtResource("1_vt1sm")
@@ -10,6 +11,7 @@ region = Rect2(-0.510231, 117.936, 12.4103, 10.0721)
 [node name="gun" type="Node2D"]
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_ynd5q")
+stats = ExtResource("2_bhpbx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(30, -5)

@@ -12,6 +12,11 @@ var projectiles_node = null # set in level
 var spawners: Array = []
 var enemy_pool: Dictionary = {}
 var timer := 0.0
+var enemy_spawn_chance: Callable = func (_wave):
+	return 0 # max(100 - wave * 10, 20)
+	
+var ranged_enemy_spawn_chance: Callable = func (_wave):
+	return 100 # min(100 - wave * 10, 20)
 
 signal enemy_spawned
 
@@ -29,8 +34,8 @@ func set_player(player_scene):
 
 func spawn_enemy() -> void:
 	enemy_pool = {
-	enemy_scene: func(_wave): return 100, #max(100 - wave * 10, 20)
-	ranged_enemy_scene: func(_wave): return 0 #min(wave * 10, 80)
+	enemy_scene: enemy_spawn_chance,
+	ranged_enemy_scene: ranged_enemy_spawn_chance
 	}
 	
 	if not is_instance_valid(player):

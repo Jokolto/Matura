@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="GunData" load_steps=5 format=3 uid="uid://pqrlke8g014p"]
+[gd_resource type="Resource" script_class="GunData" load_steps=4 format=3 uid="uid://pqrlke8g014p"]
 
 [ext_resource type="Script" path="res://scenes/weapons/guns/GunData.gd" id="1_t67x2"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_xodpv"]
-[ext_resource type="AudioStream" uid="uid://cjedsq17lw2lh" path="res://assets/audio/sfx/guns_shooting/sniper.wav" id="3_hwgcg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2egr4"]
 atlas = ExtResource("2_xodpv")
@@ -10,6 +9,7 @@ region = Rect2(64.3178, 48.0469, 39.3909, 16.7574)
 
 [resource]
 script = ExtResource("1_t67x2")
+scene_path = "res://scenes/weapons/guns/gun1.tscn"
 fire_rate = 0.5
 automatic = false
 spread_deg = 0.0
@@ -21,6 +21,5 @@ bullet_speed = 1400.0
 sprite = SubResource("AtlasTexture_2egr4")
 name = "Sniper Rifle"
 description = "High-damage and very heavy, the sniper rifle fires slowly but can eliminate targets in one precise shot from afar."
-stream = ExtResource("3_hwgcg")
-pitch_randomness = 0.1
-volume_db = 0.0
+shoot_sound_pitch_randomness = 0.1
+shoot_sound_volume_db = 0.0

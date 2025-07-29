@@ -14,7 +14,9 @@ func _process(_delta: float) -> void:
 	var actions = get_actions_from_server(states_msg)
 	Logger.log("Got actions from server: %s" % [actions], "DEBUG")
 	process_actions(actions)
-	send_reward_requests_for_events(get_all_events())
+	var events = get_all_events()
+	Logger.log("Sending reward events to server: %s" % [events], "DEBUG")
+	send_reward_requests_for_events(events)
 	
 
 func get_next_enemy_id() -> int:

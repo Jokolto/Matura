@@ -9,6 +9,11 @@ var wave_active: bool = false
 var spawn_active: bool = false
 var enemies_alive: int = 0
 
+var base_amount: int = 4 # first wave
+var growth_rate: float = 1.25
+var enemy_count_func = func(wave: int) -> int:
+	return floor(base_amount * pow(growth_rate, wave))
+
 # If I want to end wave based on time instead of kill count
 var wave_duration: float = -1
 var wave_timer: float = 0.0
@@ -46,8 +51,8 @@ func disable_spawning():
 
 
 func start_wave():
-	enemies_per_wave += 1
 	current_wave += 1
+	enemies_per_wave = enemy_count_func.call(current_wave)
 	enemies_spawned = 0
 	wave_timer = 0.0
 	wave_active = true
