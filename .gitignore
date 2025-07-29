@@ -1,16 +1,17 @@
 # Godot-specific files that should NOT be tracked
-*.import/             # Generated import files
+**/*.import/
 .import
-.export/             # Exported game builds
-.sconsign.dblite     # Build system file
-godot.cfg            # Engine configuration (auto-generated)
-*.gen.*             # Auto-generated files
+.export/
+.sconsign.dblite
+godot.cfg
+*.gen.*
 .godot/
 /android/
 
 # Python-specific files
-*.pyc               # Compiled Python files
-__pycache__/        # Python cache directories
+**/*.pyc
+__pycache__/
+
           
 
 
@@ -21,3 +22,5 @@ Thumbs.db
 # Logs and temporary files
 *.log
 *.tmp
+*.temp
+
