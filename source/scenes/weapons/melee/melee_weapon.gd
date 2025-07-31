@@ -59,6 +59,8 @@ func _swing_update(delta: float) -> void:
 		hitbox.monitoring = false
 		hitbox.monitorable = false
 		rotation_degrees = 0.0
+		if is_instance_valid(holder) and holder is Enemy:
+			holder.add_reward_event(GlobalConfig.RewardEvents["MISSED"], stored_state, stored_action)
 
 # not used yet
 func _adjust_hitbox():
@@ -81,9 +83,17 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		if body is Player:
 			body.nearby_pickups.append(self)
 	else:
-		if body is Enemy or body is Player and body != holder:
-			body.take_damage(damage)
-		elif body.get_parent() is Gate:
+		if is_attacking and body != holder:
+			if body is Player:  # Enemy hitting Player
+				body.take_damage(damage)
+				if is_instance_valid(holder):
+					holder.add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"], stored_state, stored_action)
+			
+			elif body is Enemy and holder is Player:  # Player hitting Enemy
+				body.take_damage(damage)
+			elif body is Enemy and holder is Enemy and EntitiesManager.friendly_fire: # Enemy vs Enemy
+				body.take_damage(damage)
+			elif body.get_parent() is Gate:
 				body.get_parent().take_damage(damage)
 
 

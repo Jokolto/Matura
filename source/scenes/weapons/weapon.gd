@@ -12,6 +12,7 @@ var is_lying_on_floor: bool = false
 # for enemies
 var stored_state: String = ""
 var stored_action: String = "use_weapon"
+var projectiles_node: Node = null
 
 func _process(delta: float) -> void:
 	if _cooldown > 0.0:
@@ -43,3 +44,6 @@ func on_pickup(player):
 	Logger.log("Player picked up weapon", "DEBUG")
 	player._equip_weapon(stats)
 	queue_free()  # Remove from world
+
+func set_projectiles_node(node: Node) -> void:
+	projectiles_node = node

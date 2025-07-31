@@ -45,17 +45,16 @@ func toggle_pause():
 	get_tree().paused = not get_tree().paused
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	var bus_index = AudioServer.get_bus_index("Music")
-
 	if get_tree().paused:
 		
 		Input.set_custom_mouse_cursor(null)
 		AudioServer.set_bus_effect_enabled(bus_index, 0, true)
-		AudioServer.set_bus_volume_db(bus_index, -12) # lower volume 
+		AudioServer.set_bus_volume_db(bus_index, AudioManager.music_volume-12) # lower volume 
 	else:
 		if state == "PLAYING":
 			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )
 		AudioServer.set_bus_effect_enabled(bus_index, 0, false)
-		AudioServer.set_bus_volume_db(bus_index, 0)
+		AudioServer.set_bus_volume_db(bus_index, AudioManager.music_volume)
 
 func _on_player_death():
 	state = "GAME_OVER"

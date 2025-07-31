@@ -9,6 +9,8 @@ var wave_active: bool = false
 var spawn_active: bool = false
 var enemies_alive: int = 0
 
+var friendly_fire = false
+
 var base_amount: int = 4 # first wave
 var growth_rate: float = 1.25
 var enemy_count_func = func(wave: int) -> int:

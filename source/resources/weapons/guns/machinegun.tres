@@ -10,6 +10,7 @@ region = Rect2(95.4327, 101.231, 21.7629, 11.475)
 [resource]
 script = ExtResource("1_s5wke")
 scene_path = "res://scenes/weapons/guns/gun1.tscn"
+rarity = 3
 fire_rate = 15.0
 automatic = true
 spread_deg = 20.0

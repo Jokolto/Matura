@@ -2,7 +2,7 @@ extends Node2D
 
 var music_player: AudioStreamPlayer
 var current_music: AudioStream = null
-var music_volume: int = -12
+var music_volume: int
 
 var menu_music_resource = preload("res://resources/music/mainmenu.tres")
 var level_music_resource = preload("res://resources/music/level.tres")
@@ -17,6 +17,7 @@ const MUSIC_BUS := "Music"
 const SFX_BUS := "SFX"
 
 func _ready():
+	music_volume = AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music"))
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	GameManager.state_changed.connect(_on_game_state_changed)
 	
@@ -97,8 +98,11 @@ func play_sfx_positional(stream: AudioStream, play_at_position: Vector2, volume:
 func _on_game_state_changed(state: String):
 	match state:
 		"MENU":
-			_fade_to_music(menu_music, 0.25)
+			if music_player.stream != menu_music:
+				_fade_to_music(menu_music, 0.25)
 		"PLAYING":
-			_fade_to_music(level_music, 0.25)
+			if music_player.stream != level_music:
+				_fade_to_music(level_music, 0.25)
 		"GAME_OVER":
-			_fade_to_music(death_music, 0.25)
+			if music_player.stream != death_music:
+				_fade_to_music(death_music, 0.25)

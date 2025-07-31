@@ -22,6 +22,7 @@ func _on_back_pressed():
 
 func _on_music_volume_changed(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), value)
+	AudioManager.music_volume = value
 
 func _on_sfx_volume_changed(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), value)

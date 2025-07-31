@@ -2,6 +2,7 @@ class_name MeleeData extends Resource
 
 @export var scene_path: String = "res://scenes/weapons/melee/melee_weapon.tscn"
 
+@export var rarity: int = 1
 @export var fire_rate: float = 1   # attacks per second
 @export var attack_damage: float = 1
 @export var reach: float = 20.0  # how far in front of holder

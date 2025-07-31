@@ -6,15 +6,13 @@ extends Weapon
 @onready var sprite: Sprite2D = $Sprite2D
 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
-var projectiles_node: Node = null
+
 var final_damage: float = 0.0
 
 func _ready():
 	holder = get_holder()
 	weapon_type = WeaponType.RANGED
 
-func set_projectiles_node(node: Node) -> void:
-	projectiles_node = node
 
 func use_weapon(target_pos: Vector2) -> void:
 	try_fire(target_pos)

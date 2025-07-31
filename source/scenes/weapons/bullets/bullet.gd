@@ -19,9 +19,9 @@ var gun_node: Node = null  # assigned by gun
 
 var hit_entities = []
 
-# enemy specific
+# enemy specific (could have made enemy-gun subclass, but i am too lazy)
 var hit_player = false
-var friendly_fire = false
+
 var shot_at_state = ""
 var stored_action = "use_weapon"
 
@@ -69,7 +69,7 @@ func _on_body_entered(body: Node2D) -> void:
 				body.take_damage(damage)
 				hit_player = true
 				
-			if body is Enemy and friendly_fire: # enemy hitting enemy
+			if body is Enemy and EntitiesManager.friendly_fire: # enemy hitting enemy
 				body.take_damage(damage)
 			
 	elif body.get_parent() is Gate:

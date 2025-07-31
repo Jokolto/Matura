@@ -10,6 +10,7 @@ region = Rect2(32, 96, 32, 32)
 [resource]
 script = ExtResource("1_mttof")
 scene_path = "res://scenes/weapons/melee/melee_weapon.tscn"
+rarity = 3
 fire_rate = 10.0
 attack_damage = 1.0
 reach = 20.0

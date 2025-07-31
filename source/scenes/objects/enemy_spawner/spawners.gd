@@ -4,24 +4,29 @@ extends Node
 @export var enemy_scene: PackedScene = preload("res://scenes/entities/enemies/melee/enemy.tscn")
 @export var ranged_enemy_scene: PackedScene = preload("res://scenes/entities/enemies/ranged/ranged_enemy.tscn")
 
+var melee_weapons_res: ResourceGroup = preload("res://resources/weapons/melee.tres")
+var ranged_weapons_res: ResourceGroup = preload("res://resources/weapons/guns.tres")
+
+var melee_weapons_pool = []
+var ranged_weapons_pool = []
+var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
+
 @onready var enemies_node = $"../../Entities/Enemies"
 @onready var level_node = $"../.."
+@onready var item_manager = $"../../ItemManager"  # literally just for one method - get random item
 
 var player = null  # set in level
 var projectiles_node = null # set in level
 var spawners: Array = []
 var enemy_pool: Dictionary = {}
 var timer := 0.0
-var enemy_spawn_chance: Callable = func (_wave):
-	return 0 # max(100 - wave * 10, 20)
 	
-var ranged_enemy_spawn_chance: Callable = func (_wave):
-	return 100 # min(100 - wave * 10, 20)
-
 signal enemy_spawned
 
 func _ready() -> void:
 	spawners = get_children()
+	melee_weapons_res.load_all_into(melee_weapons_pool)
+	ranged_weapons_res.load_all_into(ranged_weapons_pool)
 
 func _process(delta: float) -> void:
 	timer += delta
@@ -32,21 +37,16 @@ func _process(delta: float) -> void:
 func set_player(player_scene):
 	player = player_scene
 
-func spawn_enemy() -> void:
-	enemy_pool = {
-	enemy_scene: enemy_spawn_chance,
-	ranged_enemy_scene: ranged_enemy_spawn_chance
-	}
-	
+func spawn_enemy() -> void:	
 	if not is_instance_valid(player):
-		print("no player -> no enemies")
 		return
 	
 	if not enemy_spawned.is_connected(GameManager.hud._on_enemy_spawned):
 		enemy_spawned.connect(GameManager.hud._on_enemy_spawned)
 	
-	var chosen_enemy_scene = choose_enemy(EntitiesManager.current_wave)
-	var enemy = chosen_enemy_scene.instantiate()
+	var enemy = ranged_enemy_scene.instantiate() as RangedEnemy
+	var chosen_weapon_pool = choose_enemy_type(EntitiesManager.current_wave) # chooses between melee weapons or ranged, where ranged is rarer
+	var chosen_weapon_res = item_manager.get_random_item(chosen_weapon_pool, [], rarity_distribution)
 	
 	enemy.global_position = get_spawn_position()
 	enemy.set_player(player)
@@ -56,28 +56,11 @@ func spawn_enemy() -> void:
 	EntitiesManager.enemies_spawned += 1
 	EntitiesManager.enemies_alive += 1
 	enemies_node.add_child(enemy)
+	enemy.equip_weapon(chosen_weapon_res)
 	enemy_spawned.emit()
 	#print("Enemy was spawned!")
 
 
-func choose_enemy(wave: int) -> PackedScene:
-	var weights = {}
-	var total_weight = 0.0
-	
-	for enemy in enemy_pool.keys():
-		var weight = float(enemy_pool[enemy].call(wave))
-		weights[enemy] = weight
-		total_weight += weight
-	
-	var rand = randf() * total_weight
-	var cumulative = 0.0
-	
-	for enemy in weights.keys():
-		cumulative += weights[enemy]
-		if rand <= cumulative:
-			return enemy
-	
-	return weights.keys()[0]  # fallback
 
 func get_spawn_position() -> Vector2:
 	#var rand_ind = randi() % spawners.size()
@@ -85,6 +68,16 @@ func get_spawn_position() -> Vector2:
 	var rand_spawn_area = spawner.spawn_area
 	return rand_spawn_area.get_random_position()
 
+func get_ranged_chance(wave: int) -> float:
+	var capped_wave = clamp(wave, 1, 20)
+	return lerp(0.0, 0.4, (capped_wave - 1) / 19.0)  # 0% to 40% over 20 waves
+	
+func choose_enemy_type(wave: int) -> Array:
+	var ranged_chance = get_ranged_chance(wave)
+	if randf() < ranged_chance:
+		return ranged_weapons_pool
+	else:
+		return melee_weapons_pool
 
 func set_projectiles_node(node: Node):
 	projectiles_node = node

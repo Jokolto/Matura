@@ -7,7 +7,10 @@ var fire_rate_multiplier: float
 var attack_range: float
 var ranged_damage_multiplier: float
 
-var start_weapon: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn") 
+#var start_weapon: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn") 
+var start_weapon: PackedScene = preload("res://scenes/weapons/melee/melee_weapon.tscn") 
+var default_weapon_res: Resource = preload("res://resources/weapons/melee/stick.tres")
+
 func _ready() -> void:
 	stats = preload("res://resources/enemies/ranged_enemy.tres")
 	super._ready()
@@ -15,17 +18,13 @@ func _ready() -> void:
 	fire_rate_multiplier = stats.fire_rate_multiplier
 	attack_range = stats.attack_range
 	
-	if start_weapon != null:
-		current_weapon = start_weapon.instantiate()
-		weapon_holder.add_child(current_weapon)
-		current_weapon.set_projectiles_node(projectiles_node)
-	
+	if default_weapon_res != null:
+		equip_weapon()
+
 
 func _physics_process(_delta: float) -> void:
 	
-	var dir: Vector2 = Vector2.ZERO
-	#print(player)
-	
+	var dir: Vector2 = Vector2.ZERO	
 	if is_instance_valid(player):
 		var distance_to_player = global_position.distance_to(player.global_position)
 		var pos = player.global_position
@@ -39,3 +38,23 @@ func _physics_process(_delta: float) -> void:
 		_deal_damage(player)
 	
 	_update_animation(dir)
+
+
+func equip_weapon(res: Resource = null): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.
+	if weapon_instance:
+		weapon_instance.queue_free()
+
+	weapon_res = res if res else default_weapon_res
+	
+	var scene = load(weapon_res.scene_path) as PackedScene
+	weapon_instance = scene.instantiate() as Weapon
+	
+	weapon_instance.import_res_stats(weapon_res)
+
+	if weapon_instance.has_method("set_projectiles_node") and projectiles_node:
+		weapon_instance.set_projectiles_node(projectiles_node)
+	weapon_holder.add_child(weapon_instance)
+	if weapon_instance.has_node("Sprite2D"):
+		var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
+		sprite.texture = weapon_res.sprite
+		

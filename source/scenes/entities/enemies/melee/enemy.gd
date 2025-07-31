@@ -20,7 +20,9 @@ var player_inside_contact_range: bool = false
 var enemy_id: int = -1
 
 
-var current_weapon: Weapon = null
+var weapon_instance: Weapon = null
+var weapon_res: Resource = null
+
 var current_state = ""
 var last_action = ""
 var event_buffer := []
@@ -35,7 +37,7 @@ var fitness_damage_priority_formula = func(life_time, dmg_dealt, min_distance):
 	return dmg_dealt * 4.0 + life_time * 0.1 - min_distance * 0.01
 
 var fitness_survivability_priority = func(life_time, dmg_dealt, min_distance): 
-	return life_time * 1.0 + dmg_dealt * 0.5 - min_distance * 0.01
+	return life_time * 1.0 + dmg_dealt * 0.5 - min_distance * 0.001
 
 
 ### Batch sizes
@@ -113,9 +115,9 @@ func execute_action(action: String):
 			velocity = dir.rotated(PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"use_weapon":
-			if current_weapon and current_weapon.is_ready():
-				current_weapon.use_weapon(shooting_dir)
-				current_weapon.store_state(current_state, action)
+			if weapon_instance and weapon_instance.is_ready():
+				weapon_instance.use_weapon(shooting_dir)
+				weapon_instance.store_state(current_state, action)
 			# gets its reward from bullet if it hits player
 		_:
 			velocity = Vector2.ZERO
@@ -147,8 +149,8 @@ func get_state() -> String:
 	dist_ally = clamp(dist_ally, 0, 4)
 	angle_ally = clamp(angle_ally, 0, 3)
 	var weapon_type = -1   # no weapon means -1 in state
-	if current_weapon:
-		weapon_type = current_weapon.weapon_type  
+	if weapon_instance:
+		weapon_type = weapon_instance.weapon_type  
 	return "d{d}a{a}bd{bd}ba{ba}".format({
 		"wt": weapon_type, "d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle, "ad": dist_ally, "aa": angle_ally
 		})

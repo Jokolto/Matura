@@ -1,7 +1,7 @@
 extends CanvasLayer
 
-@onready var try_again_button: Button = $Panel/Buttons/PlayButton
-@onready var menu_button: Button = $Panel/Buttons/MenuButton
+@onready var try_again_button: TextureButton = $Panel/Buttons/PlayButton
+@onready var menu_button: TextureButton = $Panel/Buttons/MenuButton
 
 func _ready():
 	try_again_button.pressed.connect(_on_try_again_pressed)

@@ -10,8 +10,9 @@ region = Rect2(0, 0, 32, 32)
 [resource]
 script = ExtResource("1_2rw5a")
 scene_path = "res://scenes/weapons/melee/melee_weapon.tscn"
+rarity = 2
 fire_rate = 1.5
-attack_damage = 4.0
+attack_damage = 3.0
 reach = 20.0
 swing_angle = 180.0
 swing_speed = 720.0

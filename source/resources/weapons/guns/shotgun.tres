@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="GunData" load_steps=5 format=3 uid="uid://c770pty4kvkv"]
+[gd_resource type="Resource" script_class="GunData" load_steps=4 format=3 uid="uid://c770pty4kvkv"]
 
 [ext_resource type="Script" path="res://scenes/weapons/guns/GunData.gd" id="1_4fh37"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_bl3ux"]
-[ext_resource type="AudioStream" uid="uid://blfoxqyhpuf00" path="res://assets/audio/sfx/guns_shooting/shotgun.wav" id="3_on0vc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eml6e"]
 atlas = ExtResource("2_bl3ux")
@@ -10,6 +9,8 @@ region = Rect2(63.7421, 84.871, 32.3746, 12.2304)
 
 [resource]
 script = ExtResource("1_4fh37")
+scene_path = "res://scenes/weapons/guns/gun1.tscn"
+rarity = 2
 fire_rate = 1.0
 automatic = false
 spread_deg = 40.0
@@ -21,6 +22,5 @@ bullet_speed = 700.0
 sprite = SubResource("AtlasTexture_eml6e")
 name = "Shotgun"
 description = "Heavy and slow to fire, but delivers devastating close-range damage with a wide spread."
-stream = ExtResource("3_on0vc")
-pitch_randomness = 0.1
-volume_db = 0.0
+shoot_sound_pitch_randomness = 0.1
+shoot_sound_volume_db = 0.0
