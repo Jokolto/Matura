@@ -110,6 +110,9 @@ func process_actions(data_with_actions):
 		enemy.last_action = action
 		enemy.execute_action(action)
 
+func kill_all():
+	for enemy: Enemy in get_enemies():
+		enemy.take_damage(99999)
 
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)

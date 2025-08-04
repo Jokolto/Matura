@@ -5,15 +5,27 @@ extends CanvasLayer
 @onready var button: Button = $Panel/Resume
 
 var active: bool = false
-var shown_tutorials := {}
+var shown_tutorials: Dictionary = GameManager.shown_tutorials
 
 
 var tutorial_texts := {
-	"move": "Use WASD to move.",
-	"attack": "Use your mouse to aim and use left mouse button to attack.",
-	"dash": "Press right mouse button to dash.",
-	"pickup": "Press E to pick up weapons.",
-	"goal": "Break the gate to escape the goblin camp."
+	"move": 	"""
+	Oh no, it seems you were teleported straight into goblin's camp (how unfortunate!). Let's see if there anything laying on floor to help you escape. 
+	
+	Use WASD to move.
+				""",
+	
+	"pickup":	"""
+	Oh what a nice looking stick! It for sure can deal insane damages to that gate, so you can escape!
+	
+	Press E to pick up weapons.
+				""",
+				
+	"gate": 	"""
+	It seems, tree branches are not the best weapons. Maybe goblins have some real weapons. They do not seem to want to give you their weapons though (how unfriendly!).
+	
+	Use your mouse to aim and use left mouse button to tickle the goblins with the stick.
+				"""
 }
 
 
@@ -37,3 +49,6 @@ func _on_resume_pressed() -> void:
 
 func _on_player_weapon_nearby():
 	show_tutorial_piece('pickup')
+	
+func _on_gate_regen_first_time():
+	show_tutorial_piece('gate')

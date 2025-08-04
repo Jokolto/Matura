@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://38f0eeix0o4w"]
+
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_8aq1x"]
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_owxun"]
+
+[resource]
+script = ExtResource("1_8aq1x")
+name = "Stronger Back"
+description = "Weapon capacity + 1"
+rarity = 4
+icon = ExtResource("1_owxun")
+effect = "weapon_cap"
+effect_value = 1.0

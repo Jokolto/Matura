@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://jp62d31gqfqn"]
+
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_ws1ro"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="2_u80xv"]
+
+[resource]
+script = ExtResource("2_u80xv")
+name = "Quicker fingers"
+description = "Attack Speed + 20%, makes your weapons automatic"
+rarity = 2
+icon = ExtResource("1_ws1ro")
+effect = "fire_rate_up"
+effect_value = 0.2

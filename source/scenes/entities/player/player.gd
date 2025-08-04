@@ -9,10 +9,25 @@ class_name Player
 @export var fire_rate_multiplier: float = 1
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
+@export var crit_chance: float = 0.0
+@export var crit_damage_mul: float = 2
+@export var contact_damage: float = 0
+@export var life_steal: float = 0
+@export var damage_reduction: float = 0
+@export var dodge_chance: float = 0
+
+# item specific
+var weapons_automatic_override = false
+
+var fire_dmg: float = 0
+var fire_duration: float = 0 
+
+var stones_throw_amount: int = 0
+
 
 var weapon_scene: PackedScene # will be assigned automatically from resource
 var default_weapon_res: Resource = preload("res://resources/weapons/melee/hammer.tres")
-var nearby_pickups: Array[Weapon] = []
+@export var nearby_pickups: Array[Weapon] = []  
 
 var hurt_sound: AudioStream = preload("res://assets/audio/sfx/player/young-man-being-hurt-95628.mp3")
 
@@ -70,7 +85,7 @@ func _handle_pickups():
 
 func _handle_weapon_use(target_pos: Vector2) -> void:
 	if weapon_instance and weapon_instance.is_ready():
-		var is_auto = weapon_instance.stats.automatic
+		var is_auto = weapon_instance.stats.automatic or weapons_automatic_override
 		if is_auto:
 			if Input.is_action_pressed("shoot"):
 				weapon_instance.use_weapon(target_pos)

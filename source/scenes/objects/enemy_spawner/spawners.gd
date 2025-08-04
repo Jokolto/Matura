@@ -9,11 +9,12 @@ var ranged_weapons_res: ResourceGroup = preload("res://resources/weapons/guns.tr
 
 var melee_weapons_pool = []
 var ranged_weapons_pool = []
-var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
+var rarity_distribution: Dictionary = {1 : 0.65,  2 : 0.2,  3 : 0.1, 4 : 0.05}  # for weapon rarity
 
 @onready var enemies_node = $"../../Entities/Enemies"
 @onready var level_node = $"../.."
 @onready var item_manager = $"../../ItemManager"  # literally just for one method - get random item
+@onready var pickup_node = $"../Pickups"
 
 var player = null  # set in level
 var projectiles_node = null # set in level
@@ -52,7 +53,9 @@ func spawn_enemy() -> void:
 	enemy.set_player(player)
 	enemy.set_projectiles_node(projectiles_node)
 	enemy.set_enemies_node(enemies_node)
-
+	enemy.set_pickup_node(pickup_node)
+	
+	enemy.move_speed *= EntitiesManager.enemy_speed_mul
 	EntitiesManager.enemies_spawned += 1
 	EntitiesManager.enemies_alive += 1
 	enemies_node.add_child(enemy)

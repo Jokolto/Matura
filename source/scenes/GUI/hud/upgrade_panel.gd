@@ -32,7 +32,6 @@ func show_upgrade_panel():
 	var options: Array
 	if gun_wave:  
 		options = ItemManager.get_random_guns(to_choose_amount, [player.weapon_res]) 
-		
 	else:
 		options = ItemManager.get_random_items(to_choose_amount)
 		
@@ -53,7 +52,6 @@ func show_upgrade_panel():
 	
 		button.text = item["name"] + "\n" + item["description"]
 		button.icon = icon
-		
 		
 		if not first_click:  
 			button.pressed.disconnect(ItemManager._on_item_selected)
@@ -99,4 +97,6 @@ func _on_wave_end(_fitness_dict):
 func _on_upgrade_selected():
 	visible = false
 	get_tree().paused = false
+	
+
 	

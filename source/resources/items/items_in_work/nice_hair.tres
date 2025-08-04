@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://i243qdv4iyfw"]
+
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_eq6d5"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_jq4rk"]
+
+[resource]
+script = ExtResource("1_jq4rk")
+name = "Better Hairstyle"
+description = "You are very pretty now"
+rarity = 4
+icon = ExtResource("1_eq6d5")
+effect = "pretty"
+effect_value = 1.0

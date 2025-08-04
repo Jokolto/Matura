@@ -2,7 +2,7 @@ extends Node2D
 
 var music_player: AudioStreamPlayer
 var current_music: AudioStream = null
-var music_volume: int
+var music_volume: float
 
 var menu_music_resource = preload("res://resources/music/mainmenu.tres")
 var level_music_resource = preload("res://resources/music/level.tres")

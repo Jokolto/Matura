@@ -23,8 +23,8 @@
 [ext_resource type="Script" path="res://scenes/items/ItemManager.gd" id="11_53goj"]
 [ext_resource type="PackedScene" uid="uid://bbbfspwmc0l6u" path="res://scenes/objects/gate.tscn" id="13_y35x7"]
 [ext_resource type="Script" path="res://scenes/level/world_boundary.gd" id="14_hvyhn"]
-[ext_resource type="PackedScene" uid="uid://di1xueppnf4og" path="res://scenes/weapons/melee/melee_weapon.tscn" id="15_gu2a5"]
-[ext_resource type="Resource" uid="uid://cbr1fsuab4hxx" path="res://resources/weapons/melee/katana.tres" id="16_ho4mb"]
+[ext_resource type="Script" path="res://scenes/level/pickups.gd" id="15_2bsd3"]
+[ext_resource type="PackedScene" uid="uid://cvljv2xvw80qv" path="res://scenes/weapons/melee/melee_weapon.tscn" id="15_gu2a5"]
 [ext_resource type="PackedScene" uid="uid://btwyoixtrfuwu" path="res://scenes/GUI/hud/tutorial_panel.tscn" id="25_2d74r"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x1otp"]
@@ -4027,11 +4027,11 @@ shape = SubResource("RectangleShape2D_gi3fr")
 position = Vector2(6425, 1821)
 shape = SubResource("RectangleShape2D_gi3fr")
 
-[node name="StartingWeapon" type="Node2D" parent="Objects"]
+[node name="Pickups" type="Node2D" parent="Objects"]
+script = ExtResource("15_2bsd3")
 
-[node name="MeleeWeapon" parent="Objects/StartingWeapon" instance=ExtResource("15_gu2a5")]
+[node name="MeleeWeapon" parent="Objects/Pickups" instance=ExtResource("15_gu2a5")]
 position = Vector2(2360, 1285)
-stats = ExtResource("16_ho4mb")
 
 [node name="Projectiles" type="Node" parent="."]
 script = ExtResource("5_palfl")

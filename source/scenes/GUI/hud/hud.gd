@@ -83,3 +83,7 @@ func _on_player_weapon_equiped(gun_texture):
 
 func _on_player_healed(_value):
 	set_health(player.hp, player.max_hp)
+	
+func _on_player_death():
+	item_panels = item_container.get_children()
+	GameManager.stored_item_panels = item_panels

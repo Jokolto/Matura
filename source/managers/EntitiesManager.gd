@@ -9,6 +9,7 @@ var wave_active: bool = false
 var spawn_active: bool = false
 var enemies_alive: int = 0
 
+
 var friendly_fire = false
 
 var base_amount: int = 4 # first wave
@@ -21,8 +22,12 @@ var wave_duration: float = -1
 var wave_timer: float = 0.0
 
 var player_heal_after_wave_percentage: float = 0.2 
+var enemy_speed_mul: float = 1 # item can affect this
 
 var enemy_fitness: Dictionary = {}
+
+# to display at the end
+var total_enemies_killed = 0
 
 signal wave_end(fitness_dict)
 signal wave_start
@@ -75,6 +80,7 @@ func _on_player_death():
 	spawn_active = false
 
 func _on_enemy_death(enemy: Enemy): # fragile, if enemy calls queue_free before this works, it breaks
+	total_enemies_killed += 1
 	enemies_alive -= 1
 	enemy_fitness[enemy.enemy_id] = enemy.fitness
 	

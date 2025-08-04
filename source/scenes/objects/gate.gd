@@ -8,10 +8,13 @@ class_name Gate
 @export var intact_texture: Texture2D
 @export var broken_texture: Texture2D
 
+signal gate_regenerated
+
 var max_hp = 100
 var hp_regeneration_per_sec = 20
 var hp_timer = 0
 var destroyed = false
+var hp_is_full = true
 
 func _ready() -> void:
 	Sprite.texture = intact_texture
@@ -21,11 +24,17 @@ func _ready() -> void:
 	hp_component._update_bar()
 
 func _process(delta: float) -> void:
-	if not destroyed:
+	hp_is_full = hp_component.current_health >= hp_component.max_health
+	if not destroyed and not hp_is_full:
 		if hp_timer >= 1:
 			hp_timer = 0
 			hp_component.heal(hp_regeneration_per_sec)
+			hp_is_full= hp_component.current_health >= hp_component.max_health
+			if hp_is_full:
+				gate_regenerated.emit()
 		hp_timer += delta
+		
+	
 	
 func take_damage(damage: float):
 	Logger.log("Gate took dmg: %s" % [damage], "DEBUG")

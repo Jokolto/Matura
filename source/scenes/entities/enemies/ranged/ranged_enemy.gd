@@ -23,10 +23,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	
-	var dir: Vector2 = Vector2.ZERO	
 	if is_instance_valid(player):
-		var distance_to_player = global_position.distance_to(player.global_position)
 		var pos = player.global_position
 		dir = (player.global_position - global_position).normalized()	
 		weapon_holder._aim_weapon(pos)
@@ -57,4 +54,6 @@ func equip_weapon(res: Resource = null): # very similar to same name method of p
 	if weapon_instance.has_node("Sprite2D"):
 		var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
 		sprite.texture = weapon_res.sprite
+		
+
 		

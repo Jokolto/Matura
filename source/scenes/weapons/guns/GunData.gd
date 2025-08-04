@@ -1,6 +1,6 @@
 class_name GunData extends Resource
 
-@export var scene_path: String = "res://scenes/weapons/guns/gun1.tscn"
+@export var scene_path: String = "res://scenes/weapons/guns/ranged_weapon.tscn"
 @export var rarity: int = 1
 
 @export var fire_rate: float   # shots per second

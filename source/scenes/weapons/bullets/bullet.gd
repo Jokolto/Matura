@@ -58,6 +58,8 @@ func _on_body_entered(body: Node2D) -> void:
 		if (shooter_type == ShooterType.PLAYER):   # player hitting enemy
 			if not body in hit_entities:
 				hit_entities.append(body)
+				if randf() <= shooter.crit_chance:
+					damage *= shooter.crit_damage_mul
 				body.take_damage(damage)
 				if piercing >= 1:
 					piercing -= 1
@@ -72,10 +74,10 @@ func _on_body_entered(body: Node2D) -> void:
 			if body is Enemy and EntitiesManager.friendly_fire: # enemy hitting enemy
 				body.take_damage(damage)
 			
-	elif body.get_parent() is Gate:
+	elif body.get_parent() is Gate:	
 		body.get_parent().take_damage(damage)
 	
-	if is_instance_valid(shooter):
+	if is_instance_valid(shooter) and shooter is Enemy:
 		if hit_player:
 			if shot_at_state:
 				shooter.add_reward_event("HIT_PLAYER", shot_at_state, stored_action)

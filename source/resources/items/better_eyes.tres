@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://bw36hkqu1qm2c"]
+
+[ext_resource type="Texture2D" uid="uid://c2kxuifes63ro" path="res://assets/sprites/items/eyesgpt.png" id="1_6rm7i"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_urx60"]
+
+[resource]
+script = ExtResource("1_urx60")
+name = "good eyes"
+description = "Crit Chance + 10 %"
+rarity = 1
+icon = ExtResource("1_6rm7i")
+effect = "crit_chance"
+effect_value = 0.1

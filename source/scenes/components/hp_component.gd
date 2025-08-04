@@ -20,10 +20,10 @@ func take_damage(amount: float):
 		return
 	current_health = max(current_health - amount, 0)
 	_update_bar()
-	emit_signal("health_changed", current_health, max_health)
+	health_changed.emit(current_health, max_health)
 	if current_health == 0:
 		dead = true
-		emit_signal("died")
+		died.emit()
 
 func heal(amount: float):
 	current_health = min(current_health + amount, max_health)

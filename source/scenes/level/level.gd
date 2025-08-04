@@ -1,6 +1,5 @@
 extends Node2D
 
-#var enemy_scene: PackedScene = preload("res://scenes/entities/enemies/enemy.tscn")
 @onready var WaveTimer = $WaveTimer
 
 # UI
@@ -11,10 +10,12 @@ extends Node2D
 
 @onready var projectiles_node: Node = $Projectiles
 @onready var entities_node: Node2D = $Entities
+@onready var enemies_node: Node = $Entities/Enemies
 @onready var player: Player = $Entities/Player
 @onready var spawners_node: Node2D = $Objects/Spawners
+@onready var gates: Node2D = $Objects/Gates
 
-@onready var starting_weapon: Node2D = $Objects/StartingWeapon
+@onready var PickupsNode: Node2D = $Objects/Pickups
 @onready var ItemManager = $ItemManager
 
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
@@ -32,10 +33,14 @@ func _ready() -> void:
 	
 	player.damaged.connect(hud._on_player_damaged)
 	player.healed.connect(hud._on_player_healed)
+	player.died.connect(hud._on_player_death)
 	player.died.connect(EntitiesManager._on_player_death)
 	player.died.connect(GameManager._on_player_death)
 	player.weapon_equipped.connect(hud._on_player_weapon_equiped)
 	player.weapon_nearby.connect(tutorial._on_player_weapon_nearby)
+	
+	for gate: Gate in gates.get_children():
+		gate.gate_regenerated.connect(tutorial._on_gate_regen_first_time)
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
@@ -68,6 +73,8 @@ func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"): # Typically Escape
 		GameManager.toggle_pause()
 		pause.emit()
+	if event.is_action_pressed("kill_all"):
+		enemies_node.kill_all()
 
 
 func _on_wave_timer_timeout() -> void:

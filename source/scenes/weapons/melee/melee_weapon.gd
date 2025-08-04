@@ -2,21 +2,14 @@
 class_name MeleeWeapon
 extends Weapon
 
-@onready var hitbox: Area2D = $Area2D
-@onready var hitbox_shape: CollisionShape2D = $Area2D/CollisionShape2D
-@onready var sprite = $Sprite2D
-
 var is_attacking: bool = false
 var current_angle: float = 0.0
 var swing_direction: int = 1
+var swing_speed: float
 var damage: float
 
 func _ready():
-	if get_holder() is CharacterBody2D:
-		holder = get_holder()
-	else:
-		is_lying_on_floor = true
-		sprite.texture = stats.sprite
+	super._ready()
 	weapon_type = WeaponType.MELEE
 	
 func _process(delta: float) -> void:
@@ -26,14 +19,15 @@ func _process(delta: float) -> void:
 		_swing_update(delta)
 
 func use_weapon(direction: Vector2) -> void:
-	
 	try_attack(direction)
 
-func try_attack(direction: Vector2) -> void:
+func try_attack(_direction: Vector2) -> void:
 	if not is_ready() or is_attacking:
 		return
 	
-		
+	swing_speed = stats.swing_speed
+	if holder is Player:
+		swing_speed *= holder.fire_rate_multiplier
 	is_attacking = true
 	current_angle = -stats.swing_angle * 0.5
 	swing_direction = 1
@@ -50,7 +44,7 @@ func try_attack(direction: Vector2) -> void:
 	)
 
 func _swing_update(delta: float) -> void:
-	var swing_step = stats.swing_speed * delta
+	var swing_step = swing_speed * delta
 	current_angle += swing_step * swing_direction
 	rotation_degrees = current_angle
 
@@ -73,16 +67,17 @@ func _adjust_hitbox():
 		# Shift the shape forward along X
 		hitbox_shape.position.x = stats.reach * 0.5
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
-	if holder is Player: 
-		damage = (stats.attack_damage + holder.damage_flat_boost) * holder.damage_multiplier
-	else:
-		damage = stats.attack_damage
-		
+func _on_area_2d_body_entered(body: Node2D) -> void:	
 	if is_lying_on_floor:
-		if body is Player:
-			body.nearby_pickups.append(self)
+		super._on_area_2d_body_entered(body)
 	else:
+		if holder is Player: 
+			damage = (stats.attack_damage + holder.damage_flat_boost) * holder.damage_multiplier
+			if randf() <= holder.crit_chance:
+				damage *= holder.crit_damage_mul
+		else:
+			damage = stats.attack_damage
+			
 		if is_attacking and body != holder:
 			if body is Player:  # Enemy hitting Player
 				body.take_damage(damage)
@@ -95,9 +90,3 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 				body.take_damage(damage)
 			elif body.get_parent() is Gate:
 				body.get_parent().take_damage(damage)
-
-
-func _on_area_2d_body_exited(body: Node2D) -> void:
-	if is_lying_on_floor:
-		if body is Player:
-			body.nearby_pickups.erase(self)

@@ -3,14 +3,13 @@ class_name Gun
 extends Weapon
 
 @onready var _gun_point: Marker2D = $gun_point
-@onready var sprite: Sprite2D = $Sprite2D
 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
 
 var final_damage: float = 0.0
 
 func _ready():
-	holder = get_holder()
+	super._ready()
 	weapon_type = WeaponType.RANGED
 
 
@@ -61,3 +60,4 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		bullet.shot_at_state = stored_state
 		bullet.stored_action = stored_action
 		projectiles_node.add_child(bullet)
+		

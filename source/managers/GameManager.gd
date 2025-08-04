@@ -19,6 +19,9 @@ var cutscene_enabled = true
 var state = "MENU"
 var current_scene: Node = null
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
+var stored_item_panels = []
+
+var shown_tutorials: Dictionary = {}
 
 signal state_changed(state)
 
@@ -55,6 +58,7 @@ func toggle_pause():
 			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )
 		AudioServer.set_bus_effect_enabled(bus_index, 0, false)
 		AudioServer.set_bus_volume_db(bus_index, AudioManager.music_volume)
+
 
 func _on_player_death():
 	state = "GAME_OVER"

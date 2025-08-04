@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://bgqk1oyjkkm7"]
+
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_at1v4"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_lrs6c"]
+
+[resource]
+script = ExtResource("1_lrs6c")
+name = "Holy Clock"
+description = "This clock has magical abilities"
+rarity = 3
+icon = ExtResource("1_at1v4")
+effect = "mclock"
+effect_value = 0.1

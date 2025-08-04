@@ -9,6 +9,7 @@ class_name Enemy extends CharacterBody2D
 var player: CharacterBody2D = null  # assigned from spawner
 var projectiles_node: Node = null # assigned from spawner
 var enemies_node: Node = null # assigned from spawner
+var pickup_node: Node = null # assigned from spawner
 
 var move_speed: float 
 var max_health: float 
@@ -22,6 +23,7 @@ var enemy_id: int = -1
 
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
+var weapon_drop_chance: float = 0.2 # 20 percent
 
 var current_state = ""
 var last_action = ""
@@ -34,7 +36,7 @@ var damage_dealt: float = 0
 var min_dist_to_player: float = INF
 
 var fitness_damage_priority_formula = func(life_time, dmg_dealt, min_distance): 
-	return dmg_dealt * 4.0 + life_time * 0.1 - min_distance * 0.01
+	return dmg_dealt * 2.0 + life_time * 0.1 - min_distance * 0.005
 
 var fitness_survivability_priority = func(life_time, dmg_dealt, min_distance): 
 	return life_time * 1.0 + dmg_dealt * 0.5 - min_distance * 0.001
@@ -74,6 +76,8 @@ func _process(delta: float) -> void:
 	# Attacking
 	if player_inside_contact_range:
 		_deal_damage(player)
+		if player.contact_damage:
+			take_damage(player.contact_damage)
 		add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"])
 	life_time_sec += delta
 
@@ -94,6 +98,8 @@ func take_damage(amount: float) -> void:
 	if health <= 0:
 		fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
 		enemy_death.emit(self)
+		if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
+			call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
 		queue_free()
 		
 
@@ -150,8 +156,9 @@ func get_state() -> String:
 	angle_ally = clamp(angle_ally, 0, 3)
 	var weapon_type = -1   # no weapon means -1 in state
 	if weapon_instance:
-		weapon_type = weapon_instance.weapon_type  
-	return "d{d}a{a}bd{bd}ba{ba}".format({
+		#weapon_type = weapon_instance.weapon_type  # distinguish between melee and ranged
+		weapon_type = weapon_instance.name   # distinguish even more, each kind of weapon gets its own ai
+	return "wt{wt}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
 		"wt": weapon_type, "d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle, "ad": dist_ally, "aa": angle_ally
 		})
 
@@ -180,7 +187,6 @@ func get_unsent_events() -> Array:
 	return unsent
 
 func cleanup_old_events():
-	# Optional: call this every few seconds
 	event_buffer = event_buffer.filter(func(ev): return not ev["sent"] or is_still_relevant(ev))
 
 func is_still_relevant(_event):
@@ -213,14 +219,12 @@ func generate_id():
 	
 
 func _update_animation(input_vec: Vector2) -> void:
-	# ---- play the correct clip ----
 	if input_vec != Vector2.ZERO:
 		if body_sprite.animation != "run":
 			body_sprite.play("run")
 	else:
 		if body_sprite.animation != "idle":
 			body_sprite.play("idle")
-	 #---- face the correct direction ----  // no need, gun aim decides the orientation
 	if input_vec.x != 0:
 		body_sprite.flip_h = input_vec.x < 0
 		
@@ -243,3 +247,14 @@ func _on_body_exited(body: Node) -> void:
 		
 func set_enemies_node(node: Node):
 	enemies_node = node
+
+func set_pickup_node(pickup_n):
+	pickup_node = pickup_n
+
+func drop_current_weapon():
+	var drop = weapon_instance
+	drop.get_parent().remove_child(drop)
+	pickup_node.add_child(drop)
+	drop.global_position = global_position + Vector2.RIGHT.rotated(rotation) * 16
+	drop.enter_pickup_state()
+	

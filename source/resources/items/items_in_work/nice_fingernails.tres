@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cqcwq2k4q8yix"]
+
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="1_hl7bq"]
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_sfmui"]
+
+[resource]
+script = ExtResource("1_hl7bq")
+name = "Pretty nails"
+description = "less agression"
+rarity = 2
+icon = ExtResource("1_sfmui")
+effect = "agression"
+effect_value = 1.0

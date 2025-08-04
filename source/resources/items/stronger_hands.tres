@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://2h3ybrakl436"]
+
+[ext_resource type="Texture2D" uid="uid://clwidqkxfcvm5" path="res://assets/sprites/items/handmgpt.png" id="1_naik6"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="2_v5tiy"]
+
+[resource]
+script = ExtResource("2_v5tiy")
+name = "Stronger Hands"
+description = "damage + 1"
+rarity = 4
+icon = ExtResource("1_naik6")
+effect = "damage_up"
+effect_value = 1.0

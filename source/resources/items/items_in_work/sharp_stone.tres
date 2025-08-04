@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cle5t7ixrghfj"]
+
+[ext_resource type="Texture2D" uid="uid://1mr0ltxyli63" path="res://assets/sprites/items/handgpt.png" id="1_f0lxf"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="2_q82mf"]
+
+[resource]
+script = ExtResource("2_q82mf")
+name = "Sharp stone"
+description = "throw stones"
+rarity = 3
+icon = ExtResource("1_f0lxf")
+effect = "stone"
+effect_value = 0.0

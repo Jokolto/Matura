@@ -9,7 +9,7 @@ region = Rect2(64.3178, 48.0469, 39.3909, 16.7574)
 
 [resource]
 script = ExtResource("1_t67x2")
-scene_path = "res://scenes/weapons/guns/gun1.tscn"
+scene_path = "res://scenes/weapons/guns/ranged_weapon.tscn"
 rarity = 4
 fire_rate = 0.5
 automatic = false

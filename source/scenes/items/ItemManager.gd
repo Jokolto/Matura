@@ -24,24 +24,29 @@ func apply_item(item: ItemData):
 	match item.effect:
 		"fire_rate_up":
 			player.fire_rate_multiplier += item.effect_value
+			player.weapons_automatic_override = true
 		"damage_up":
 			player.damage_flat_boost += item.effect_value
 		"max_hp":
-			player.max_hp += item.effect_value
-			player.hp += item.effect_value
+			player.max_hp += player.max_hp * item.effect_value
+			player.hp += player.hp * item.effect_value
 		"move_speed":
-			player.move_speed += item.effect_value
-		"fire_rate":
-			player.fire_rate += item.effect_value
+			player.move_speed += player.move_speed * item.effect_value
 		"damage_multiply":
 			player.damage_multiplier += item.effect_value
+		"crit_chance":
+			player.crit_chance += item.effect_value
+		"clock":
+			EntitiesManager.enemy_speed_mul -= item.effect_value
+		"contact_damage":
+			player.contact_damage += item.effect_value
 		_:
 			print("Unknown upgrade type: ", item.effect)
 		
 
 func get_random_items_from_pool(pool: Array, item_amount: int, rarity_distribution_for_items: Dictionary = {}, minus_pool=[]) -> Array:
 	var options = pool
-	var chosen_items = minus_pool
+	var chosen_items = []
 	
 
 	if not rarity_distribution_for_items:  # not weighted random - used for guns
@@ -55,16 +60,39 @@ func get_random_items_from_pool(pool: Array, item_amount: int, rarity_distributi
 	return chosen_items
 	
 func get_random_item(options: Array, chosen_already: Array, rarity_distribution_for_items: Dictionary = {}) -> Resource:
-	var roll = randf()  # random float between 0.0 and 1.0
-	var cumulative = 0.0
+	# Step 1: Filter out already chosen items
+	var available_items = []
 	for item in options:
-		if item in chosen_already:
-			continue
-			
-		cumulative += rarity_distribution_for_items[item.rarity]
+		if item not in chosen_already:
+			available_items.append(item)
+
+	# Step 2: Group items by rarity
+	var rarity_groups = {}
+	for item in available_items:
+		var r = item.rarity
+		if not rarity_groups.has(r):
+			rarity_groups[r] = []
+		rarity_groups[r].append(item)
+
+	# Step 3: Choose a rarity based on distribution
+	var roll = randf()
+	var cumulative = 0.0
+	var chosen_rarity = 1
+	for r in rarity_distribution_for_items.keys():
+		cumulative += rarity_distribution_for_items[r]
 		if roll <= cumulative:
-			return item
-	return null # should not go here, if rarities sum is 1
+			chosen_rarity = r
+			break
+	
+	# Step 5: Return random item from selected rarity group
+	var group = rarity_groups[chosen_rarity]
+	
+	#
+	while len(group) < 1:
+		chosen_rarity -= 1
+		group = rarity_groups[chosen_rarity]
+	return group[randi() % group.size()]
+
 
 func get_random_items(items_amount):
 	return get_random_items_from_pool(item_pool, items_amount, rarity_distribution)
