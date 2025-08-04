@@ -14,18 +14,23 @@ class ServerConfig:
 
 
 class RewardConfig:
-    # Define rewards for different actions
-    TOOK_DAMAGE = -1.0
-    TIME_ALIVE = 0.05
-    HIT_PLAYER = 15.0
-    RETREATED = -2.0  # Penalty for retreating
-    WASTED_MOVEMENT = -1.0  # Penalty for wasted movement
-    MOVED_CLOSER = 1.0  # Reward for moving closer to the player
-    MISSED = 0  # Penalty for missing an attack
+    REWARDS = {    # not constant btw
+        "TOOK_DAMAGE": -1.0,
+        "TIME_ALIVE": 0.05,
+        "HIT_PLAYER": 15.0,
+        "RETREATED": -2.0,
+        "WASTED_MOVEMENT": -1.0,
+        "MOVED_CLOSER": 1.0,
+        "MISSED": 0,
+    }
 
     @classmethod
     def get(cls, name: str):
-        return getattr(cls, name, None)
+        return cls.REWARDS.get(name, None)
+
+    @classmethod
+    def update_rewards(cls, new_rewards: dict):
+        cls.REWARDS.update(new_rewards)
 
 
 class Logger:
