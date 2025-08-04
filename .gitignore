@@ -12,6 +12,9 @@ godot.cfg
 **/*.pyc
 __pycache__/
 
+# Virtual environment directories
+venv/
+.venv
           
 
 
