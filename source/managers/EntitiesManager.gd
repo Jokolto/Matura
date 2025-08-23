@@ -79,7 +79,7 @@ func _on_player_death():
 	wave_active = false
 	spawn_active = false
 
-func _on_enemy_death(enemy: Enemy): # fragile, if enemy calls queue_free before this works, it breaks
+func _on_enemy_death(enemy: Enemy):
 	total_enemies_killed += 1
 	enemies_alive -= 1
 	enemy_fitness[enemy.enemy_id] = enemy.fitness

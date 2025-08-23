@@ -61,7 +61,7 @@ func send_reward_requests_for_events(events: Dictionary) -> void:
 		return
 	var msg = create_event_msg(events)
 	#Logger.log("Sent reward to Server: %s" % [msg], "DEBUG")
-	AiClient.send_json_from_dict_message(msg)
+	AiClient.send_message_to_server(msg)
 
 
 func create_states_msg(states_bundle: Dictionary) -> Dictionary:
@@ -110,11 +110,12 @@ func process_actions(data_with_actions):
 		enemy.last_action = action
 		enemy.execute_action(action)
 
+# best function ever
 func kill_all():
 	for enemy: Enemy in get_enemies():
 		enemy.take_damage(99999)
 
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)
-	AiClient.send_json_from_dict_message(fitness_msg)
+	AiClient.send_message_to_server(fitness_msg)
 	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "DEBUG")

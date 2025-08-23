@@ -3930,7 +3930,7 @@ script = ExtResource("1_tbp78")
 [node name="Objects" type="Node2D" parent="."]
 position = Vector2(1000, 1000)
 
-[node name="Tiles" type="Node" parent="Objects"]
+[node name="Tiles" type="Node2D" parent="Objects"]
 
 [node name="Ground" type="TileMapLayer" parent="Objects/Tiles"]
 z_index = -6
@@ -3981,7 +3981,7 @@ tile_map_data = PackedByteArray("AAA7AB4AAAAGAAQAAAA7AB0AAAAGAAQAAAA7ABwAAAAGAAQ
 tile_set = SubResource("TileSet_1p3tx")
 
 [node name="Spawners" type="Node2D" parent="Objects"]
-position = Vector2(410, 410)
+position = Vector2(1410, 1412)
 script = ExtResource("6_8m46x")
 
 [node name="EnemySpawner2" parent="Objects/Spawners" instance=ExtResource("3_iwmw6")]
@@ -3997,7 +3997,7 @@ position = Vector2(3491, 1415)
 rotation = 1.5708
 
 [node name="Gates" type="Node2D" parent="Objects"]
-position = Vector2(410, 410)
+position = Vector2(1410, 1412)
 
 [node name="gate2" parent="Objects/Gates" instance=ExtResource("13_y35x7")]
 position = Vector2(2069, 565)
@@ -4008,6 +4008,7 @@ position = Vector2(1829, 565)
 scale = Vector2(5, 5)
 
 [node name="WorldBoundary" type="Area2D" parent="Objects"]
+position = Vector2(1000, 1002)
 collision_layer = 16
 script = ExtResource("14_hvyhn")
 
@@ -4028,6 +4029,7 @@ position = Vector2(6425, 1821)
 shape = SubResource("RectangleShape2D_gi3fr")
 
 [node name="Pickups" type="Node2D" parent="Objects"]
+position = Vector2(1000, 1002)
 script = ExtResource("15_2bsd3")
 
 [node name="MeleeWeapon" parent="Objects/Pickups" instance=ExtResource("15_gu2a5")]
@@ -4044,7 +4046,7 @@ script = ExtResource("6_f1o80")
 
 [node name="Player" parent="Entities" instance=ExtResource("1_cp1lv")]
 z_index = 2
-position = Vector2(2924, 2166)
+position = Vector2(3950, 3099)
 
 [node name="Camera2D" type="Camera2D" parent="Entities/Player"]
 zoom = Vector2(0.6, 0.6)

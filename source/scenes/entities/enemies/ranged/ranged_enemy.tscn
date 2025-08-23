@@ -6,7 +6,6 @@
 
 [node name="RangedEnemy" instance=ExtResource("1_4qi32")]
 script = ExtResource("2_pu3vm")
-attack_range = 1000
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 animation = &"idle"

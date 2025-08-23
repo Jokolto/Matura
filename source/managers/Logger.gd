@@ -1,5 +1,6 @@
 extends Node
 
+# too much logging, do not turn this thing on
 const PRINT_DEBUG = false
 var log_path: String = "user://logs/godot.log"
 var log_file: FileAccess

@@ -1,15 +1,19 @@
 extends Node
 
-var client : StreamPeerTCP = StreamPeerTCP.new()
+var client : StreamPeerTCP
+var local_ai_server: AIServer # only assigned and used when not using python
 var connected := false
 var buffer : String = ""
 var trying_to_connect := false
 var waiting_for_actions := false
 
 func _ready():
-	
-	connect_to_server()
-	trying_to_connect = true
+	if GlobalConfig.USE_PYTHON_SERVER:
+		client = StreamPeerTCP.new() 
+		connect_to_server()
+		trying_to_connect = true
+	else:
+		local_ai_server = AIServer.new()
 
 func _process(_delta: float) -> void:
 	if trying_to_connect:
@@ -28,7 +32,6 @@ func connect_to_server():
 	var err = client.connect_to_host(GlobalConfig.ClientConfig["HOST"], GlobalConfig.ClientConfig["PORT"])
 	if err == OK:
 		connected = true
-		
 	else:
 		connected = false
 		
@@ -44,33 +47,33 @@ func connect_to_server():
 		Logger.log("[AIClient] Failed to connect to AI server with status:" + str(status), "WARNING")
 		connected = false
 
-func send_json_from_dict_message(msg: Dictionary):
-	if not connected:
-		Logger.log("Failed to send message: not connected to server", "WARNING")
-		return
-		
-	var json_msg = JSON.stringify(msg) + "\n"
-	var _err = client.put_data(json_msg.to_utf8_buffer())
-	#print("[Debug] Tried to send following data to server: %s, result: %s" % [msg, err])
+
+func send_message_to_server(msg: Dictionary):
+	if GlobalConfig.USE_PYTHON_SERVER:
+		if not connected:
+			Logger.log("Failed to send message: not connected to server", "WARNING")
+			return
+		var json_msg = JSON.stringify(msg) + "\n"
+		var _err = client.put_data(json_msg.to_utf8_buffer())
+	else:
+		local_ai_server.handle_message(msg)
 
 
 func get_ai_actions(states_msg: Dictionary) -> Dictionary:
-	if not connected:
-		return {} # fallback action if server is unreachable
-	
-	# Send message to Python AI as a JSON 
-	#Logger.log("Sent states of enemies to the server", "DEBUG")
-	send_json_from_dict_message(states_msg)
-	waiting_for_actions = true
-	
-	# Read response from Python
-	while waiting_for_actions:
-		
-		if client.get_available_bytes() > 0:
-			waiting_for_actions = false
-			return get_actions_from_server()
-	
-	return {}
+	if GlobalConfig.USE_PYTHON_SERVER:
+		if not connected:
+			return {} # fallback action if server is unreachable
+		send_message_to_server(states_msg)
+		waiting_for_actions = true
+
+		while waiting_for_actions:
+			if client.get_available_bytes() > 0:
+				waiting_for_actions = false
+				return get_actions_from_server()
+		return {}
+	else:
+		# Directly use the GDScript AI server
+		return local_ai_server.handle_message(states_msg)
 
 
 func get_actions_from_server() -> Dictionary:

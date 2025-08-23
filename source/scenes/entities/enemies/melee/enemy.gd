@@ -72,7 +72,6 @@ func _process(delta: float) -> void:
 		body_sprite.play("run")
 	
 	current_state = get_state() # returns something like "d20a90bd0ba0"
-	
 	# Attacking
 	if player_inside_contact_range:
 		_deal_damage(player)
@@ -136,7 +135,7 @@ func get_state() -> String:
 	if min_dist_to_player > dist_not_batch:
 		min_dist_to_player = dist_not_batch
 	var dist = floor(dist_not_batch / 400.0)   # 400 is aproximately 1/5 of the map
-	var angle = floor(global_position.angle_to_point(player.global_position) / (PI / 2)) # 4 possible angles, divided by quadrants
+	var angle = round(global_position.angle_to_point(player.global_position) / (PI / 2)) # 4 possible angles, divided by quadrants
 	
 	var dist_and_angle_to_ally = get_distance_and_angle_to_closest_ally()
 	var dist_ally = floor(dist_and_angle_to_ally[0] / 400)
@@ -147,7 +146,7 @@ func get_state() -> String:
 	var bullet_angle = -1  # no bullets flying
 	if nearest_bullet:
 		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 200.0) # Here short distance is quite important, therefore 200 which is 1/10 of map
-		bullet_angle = floor(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 2))
+		bullet_angle = round(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 2))
 	bullet_dist = clamp(dist, 0, 4)   # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
 	bullet_angle = clamp(angle, 0, 3)			
 	dist = clamp(dist, 0, 4)
@@ -156,8 +155,7 @@ func get_state() -> String:
 	angle_ally = clamp(angle_ally, 0, 3)
 	var weapon_type = -1   # no weapon means -1 in state
 	if weapon_instance:
-		#weapon_type = weapon_instance.weapon_type  # distinguish between melee and ranged
-		weapon_type = weapon_instance.name   # distinguish even more, each kind of weapon gets its own ai
+		weapon_type = weapon_instance.weapon_type  # distinguish between melee and ranged
 	return "wt{wt}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
 		"wt": weapon_type, "d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle, "ad": dist_ally, "aa": angle_ally
 		})
