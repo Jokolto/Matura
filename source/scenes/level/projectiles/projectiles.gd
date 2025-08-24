@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 var next_proj_id = 0
 var proj_amount = 0
 @onready var player_projectile_node = $PlayerProjectiles

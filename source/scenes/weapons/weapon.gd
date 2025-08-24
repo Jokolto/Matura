@@ -24,8 +24,8 @@ func _ready():
 	if get_holder() is CharacterBody2D:
 		holder = get_holder()
 	else:
-		is_lying_on_floor = true
-
+		enter_pickup_state()
+		
 func _process(delta: float) -> void:
 	if _cooldown > 0.0:
 		_cooldown -= delta
@@ -47,7 +47,6 @@ func store_state(state, action):
 func import_res_stats(res: Resource) -> void:
 	stats = res
 
-# Unified interface method
 func use_weapon(_direction_or_target_pos: Vector2) -> void:
 	# To be overridden in child classes
 	pass
@@ -55,17 +54,15 @@ func use_weapon(_direction_or_target_pos: Vector2) -> void:
 func on_pickup(player):
 	Logger.log("Player picked up weapon", "DEBUG")
 	player._equip_weapon(stats)
-	queue_free()  # Remove from world
+	queue_free()  
 
 func set_projectiles_node(node: Node) -> void:
 	projectiles_node = node
 
 func enter_pickup_state():
 	is_lying_on_floor = true
-	await get_tree().physics_frame # wait a frame, to have monitoring enabled
-	for body in hitbox.get_overlapping_bodies():
-		if body is Player:
-			body.nearby_pickups.append(self)
+	hitbox.monitoring = true
+	hitbox.monitorable = true
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if is_lying_on_floor:

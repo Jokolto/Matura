@@ -75,7 +75,10 @@ func _on_upgrade_selected(item):
 		item_panel.change_texture(item["icon"])
 		item_panel.change_item_amount_label(ItemManager.held_items[item])
 		item_panel.change_name(item['name'])
-		
+
+func save_item_panels():
+	item_panels = item_container.get_children()
+	GameManager.stored_item_panels = item_panels
 	
 func _on_player_weapon_equiped(gun_texture):
 	gun_container.texture = gun_texture
@@ -83,7 +86,10 @@ func _on_player_weapon_equiped(gun_texture):
 
 func _on_player_healed(_value):
 	set_health(player.hp, player.max_hp)
-	
+
+
 func _on_player_death():
-	item_panels = item_container.get_children()
-	GameManager.stored_item_panels = item_panels
+	save_item_panels()
+
+func _on_win():
+	save_item_panels()

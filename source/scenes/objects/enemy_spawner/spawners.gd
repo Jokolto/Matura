@@ -11,13 +11,14 @@ var melee_weapons_pool = []
 var ranged_weapons_pool = []
 var rarity_distribution: Dictionary = {1 : 0.65,  2 : 0.2,  3 : 0.1, 4 : 0.05}  # for weapon rarity
 
-@onready var enemies_node = $"../../Entities/Enemies"
-@onready var level_node = $"../.."
-@onready var item_manager = $"../../ItemManager"  # literally just for one method - get random item
-@onready var pickup_node = $"../Pickups"
+# set in level 
+var enemies_node = null
+var pickup_node = null
+var item_manager: Node = null 
+var ui: Node = null 
+var player = null  
+var projectiles_node = null 
 
-var player = null  # set in level
-var projectiles_node = null # set in level
 var spawners: Array = []
 var enemy_pool: Dictionary = {}
 var timer := 0.0
@@ -35,8 +36,25 @@ func _process(delta: float) -> void:
 		timer = 0.0
 		spawn_enemy()
 
+
+# maybe one set_nodes(player, enemiesn ...) method would be better.
 func set_player(player_scene):
 	player = player_scene
+
+func set_enemies_node(node):
+	enemies_node = node
+	
+func set_pickups_node(node):
+	pickup_node = node
+
+func set_projectiles_node(node):
+	projectiles_node = node
+	
+func set_item_manager(node):
+	item_manager = node
+
+func set_ui(node):
+	ui = node
 
 func spawn_enemy() -> void:	
 	if not is_instance_valid(player):
@@ -54,6 +72,7 @@ func spawn_enemy() -> void:
 	enemy.set_projectiles_node(projectiles_node)
 	enemy.set_enemies_node(enemies_node)
 	enemy.set_pickup_node(pickup_node)
+	enemy.set_ui(ui)
 	
 	enemy.move_speed *= EntitiesManager.enemy_speed_mul
 	EntitiesManager.enemies_spawned += 1
@@ -81,6 +100,3 @@ func choose_enemy_type(wave: int) -> Array:
 		return ranged_weapons_pool
 	else:
 		return melee_weapons_pool
-
-func set_projectiles_node(node: Node):
-	projectiles_node = node

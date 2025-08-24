@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 # quite a useless script for now
 

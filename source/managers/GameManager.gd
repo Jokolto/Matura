@@ -21,7 +21,9 @@ var current_scene: Node = null
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 var stored_item_panels = []
 
-var shown_tutorials: Dictionary = {}
+# changed only in tutorialpanel, needed globally to not repeat tutorials however
+var shown_tutorials: Dictionary = {} 
+var tutorials_amount: int = 0 
 
 signal state_changed(state)
 
@@ -63,7 +65,10 @@ func toggle_pause():
 func _on_player_death():
 	state = "GAME_OVER"
 	change_scene()
-	
+
+func _on_win():
+	state = "WIN"
+	change_scene()
 	
 func _set_hud(thehud: Node):
 	hud = thehud

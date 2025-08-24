@@ -49,9 +49,6 @@ signal died
 signal weapon_equipped(texture)
 signal weapon_nearby
 
-func _ready() -> void:
-	died.connect(_die)
-	#_equip_weapon(default_weapon_res)
 
 func _physics_process(delta: float) -> void:
 	var input_vector = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -119,13 +116,15 @@ func take_damage(damage: float) -> void:
 		$Timers/InvulnerabilityTimer.start(invulnerable_period)
 		AudioManager.play_sfx(hurt_sound)
 		vulnerable = false
-
-	if hp <= 0:
-		emit_signal("died")
+		if hp <= 0:
+			_die()
+	
 
 func _die() -> void:
+	died.emit()
 	Logger.log("Player died!", "INFO")
-
+	queue_free()
+	
 func _equip_weapon(res: Resource = null):
 	if weapon_instance:
 		weapon_instance.queue_free()

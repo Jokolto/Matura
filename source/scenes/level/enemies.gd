@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 var next_enemy_id = 0
 var tick = 0

@@ -3,10 +3,12 @@ extends Node2D
 @onready var WaveTimer = $WaveTimer
 
 # UI
+@onready var UI = $UI
 @onready var Upgradepanel = $UI/UpgradePanel
 @onready var PauseMenu = $UI/PauseMenu
 @onready var hud = $UI/HUD
 @onready var tutorial = $UI/TutorialPanel
+
 
 @onready var projectiles_node: Node = $Projectiles
 @onready var entities_node: Node2D = $Entities
@@ -14,22 +16,19 @@ extends Node2D
 @onready var player: Player = $Entities/Player
 @onready var spawners_node: Node2D = $Objects/Spawners
 @onready var gates: Node2D = $Objects/Gates
+@onready var world_boundary: Area2D = $Objects/WorldBoundary
 
-@onready var PickupsNode: Node2D = $Objects/Pickups
+@onready var pickups_node: Node2D = $Objects/Pickups
 @onready var ItemManager = $ItemManager
 
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
-var rest_time: float = 2.5
 
 signal pause
 
 func _ready() -> void:
 	
 	pause.connect(PauseMenu._on_pause)
-	EntitiesManager.wave_end.connect(_on_wave_end)
 	EntitiesManager.wave_end.connect(player._on_wave_end)
-	
-	WaveTimer.start(rest_time)
 	
 	player.damaged.connect(hud._on_player_damaged)
 	player.healed.connect(hud._on_player_healed)
@@ -39,14 +38,19 @@ func _ready() -> void:
 	player.weapon_equipped.connect(hud._on_player_weapon_equiped)
 	player.weapon_nearby.connect(tutorial._on_player_weapon_nearby)
 	
-	for gate: Gate in gates.get_children():
-		gate.gate_regenerated.connect(tutorial._on_gate_regen_first_time)
+	world_boundary.won.connect(hud._on_win)
+	world_boundary.won.connect(GameManager._on_win)
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
 	EntitiesManager.enemies_per_wave = 1
 	EntitiesManager.enemies_alive = 0
 	EntitiesManager.enemies_spawned = 0
+	EntitiesManager.total_enemies_killed = 0
+	
+	for gate: Gate in gates.get_children():
+		gate.gate_regenerated.connect(tutorial._on_gate_regen_first_time)
+		gate.set_ui(UI)
 	
 	
 	# passing player reference
@@ -54,19 +58,26 @@ func _ready() -> void:
 		node.set_player(player)
 	
 	# passing itemmanager reference
-	Upgradepanel.set_item_manager(ItemManager)
-	hud.set_item_manager(ItemManager)
+	for node in [Upgradepanel, hud, spawners_node]:
+		node.set_item_manager(ItemManager)
 	
 	# passing projectiles_node reference 
 	spawners_node.set_projectiles_node(projectiles_node)
+	player.set_projectiles_node(projectiles_node)
 	
+	# passing ui node
+	spawners_node.set_ui(UI)
+	spawners_node.set_pickups_node(pickups_node)
+	spawners_node.set_enemies_node(enemies_node)
+		
 	set_default_nodes()
 	tutorial.show_tutorial_piece("move")
 
+func _process(delta: float) -> void:
+	if len(GameManager.shown_tutorials) == GameManager.tutorials_amount and not EntitiesManager.wave_active:
+		EntitiesManager.start_wave()
+
 func set_default_nodes():
-	player.set_projectiles_node(projectiles_node)
-	
-	
 	hud.set_health(player.hp, player.max_hp)
 
 func _unhandled_input(event):
@@ -80,5 +91,3 @@ func _unhandled_input(event):
 func _on_wave_timer_timeout() -> void:
 	EntitiesManager.start_wave()
 	
-func _on_wave_end(_fitness_dict):
-	WaveTimer.start(rest_time)

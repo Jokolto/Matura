@@ -5,6 +5,8 @@ class_name Gate
 @onready var door_hit_box = $StaticBody2D/CollisionShape2D
 @onready var Sprite = $BotomSprite
 
+var ui: Node = null
+
 @export var intact_texture: Texture2D
 @export var broken_texture: Texture2D
 
@@ -34,11 +36,13 @@ func _process(delta: float) -> void:
 				gate_regenerated.emit()
 		hp_timer += delta
 		
-	
-	
+func set_ui(node):
+	ui = node	
+
 func take_damage(damage: float):
 	Logger.log("Gate took dmg: %s" % [damage], "DEBUG")
 	hp_component.take_damage(damage)
+	ui.show_damage_ui(damage, global_position)
 
 func _on_died():
 	Sprite.texture = broken_texture

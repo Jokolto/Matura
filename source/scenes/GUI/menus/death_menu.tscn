@@ -146,10 +146,10 @@ anchor_left = 0.56
 anchor_top = 0.431
 anchor_right = 0.957
 anchor_bottom = 0.547
-offset_left = -26.0
-offset_top = 191.2
-offset_right = -25.4
-offset_bottom = 191.4
+offset_left = -25.8
+offset_top = 174.68
+offset_right = -25.2
+offset_bottom = 174.88
 size_flags_vertical = 0
 text = "Items
 "
@@ -171,9 +171,8 @@ grow_vertical = 0
 [node name="ItemsGridContainer" type="GridContainer" parent="Panel/ItemsContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-columns = 4
+columns = 6
 
 [node name="ItemPanel" parent="Panel/ItemsContainer/ItemsGridContainer" instance=ExtResource("5_dwv1h")]
 visible = false
-custom_minimum_size = Vector2(40, 40)
 layout_mode = 2

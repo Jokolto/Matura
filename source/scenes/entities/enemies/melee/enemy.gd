@@ -2,14 +2,15 @@ class_name Enemy extends CharacterBody2D
 
 @export var stats: Resource = preload("res://resources/enemies/general_enemy.tres")
 
-
 @onready var body_sprite = $AnimatedSprite2D
 
-
-var player: CharacterBody2D = null  # assigned from spawner
-var projectiles_node: Node = null # assigned from spawner
-var enemies_node: Node = null # assigned from spawner
-var pickup_node: Node = null # assigned from spawner
+# assigned from spawner
+var player: CharacterBody2D = null  
+var projectiles_node: Node2D = null
+var enemies_node: Node2D = null 
+var pickup_node: Node2D = null 
+var hud: CanvasLayer = null 
+var ui: Node = null
 
 var move_speed: float 
 var max_health: float 
@@ -84,6 +85,8 @@ func _process(delta: float) -> void:
 func set_player(player_instance):
 	player = player_instance
 
+func set_ui(node):
+	ui = node
 
 func set_projectiles_node(node: Node):
 	projectiles_node = node
@@ -93,6 +96,7 @@ func take_damage(amount: float) -> void:
 		return 
 		
 	health -= amount
+	ui.show_damage_ui(amount, global_position)
 	add_reward_event(GlobalConfig.RewardEvents["TOOK_DAMAGE"])
 	if health <= 0:
 		fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
@@ -101,6 +105,8 @@ func take_damage(amount: float) -> void:
 			call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
 		queue_free()
 		
+
+
 
 func execute_action(action: String):
 	dir = (player.global_position - global_position).normalized()
@@ -128,30 +134,31 @@ func execute_action(action: String):
 			velocity = Vector2.ZERO
 	move_and_slide()
 
+# a lot of magical numbers, that were found by trial and error
 func get_state() -> String:
 	#var pos_x = floor(global_position.x / 50.0)
 	#var pos_y = floor(global_position.y / 50.0)
 	var dist_not_batch = global_position.distance_to(player.global_position)
 	if min_dist_to_player > dist_not_batch:
 		min_dist_to_player = dist_not_batch
-	var dist = floor(dist_not_batch / 400.0)   # 400 is aproximately 1/5 of the map
+	var dist = floor(dist_not_batch / 200.0)   # 400 is aproximately 1/5 of the map
 	var angle = round(global_position.angle_to_point(player.global_position) / (PI / 2)) # 4 possible angles, divided by quadrants
 	
 	var dist_and_angle_to_ally = get_distance_and_angle_to_closest_ally()
-	var dist_ally = floor(dist_and_angle_to_ally[0] / 400)
-	var angle_ally = (dist_and_angle_to_ally[1] / 400)
+	var dist_ally = floor(dist_and_angle_to_ally[0] / 200)
+	var angle_ally = (dist_and_angle_to_ally[1] / 200)
 	
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position)
 	var bullet_dist = -1  # no bullets flying
 	var bullet_angle = -1  # no bullets flying
 	if nearest_bullet:
-		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 200.0) # Here short distance is quite important, therefore 200 which is 1/10 of map
+		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 100.0) # Here short distance is quite important, therefore 200 which is 1/10 of map
 		bullet_angle = round(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 2))
-	bullet_dist = clamp(dist, 0, 4)   # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
+	bullet_dist = clamp(dist, 0, 1)   # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
 	bullet_angle = clamp(angle, 0, 3)			
-	dist = clamp(dist, 0, 4)
+	dist = clamp(dist, 0, 2)
 	angle = clamp(angle, 0, 3)
-	dist_ally = clamp(dist_ally, 0, 4)
+	dist_ally = clamp(dist_ally, 0, 2)
 	angle_ally = clamp(angle_ally, 0, 3)
 	var weapon_type = -1   # no weapon means -1 in state
 	if weapon_instance:

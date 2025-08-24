@@ -28,6 +28,8 @@ var tutorial_texts := {
 				"""
 }
 
+func _ready() -> void:
+	GameManager.tutorials_amount = len(tutorial_texts)
 
 func show_tutorial_piece(key: String) -> void:
 	if key in tutorial_texts and not shown_tutorials.has(key) and GameManager.tutorial_enabled:

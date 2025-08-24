@@ -4,17 +4,18 @@ extends CanvasLayer
 @onready var menu_button: TextureButton = $Panel/Buttons/MenuButton
 @onready var items_container = $Panel/ItemsContainer
 @onready var stat_label = $Panel/statsvcontainer/statLabel
+@onready var items_grid_container = $Panel/ItemsContainer/ItemsGridContainer
 
 func _ready():
 	var item_panels = GameManager.stored_item_panels
 	try_again_button.pressed.connect(_on_try_again_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
-	for item_panel in item_panels:
+	for item_panel: Panel in item_panels:
 		item_panel.get_parent().remove_child(item_panel)
-		items_container.add_child(item_panel)
+		items_grid_container.add_child(item_panel)
 	
 	var stats: String = """
-	Wave reached: %s,
+	Wave reached: %s
 	Enemies slaughtered: %s
 						""" % [EntitiesManager.current_wave, EntitiesManager.total_enemies_killed]
 	

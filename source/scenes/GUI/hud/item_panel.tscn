@@ -6,12 +6,12 @@
 [sub_resource type="LabelSettings" id="LabelSettings_xkw3u"]
 
 [node name="ItemPanel" type="Panel"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(40, 40)
 anchors_preset = -1
 anchor_right = 0.034
 anchor_bottom = 0.057
-offset_right = -0.800003
-offset_bottom = -0.600002
+offset_right = -3.52
+offset_bottom = -1.04
 script = ExtResource("1_1cg6u")
 
 [node name="TextureRect" type="TextureRect" parent="."]

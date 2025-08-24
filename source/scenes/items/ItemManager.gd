@@ -85,12 +85,11 @@ func get_random_item(options: Array, chosen_already: Array, rarity_distribution_
 			break
 	
 	# Step 5: Return random item from selected rarity group
-	var group = rarity_groups[chosen_rarity]
+	var group = rarity_groups.get(chosen_rarity, [])
 	
-	#
 	while len(group) < 1:
 		chosen_rarity -= 1
-		group = rarity_groups[chosen_rarity]
+		group = rarity_groups.get(chosen_rarity, [])
 	return group[randi() % group.size()]
 
 
