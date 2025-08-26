@@ -1,5 +1,6 @@
 class_name RangedEnemy extends Enemy
-
+# RangedEnemy is not quite a good name, but due to lazyness of renaming a lot of stuff, it is kept that way. 
+# better name would be EnemywithWeapon or something similar
 
 @onready var weapon_holder = $Weaponholder
 
@@ -10,6 +11,7 @@ var ranged_damage_multiplier: float
 #var start_weapon: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn") 
 var start_weapon: PackedScene = preload("res://scenes/weapons/melee/melee_weapon.tscn") 
 var default_weapon_res: Resource = preload("res://resources/weapons/melee/stick.tres")
+
 
 func _ready() -> void:
 	stats = preload("res://resources/enemies/ranged_enemy.tres")
@@ -37,23 +39,20 @@ func _physics_process(_delta: float) -> void:
 	_update_animation(dir)
 
 
-func equip_weapon(res: Resource = null): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.
+func equip_weapon(weapon_res = default_weapon_res): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.
 	if weapon_instance:
 		weapon_instance.queue_free()
-
-	weapon_res = res if res else default_weapon_res
 	
 	var scene = load(weapon_res.scene_path) as PackedScene
 	weapon_instance = scene.instantiate() as Weapon
 	
 	weapon_instance.import_res_stats(weapon_res)
 
-	if weapon_instance.has_method("set_projectiles_node") and projectiles_node:
-		weapon_instance.set_projectiles_node(projectiles_node)
+	weapon_instance.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(weapon_instance)
-	if weapon_instance.has_node("Sprite2D"):
-		var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
-		sprite.texture = weapon_res.sprite
+	enemy_type = weapon_instance.weapon_type
+	var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
+	sprite.texture = weapon_res.sprite
 		
 
 		

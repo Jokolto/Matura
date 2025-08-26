@@ -19,8 +19,8 @@ var contact_damage: float
 var dir: Vector2 = Vector2.RIGHT
 
 var player_inside_contact_range: bool = false
-var enemy_id: int = -1
-
+var enemy_id: int
+var enemy_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes.Generic # would change after equiping weapon
 
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null

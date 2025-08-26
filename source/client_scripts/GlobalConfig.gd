@@ -4,13 +4,16 @@ extends Node
 # Python or not python, that is the question
 const USE_PYTHON_SERVER = false
 
+enum EnemyTypes {Melee, Ranged, Generic}
+enum WeaponType {MELEE, RANGED}
+var EnemyWeaponType
 
 var ClientConfig = {
 	"HOST": "127.0.0.1",
 	"PORT": 9000,
 }
 
-# looks braindead, but it is the way.
+# looks braindead, but it is the way. (no it is not)
 var RewardEvents = {
 	"TOOK_DAMAGE": "TOOK_DAMAGE",
 	"HIT_PLAYER": "HIT_PLAYER",

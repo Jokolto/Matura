@@ -34,7 +34,8 @@ func get_all_states() -> Dictionary:
 	for enemy: Enemy in get_enemies():
 		state_bundle[enemy.enemy_id] = {
 			"state": enemy.get_state(),
-			"valid_actions": enemy.valid_actions
+			"valid_actions": enemy.valid_actions,
+			"enemy_type": enemy.enemy_type
 		}
 	return state_bundle
 

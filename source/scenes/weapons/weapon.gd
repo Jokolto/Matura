@@ -7,12 +7,11 @@ class_name Weapon
 @onready var sprite = $Sprite2D
 
 
-enum WeaponType { MELEE, RANGED }
 @export var stats: Resource
 var holder: CharacterBody2D = null
 var _cooldown: float = 0.0
 var automatic: bool = true
-var weapon_type: WeaponType = WeaponType.MELEE  # Default, overridden by child
+var weapon_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes.Melee  # Default, overridden by child
 var is_lying_on_floor: bool = false
 
 # for enemies

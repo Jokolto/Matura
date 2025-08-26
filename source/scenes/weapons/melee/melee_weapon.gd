@@ -10,7 +10,7 @@ var damage: float
 
 func _ready():
 	super._ready()
-	weapon_type = WeaponType.MELEE
+	weapon_type = GlobalConfig.EnemyTypes.Melee
 	
 func _process(delta: float) -> void:
 	super._process(delta)

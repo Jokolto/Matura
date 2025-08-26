@@ -10,7 +10,7 @@ var final_damage: float = 0.0
 
 func _ready():
 	super._ready()
-	weapon_type = WeaponType.RANGED
+	weapon_type = GlobalConfig.EnemyTypes.Ranged
 
 
 func use_weapon(target_pos: Vector2) -> void:

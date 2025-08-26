@@ -5,11 +5,12 @@ class_name AIServer
 
 var agents = {}          # enemy_id (String): QLearner
 var fitnesses = {}       # enemy_id (String): float
-var shared_brain         # SharedQLearner
+var shared_brains = {}         # enemy_type : SharedQLearner
 var running = true
 
 func _init():
-	shared_brain = QLearner.SharedQLearner.new()
+	for enemy_type in GlobalConfig.EnemyTypes.values():
+		shared_brains[enemy_type] = QLearner.SharedQLearner.new(enemy_type)
 
 func handle_message(msg: Dictionary) -> Dictionary:
 	var msg_type = msg.get("type", "")
@@ -38,9 +39,10 @@ func handle_state_msg(data: Dictionary) -> Dictionary:
 	for enemy_id in data.keys():
 		var enemy_info = data[enemy_id]
 		var state = enemy_info["state"]
+		var enemy_type = enemy_info["enemy_type"]
 		var valid_actions = enemy_info["valid_actions"]
 
-		var agent = get_or_create_agent(str(enemy_id))
+		var agent = get_or_create_agent(str(enemy_id), enemy_type)
 		var action = agent.choose_action(state, valid_actions)
 
 		msg["data"][str(enemy_id)] = action
@@ -75,23 +77,27 @@ func handle_fitness_msg(data: Dictionary) -> void:
 
 
 func handle_wave_end() -> void:
-	shared_brain.q_table.clear()
+	for shared_brain in shared_brains.values():
+		shared_brain.q_table.clear()
 
 	var learners = []
 	for agent in agents.values():
 		var fitness = fitnesses.get(int(agent.enemy_id), 0.0)
-		learners.append([agent, fitness])
+		learners.append([agent, fitness]) 
+	
+	# enemy type is stored inside agent, so only some learner would crossover with each other, others would skipped
+	for shared_brain in shared_brains.values():
+		shared_brain.average_all(learners)
 
-	shared_brain.average_all(learners)
-
-	Logger.log("Shared brain updated. Q-table: %s" % shared_brain.q_table, "DEBUG")
+	Logger.log("Shared brains for each type updated. Q-table: %s" % shared_brains, "DEBUG")
 
 	agents.clear()
 	fitnesses.clear()
 
 
-func get_or_create_agent(enemy_id: String):
+func get_or_create_agent(enemy_id: String, enemy_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes["Generic"]):
 	if not agents.has(enemy_id):
+		var shared_brain = shared_brains[enemy_type]
 		var agent = shared_brain.duplicate(true)
 		agent.enemy_id = enemy_id
 		agents[enemy_id] = agent

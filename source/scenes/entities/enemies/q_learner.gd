@@ -6,7 +6,8 @@ class_name QLearner
 const MAX_PENDING = 100
 
 var q_table = {}
-var enemy_id: String = ""
+var enemy_id: String
+var enemy_type: GlobalConfig.EnemyTypes
 var pending_actions: Array = []   # queue of (state, action)
 var discount_factor = GlobalConfig.DISCOUNT_FACTOR
 var learning_rate = GlobalConfig.LEARNING_RATE
@@ -70,15 +71,15 @@ func _to_string() -> String:
 	return "QLearner(enemy_id=%s)" % enemy_id
 
 
-# -----------------------------
-# SharedQLearner
-# -----------------------------
 class SharedQLearner:
 	extends QLearner
+ 	
+	# type specifies between which type of enemies the q table is shared, e.g MeleeEnemy or RangedEnemy
+	func _init(type: GlobalConfig.EnemyTypes=GlobalConfig.EnemyTypes.Generic):
+		super._init("sharedtype %s" % [type])
+		enemy_type = type
 
-	func _init():
-		super._init("shared")
-
+	# Previous crossover strategy	
 	func merge_from(other: QLearner, weight: float = 1.0) -> void:
 		for state in other.q_table.keys():
 			if not q_table.has(state):
@@ -87,7 +88,8 @@ class SharedQLearner:
 				if not q_table[state].has(action):
 					q_table[state][action] = 0.0
 				q_table[state][action] += other.q_table[state][action] * weight
-
+	
+	
 	func average_all(learners_with_fitness: Array) -> void:
 		var total_fitness = 0.0
 		for pair in learners_with_fitness:
