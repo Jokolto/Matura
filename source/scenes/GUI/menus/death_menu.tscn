@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://lp5xmyief1ij"]
+[gd_scene load_steps=10 format=3 uid="uid://lp5xmyief1ij"]
 
 [ext_resource type="Script" path="res://scenes/GUI/menus/death_menu.gd" id="1_capo8"]
 [ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="2_ygwxt"]
@@ -8,6 +8,9 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_2x622"]
 font_size = 52
+
+[sub_resource type="LabelSettings" id="LabelSettings_jruia"]
+font_size = 14
 
 [sub_resource type="LabelSettings" id="LabelSettings_io5jf"]
 font_size = 40
@@ -40,10 +43,10 @@ anchor_left = 0.233
 anchor_top = 0.28
 anchor_right = 0.44
 anchor_bottom = 0.37
-offset_left = 12.4
-offset_top = 106.0
-offset_right = 18.9999
-offset_bottom = 146.0
+offset_left = 9.76001
+offset_top = 39.4
+offset_right = 16.3599
+offset_bottom = 79.4
 size_flags_vertical = 0
 text = "Skill Issue"
 label_settings = SubResource("LabelSettings_2x622")
@@ -55,10 +58,10 @@ anchor_left = 0.24
 anchor_top = 0.427
 anchor_right = 0.459
 anchor_bottom = 0.722
-offset_left = 4.0
-offset_top = 134.4
-offset_right = -108.8
-offset_bottom = 55.4
+offset_left = 1.36002
+offset_top = 67.8
+offset_right = -111.44
+offset_bottom = 11.4
 scale = Vector2(1.75, 1.5)
 size_flags_vertical = 4
 theme_override_constants/separation = 30
@@ -98,6 +101,25 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Main menu
 "
+horizontal_alignment = 1
+
+[node name="SubmitButton" type="TextureButton" parent="Panel/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("2_ygwxt")
+texture_pressed = ExtResource("3_g5t6f")
+texture_hover = ExtResource("4_7fnvi")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="Panel/Buttons/SubmitButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Submit Score"
+label_settings = SubResource("LabelSettings_jruia")
 horizontal_alignment = 1
 
 [node name="Statstitle" type="Label" parent="Panel"]
@@ -176,3 +198,29 @@ columns = 6
 [node name="ItemPanel" parent="Panel/ItemsContainer/ItemsGridContainer" instance=ExtResource("5_dwv1h")]
 visible = false
 layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.772549, 0.0980392, 0.0235294, 1)
+
+[node name="PlayerNameInput" type="LineEdit" parent="."]
+visible = false
+anchors_preset = -1
+anchor_left = 0.059
+anchor_top = 0.778
+anchor_right = 0.197
+anchor_bottom = 0.799
+offset_left = 237.48
+offset_top = 53.84
+offset_right = 221.84
+offset_bottom = 72.72
+grow_vertical = 2
+placeholder_text = "Your_nickname"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]

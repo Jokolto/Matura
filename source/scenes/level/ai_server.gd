@@ -11,6 +11,7 @@ var running = true
 func _init():
 	for enemy_type in GlobalConfig.EnemyTypes.values():
 		shared_brains[enemy_type] = QLearner.SharedQLearner.new(enemy_type)
+	
 
 func handle_message(msg: Dictionary) -> Dictionary:
 	var msg_type = msg.get("type", "")
@@ -55,7 +56,6 @@ func handle_reward_msg(data: Dictionary) -> void:
 	for enemy_id_str in data.keys():
 		var agent = get_or_create_agent(enemy_id_str)
 		var events = data[enemy_id_str]
-
 		for event in events:
 			var event_type = event["event_type"]
 			var new_state = event["new_state"]

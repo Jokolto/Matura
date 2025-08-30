@@ -39,20 +39,20 @@ func _physics_process(_delta: float) -> void:
 	_update_animation(dir)
 
 
-func equip_weapon(weapon_res = default_weapon_res): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.
+func equip_weapon(new_weapon_res = default_weapon_res): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.
 	if weapon_instance:
 		weapon_instance.queue_free()
 	
-	var scene = load(weapon_res.scene_path) as PackedScene
+	var scene = load(new_weapon_res.scene_path) as PackedScene
 	weapon_instance = scene.instantiate() as Weapon
 	
-	weapon_instance.import_res_stats(weapon_res)
+	weapon_instance.import_res_stats(new_weapon_res)
 
 	weapon_instance.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(weapon_instance)
 	enemy_type = weapon_instance.weapon_type
 	var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
-	sprite.texture = weapon_res.sprite
+	sprite.texture = new_weapon_res.sprite
 		
 
 		

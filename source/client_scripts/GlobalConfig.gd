@@ -7,6 +7,7 @@ const USE_PYTHON_SERVER = false
 enum EnemyTypes {Melee, Ranged, Generic}
 enum WeaponType {MELEE, RANGED}
 var EnemyWeaponType
+var PlayerNickName: String
 
 var ClientConfig = {
 	"HOST": "127.0.0.1",
@@ -22,19 +23,21 @@ var RewardEvents = {
 	"RETREATED": "RETREATED",
 	"WASTED_MOVEMENT": "WASTED_MOVEMENT",
 	"MOVED_CLOSER": "MOVED_CLOSER",
-	"MISSED": "MISSED"
+	"MISSED": "MISSED",
+	"DIED": "DIED"
 }
 
+# makes it kind of dangerous to make it public on github. This service does not work in html build, cause it uses http not s
+var DreamloConfig = {
+	"public": "http://dreamlo.com/lb/68b2c88d8f40bb12e078c937",
+	"private": "http://dreamlo.com/lb/Lg6YUy6iREiToPXTcR4jSQTNhHEOU4NU-AFyOnc-K-Kg"
+}
+# used for leaderboards now, also should not be shared
+const FIREBASE_URL = "https://maturgamelb-default-rtdb.europe-west1.firebasedatabase.app/scores.json"
 
 var GameConfig = {
 	"X_MAP_SIZE" : 3000,  # very approximately 
 	"Y_MAP_SIZE" : 2000,  # also /
-}
-
-# not doing anything yet
-var DisplayConfig = {
-	"RESOLUTION": Vector2i(1200, 800),
-	"SHOW_DEBUG_UI": false
 }
 
 # If not using python server
@@ -44,11 +47,12 @@ const DISCOUNT_FACTOR = 0.9
 const EPSILON = 0.1
 
 var REWARDS := {
-	"TOOK_DAMAGE": -1.0,
+	"TOOK_DAMAGE": -2.0,
 	"TIME_ALIVE": 0.05,
-	"HIT_PLAYER": 15.0,
-	"RETREATED": -2.0,
-	"WASTED_MOVEMENT": -1.0,
-	"MOVED_CLOSER": 1.0,
-	"MISSED": 0.0,
+	"HIT_PLAYER": 8.0,
+	"RETREATED": -0.2,
+	"WASTED_MOVEMENT": -0.1,
+	"MOVED_CLOSER": 0.05,
+	"MISSED": -0.2,
+	"DIED": -10
 }

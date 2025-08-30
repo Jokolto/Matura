@@ -9,15 +9,16 @@ region = Rect2(95.4327, 101.231, 21.7629, 11.475)
 
 [resource]
 script = ExtResource("1_s5wke")
+scene_path = "res://scenes/weapons/guns/ranged_weapon.tscn"
 rarity = 3
-fire_rate = 15.0
+fire_rate = 10.0
 automatic = true
 spread_deg = 20.0
 bullet_damage = 0.5
 bullets_amount = 1
 bullet_piercing = 0
-shooting_range = 1000.0
-bullet_speed = 700.0
+shooting_range = 700.0
+bullet_speed = 550.0
 sprite = SubResource("AtlasTexture_pww37")
 name = "SMG"
 description = "Fast-firing and lightweight, the SMG shreds close targets but lacks stopping power and control at range."

@@ -1,0 +1,151 @@
+[gd_scene load_steps=7 format=3 uid="uid://ch1c316wvqhqm"]
+
+[ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="1_5prik"]
+[ext_resource type="Script" path="res://scenes/GUI/menus/leaderboard_menu.gd" id="1_psmww"]
+[ext_resource type="Texture2D" uid="uid://cmuwdtjw3y1ll" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_press.png" id="2_t85do"]
+[ext_resource type="Texture2D" uid="uid://cwr303sdoy3f6" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_hovered.png" id="3_p8kes"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_46rs6"]
+font_size = 35
+
+[sub_resource type="LabelSettings" id="LabelSettings_appqr"]
+font_size = 22
+font_color = Color(1, 0.027451, 0.890196, 1)
+
+[node name="LeaderboardMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_psmww")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.890196, 0.443137, 0.45098, 0.443137)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.08
+anchor_right = 0.75
+anchor_bottom = 0.16
+text = "Leaderboards"
+label_settings = SubResource("LabelSettings_46rs6")
+horizontal_alignment = 1
+
+[node name="WaveReachedLeaderboard" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.357
+anchor_top = 0.278
+anchor_right = 0.61
+anchor_bottom = 0.814
+
+[node name="Label" type="Label" parent="WaveReachedLeaderboard"]
+layout_mode = 2
+offset_right = 323.0
+offset_bottom = 31.0
+size_flags_vertical = 3
+text = "Wave Reached"
+label_settings = SubResource("LabelSettings_appqr")
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="WaveReachedLeaderboard"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.071
+anchor_top = 0.15
+anchor_right = 0.923
+anchor_bottom = 0.893
+offset_left = 0.00735474
+offset_top = 0.111996
+offset_right = 0.0956116
+offset_bottom = 0.373413
+
+[node name="LeaderboardList" type="VBoxContainer" parent="WaveReachedLeaderboard/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="WaveReachedLeaderboard/ScrollContainer/LeaderboardList"]
+visible = false
+layout_mode = 2
+text = "1. a_man: 4"
+horizontal_alignment = 1
+
+[node name="TimeLeaderboard" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.644
+anchor_top = 0.279
+anchor_right = 0.897
+anchor_bottom = 0.814
+offset_left = -0.320068
+offset_top = 0.119995
+offset_right = -0.319946
+offset_bottom = 0.839966
+
+[node name="Label" type="Label" parent="TimeLeaderboard"]
+layout_mode = 2
+offset_right = 323.0
+offset_bottom = 31.0
+size_flags_vertical = 3
+text = "Best Time"
+label_settings = SubResource("LabelSettings_appqr")
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TimeLeaderboard"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.071
+anchor_top = 0.15
+anchor_right = 0.923
+anchor_bottom = 0.893
+offset_left = 0.00735474
+offset_top = 0.111996
+offset_right = 0.0956116
+offset_bottom = 0.373413
+
+[node name="LeaderboardList" type="VBoxContainer" parent="TimeLeaderboard/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="TimeLeaderboard/ScrollContainer/LeaderboardList"]
+visible = false
+layout_mode = 2
+text = "1. a_man: 4"
+horizontal_alignment = 1
+
+[node name="MenuButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 464.0
+offset_right = 263.0
+offset_bottom = 496.0
+scale = Vector2(1.5, 1.5)
+size_flags_horizontal = 0
+texture_normal = ExtResource("1_5prik")
+texture_pressed = ExtResource("2_t85do")
+texture_hover = ExtResource("3_p8kes")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="MenuButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Back
+"
+horizontal_alignment = 1

@@ -1,10 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://dksiy7ar1gm1v"]
+[gd_scene load_steps=8 format=3 uid="uid://dksiy7ar1gm1v"]
 
 [ext_resource type="Script" path="res://scenes/GUI/menus/main_menu.gd" id="1_33kf0"]
 [ext_resource type="Texture2D" uid="uid://bw7vb3es4sn5x" path="res://assets/sprites/funny.png" id="2_fkv2b"]
 [ext_resource type="Texture2D" uid="uid://ljbmf5hba4o2" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button.png" id="2_xiymw"]
 [ext_resource type="Texture2D" uid="uid://cmuwdtjw3y1ll" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_press.png" id="3_3bd67"]
 [ext_resource type="Texture2D" uid="uid://cwr303sdoy3f6" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/menu_button_hovered.png" id="4_j6g24"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wteyo"]
+font_size = 14
 
 [sub_resource type="LabelSettings" id="LabelSettings_rxqp4"]
 font_size = 52
@@ -89,7 +92,7 @@ text = "Options
 "
 horizontal_alignment = 1
 
-[node name="CreditsButton" type="TextureButton" parent="Panel/Buttons"]
+[node name="LeaderBoardButton" type="TextureButton" parent="Panel/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 0
 texture_normal = ExtResource("2_xiymw")
@@ -97,14 +100,19 @@ texture_pressed = ExtResource("3_3bd67")
 texture_hover = ExtResource("4_j6g24")
 stretch_mode = 3
 
-[node name="Label" type="Label" parent="Panel/Buttons/CreditsButton"]
+[node name="Label" type="Label" parent="Panel/Buttons/LeaderBoardButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 2.0
+offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Credits"
+text = "Leaderboard"
+label_settings = SubResource("LabelSettings_wteyo")
 horizontal_alignment = 1
 
 [node name="ExitButton" type="TextureButton" parent="Panel/Buttons"]

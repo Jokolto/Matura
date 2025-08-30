@@ -10,21 +10,21 @@ var shown_tutorials: Dictionary = GameManager.shown_tutorials
 
 var tutorial_texts := {
 	"move": 	"""
-	Oh no, it seems you were teleported straight into goblin's camp (how unfortunate!). Let's see if there anything laying on floor to help you escape. 
+	Oh no, it seems you were teleported straight into goblin's camp (how unfortunate!). Let's see if there is anything laying on floor to help you escape. 
 	
-	Use WASD to move.
+	Use WASD to move. Use right mouse button to dash.
 				""",
 	
 	"pickup":	"""
 	Oh what a nice looking stick! It for sure can deal insane damages to that gate, so you can escape!
 	
-	Press E to pick up weapons.
+	Press E to pick up weapons. Use your mouse to aim and use left mouse button to attack
 				""",
 				
 	"gate": 	"""
 	It seems, tree branches are not the best weapons. Maybe goblins have some real weapons. They do not seem to want to give you their weapons though (how unfriendly!).
 	
-	Use your mouse to aim and use left mouse button to tickle the goblins with the stick.
+	Get some weapons from goblins and get stronger to break the gate and escape.
 				"""
 }
 

@@ -37,10 +37,10 @@ var damage_dealt: float = 0
 var min_dist_to_player: float = INF
 
 var fitness_damage_priority_formula = func(life_time, dmg_dealt, min_distance): 
-	return dmg_dealt * 2.0 + life_time * 0.1 - min_distance * 0.005
+	return dmg_dealt * 5.0 + life_time * 0.2 - min_distance * 0.005
 
-var fitness_survivability_priority = func(life_time, dmg_dealt, min_distance): 
-	return life_time * 1.0 + dmg_dealt * 0.5 - min_distance * 0.001
+var fitness_survivability_priority = func(life_time, dmg_dealt, _min_distance): 
+	return life_time * 1.0 + dmg_dealt * 0.5
 
 
 ### Batch sizes
@@ -72,13 +72,20 @@ func _process(delta: float) -> void:
 	if velocity > Vector2.ZERO:
 		body_sprite.play("run")
 	
+	if weapon_instance and weapon_instance.is_ready():
+		valid_actions.append("use_weapon")
+	else:
+		if valid_actions.has("use_weapon"):
+			valid_actions.remove_at(valid_actions.find("use_weapon"))
+	
 	current_state = get_state() # returns something like "d20a90bd0ba0"
-	# Attacking
+	# Attacking with contact damage
 	if player_inside_contact_range:
 		_deal_damage(player)
 		if player.contact_damage:
 			take_damage(player.contact_damage)
 		add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"])
+		
 	life_time_sec += delta
 
 
@@ -101,6 +108,7 @@ func take_damage(amount: float) -> void:
 	if health <= 0:
 		fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
 		enemy_death.emit(self)
+		add_reward_event(GlobalConfig.RewardEvents["DIED"])
 		if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
 			call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
 		queue_free()
@@ -126,10 +134,10 @@ func execute_action(action: String):
 			velocity = dir.rotated(PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"use_weapon":
-			if weapon_instance and weapon_instance.is_ready():
+			if weapon_instance and weapon_instance.is_ready():   # not very necessary check, but let it stay
 				weapon_instance.use_weapon(shooting_dir)
 				weapon_instance.store_state(current_state, action)
-			# gets its reward from bullet if it hits player
+			# gets its reward from weapon if it hits player
 		_:
 			velocity = Vector2.ZERO
 	move_and_slide()
@@ -215,7 +223,7 @@ func get_distance_and_angle_to_closest_ally() -> Array:
 	return [min_distance, -1.0]
 
 func generate_id():
-	if enemy_id == -1:
+	if enemy_id == 0:
 		enemy_id = enemies_node.get_next_enemy_id()
 
 	# Generate a name like "Goblin_3" or "Orc_5"

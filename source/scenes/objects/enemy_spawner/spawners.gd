@@ -80,7 +80,7 @@ func spawn_enemy() -> void:
 	enemies_node.add_child(enemy)
 	enemy.equip_weapon(chosen_weapon_res)
 	enemy_spawned.emit()
-	#print("Enemy was spawned!")
+	#print("Enemy was spawned! %s" % [enemy.enemy_id])
 
 
 
@@ -91,8 +91,8 @@ func get_spawn_position() -> Vector2:
 	return rand_spawn_area.get_random_position()
 
 func get_ranged_chance(wave: int) -> float:
-	var capped_wave = clamp(wave, 1, 20)
-	return lerp(0.0, 0.4, (capped_wave - 1) / 19.0)  # 0% to 40% over 20 waves
+	var capped_wave = clamp(wave, 1, 10)
+	return lerp(0.0, 0.5, (capped_wave - 1) / 9.0)  # 0% to 40% over 20 waves
 	
 func choose_enemy_type(wave: int) -> Array:
 	var ranged_chance = get_ranged_chance(wave)

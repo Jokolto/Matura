@@ -9,7 +9,8 @@ var Scenes = {
 	"OPTIONS": preload("res://scenes/GUI/menus/options_menu.tscn"),
 	"CREDITS": preload("res://scenes/GUI/menus/credits_menu.tscn"),
 	"WIN": preload("res://scenes/GUI/menus/win_menu.tscn"),
-	"CUTSCENE": preload("res://scenes/GUI/menus/cutscene.tscn")
+	"CUTSCENE": preload("res://scenes/GUI/menus/cutscene.tscn"),
+	"LEADERBOARD": preload("res://scenes/GUI/menus/leaderboard_menu.tscn")
 }
 
 var hud
