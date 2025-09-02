@@ -4,6 +4,6 @@ extends Node
 
 func show_damage_ui(damage_amount: float, position: Vector2):
 	var dmg_label = dmg_ui_scene.instantiate()
-	dmg_label.text = str(round(damage_amount))
+	dmg_label.text = ("%.1f" % damage_amount).rstrip("0").rstrip(".")
 	indicators_node.add_child(dmg_label)  # projectiles node, why not.
 	dmg_label.global_position = position

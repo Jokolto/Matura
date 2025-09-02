@@ -95,7 +95,7 @@ func handle_wave_end() -> void:
 	fitnesses.clear()
 
 
-func get_or_create_agent(enemy_id: String, enemy_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes["Generic"]):
+func get_or_create_agent(enemy_id: String, enemy_type = GlobalConfig.EnemyTypes["Generic"]):
 	if not agents.has(enemy_id):
 		var shared_brain = shared_brains[enemy_type]
 		var agent = shared_brain.duplicate(true)

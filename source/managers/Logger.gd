@@ -2,11 +2,7 @@ extends Node
 
 # too much logging, do not turn this thing on
 const PRINT_DEBUG = false
-var log_path: String = "user://logs/godot.log"
-var log_file: FileAccess
 
-func _ready():
-	log_file = FileAccess.open(log_path, FileAccess.WRITE_READ)	
 
 func log(msg: String, level: String) -> void:
 	if not PRINT_DEBUG and (level == "DEBUG"):
@@ -20,5 +16,3 @@ func log(msg: String, level: String) -> void:
 		"ERROR":
 			push_error(msg)
 	print(typed_msg)
-	log_file.seek_end()
-	log_file.store_line(typed_msg)

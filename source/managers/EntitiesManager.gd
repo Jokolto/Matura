@@ -22,7 +22,11 @@ var wave_duration: float = -1
 var wave_timer: float = 0.0
 
 var player_heal_after_wave_percentage: float = 0.25
-var enemy_speed_mul: float = 1 # item can affect this
+# items can affect this
+var enemy_speed_mul: float = 1 
+var enemy_hp_mul: float = 1
+var enemy_dmg_mul: float = 1
+
 
 var enemy_fitness: Dictionary = {}
 
@@ -65,9 +69,14 @@ func start_wave():
 	wave_timer = 0.0
 	wave_active = true
 	spawn_active = true
+
+	if current_wave % 4 == 0: # every 4th wave, enemies get 10 percent stronger
+		enemy_dmg_mul *= 1.1
+		enemy_speed_mul *= 1.1
+		enemy_hp_mul *= 1.1
+	
 	Logger.log("Wave %d started" % current_wave, "INFO")
 	wave_start.emit()
-	
 	
 func end_wave():
 	wave_active = false

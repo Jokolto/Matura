@@ -4,9 +4,9 @@ class_name RangedEnemy extends Enemy
 
 @onready var weapon_holder = $Weaponholder
 
-var fire_rate_multiplier: float
+var fire_rate_multiplier: float = 1
 var attack_range: float
-var ranged_damage_multiplier: float
+var ranged_damage_multiplier: float = 1
 
 #var start_weapon: PackedScene = preload("res://scenes/weapons/guns/gun1.tscn") 
 var start_weapon: PackedScene = preload("res://scenes/weapons/melee/melee_weapon.tscn") 

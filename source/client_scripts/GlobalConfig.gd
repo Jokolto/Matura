@@ -3,6 +3,7 @@ extends Node
 
 # Python or not python, that is the question
 const USE_PYTHON_SERVER = false
+const DEBBUGGING = true
 
 enum EnemyTypes {Melee, Ranged, Generic}
 enum WeaponType {MELEE, RANGED}
@@ -42,9 +43,9 @@ var GameConfig = {
 
 # If not using python server
 # Q-learning constants 
-const LEARNING_RATE = 0.1
+const LEARNING_RATE = 0.2
 const DISCOUNT_FACTOR = 0.9
-const EPSILON = 0.1
+const EPSILON = 0.2
 
 var REWARDS := {
 	"TOOK_DAMAGE": -2.0,

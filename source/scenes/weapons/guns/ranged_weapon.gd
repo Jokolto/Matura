@@ -5,19 +5,19 @@ extends Weapon
 @onready var _gun_point: Marker2D = $gun_point
 
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
-
 var final_damage: float = 0.0
+var ammo: int
 
 func _ready():
 	super._ready()
 	weapon_type = GlobalConfig.EnemyTypes.Ranged
-
+	ammo = stats.ammo
 
 func use_weapon(target_pos: Vector2) -> void:
 	try_fire(target_pos)
 
 func try_fire(target_pos: Vector2) -> void:
-	if not is_ready():
+	if not is_ready() or ammo < 1:
 		return
 	
 	
@@ -30,7 +30,8 @@ func try_fire(target_pos: Vector2) -> void:
 	)
 
 	trigger_cooldown(holder.fire_rate_multiplier)
-
+	ammo -= 1
+	
 func _spawn_bullet(target_pos: Vector2) -> void:
 	var bullet = bullet_scene.instantiate()
 	bullet.projectiles_node = projectiles_node
@@ -57,6 +58,7 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		bullet.damage = final_damage
 		projectiles_node.player_projectile_node.add_child(bullet)
 	else:
+		bullet.damage = holder.ranged_damage_multiplier
 		bullet.shot_at_state = stored_state
 		bullet.stored_action = stored_action
 		projectiles_node.add_child(bullet)

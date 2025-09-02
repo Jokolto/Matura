@@ -19,7 +19,7 @@ func _on_menu_pressed():
 func fetch_leaderboard() -> void:
 	http.request(GlobalConfig.FIREBASE_URL)
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(_result, response_code, _headers, body):
 	if response_code != 200:
 		return
 	
@@ -27,7 +27,7 @@ func _on_request_completed(result, response_code, headers, body):
 	var json_data = {}
 	if text != "":
 		var json = JSON.new()
-		var error = json.parse(text)
+		var _error = json.parse(text)
 		json_data = json.data
 	
 	var entries = []
@@ -58,14 +58,19 @@ func _update_leaderboard_ui(container: VBoxContainer, entries: Array, _metric: S
 		child.queue_free()
 	
 	var max_entries = min(entries.size(), 10)
+	var n = 0  
 	for i in range(max_entries):
 		var e = entries[i]
 		var label = Label.new()
 		
 		if show_time:
-			label.text = "%d. %s  - Time: %ds" % [
-				i + 1, e["name"], e["time"]
-			]
+			if e["time"] > 0:
+				label.text = "%d. %s  - Time: %ds" % [
+					n + 1, e["name"], e["time"]
+				]
+				n += 1
+			else:
+				continue
 		else:
 			label.text = "%d. %s  - Wave: %d" % [
 				i + 1, e["name"], e["wave"]

@@ -21,8 +21,6 @@ anchor_left = 0.25
 anchor_top = 0.1
 anchor_right = 0.75
 anchor_bottom = 0.95
-offset_left = -68.5
-offset_right = 68.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -33,7 +31,7 @@ theme_override_constants/separation = 30
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "The Game"
+text = "Learning Camp"
 label_settings = SubResource("LabelSettings_2gulp")
 horizontal_alignment = 1
 
@@ -43,27 +41,49 @@ text = "Game made by:
 Jokolto
 
 Music:
-None
+Music Pack made by Clement Panchout
 
 Sounds:
 Various internet sources
 
 Sprites:
-Asset 1 - Pack made by o_lobster 
+1. Asset Pack made by o_lobster 
 (https://o-lobster.itch.io/)
 
-Asset 2 - Pack made by cainos
+2. Asset Pack made by cainos
 (https://cainos.itch.io/pixel-art-top-down-basic)
 
-Asset 3 - Pack made by pixel_boy
+3. Asset Pack made by pixel_boy
 (https://pixel-boy.itch.io/ninja-adventure-asset-pack)
 ....
 
-Thanks to everyone who helped me, and you for playing."
+Thanks for playing!"
 horizontal_alignment = 1
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Back 
+text = "Main menu
 "
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12549, 0.0705882, 0.384314, 0.196078)
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_right = 0.75
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

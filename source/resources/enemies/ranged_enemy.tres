@@ -6,7 +6,7 @@
 script = ExtResource("1_ymjuj")
 name = "goblin_ranged"
 contact_damage = 1.0
-ranged_damage = 0.0
+ranged_damage = 1.0
 max_health = 6.0
 move_speed = 150.0
 attack_range = 750.0

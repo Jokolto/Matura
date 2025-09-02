@@ -36,6 +36,7 @@ func _ready() -> void:
 	player.died.connect(EntitiesManager._on_player_death)
 	player.died.connect(GameManager._on_player_death)
 	player.weapon_equipped.connect(hud._on_player_weapon_equiped)
+	player.shot.connect(hud._on_player_shoot)
 	player.weapon_nearby.connect(tutorial._on_player_weapon_nearby)
 
 	world_boundary.won.connect(_on_win)
@@ -48,6 +49,9 @@ func _ready() -> void:
 	EntitiesManager.enemies_alive = 0
 	EntitiesManager.enemies_spawned = 0
 	EntitiesManager.total_enemies_killed = 0
+	EntitiesManager.enemy_speed_mul = 1 
+	EntitiesManager.enemy_hp_mul = 1
+	EntitiesManager.enemy_dmg_mul = 1
 	
 	for gate: Gate in gates.get_children():
 		gate.gate_regenerated.connect(tutorial._on_gate_regen_first_time)
@@ -87,7 +91,8 @@ func _unhandled_input(event):
 		GameManager.toggle_pause()
 		pause.emit()
 	if event.is_action_pressed("kill_all"):
-		enemies_node.kill_all()
+		if GlobalConfig.DEBBUGGING:
+			enemies_node.kill_all()
 
 
 func _on_wave_timer_timeout() -> void:

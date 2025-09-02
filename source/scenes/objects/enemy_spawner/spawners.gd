@@ -74,11 +74,16 @@ func spawn_enemy() -> void:
 	enemy.set_pickup_node(pickup_node)
 	enemy.set_ui(ui)
 	
-	enemy.move_speed *= EntitiesManager.enemy_speed_mul
 	EntitiesManager.enemies_spawned += 1
 	EntitiesManager.enemies_alive += 1
 	enemies_node.add_child(enemy)
 	enemy.equip_weapon(chosen_weapon_res)
+	
+	enemy.move_speed *= EntitiesManager.enemy_speed_mul
+	enemy.max_health *= EntitiesManager.enemy_hp_mul
+	enemy.health *= EntitiesManager.enemy_hp_mul
+	enemy.ranged_damage_multiplier *= EntitiesManager.enemy_dmg_mul
+	
 	enemy_spawned.emit()
 	#print("Enemy was spawned! %s" % [enemy.enemy_id])
 

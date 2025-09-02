@@ -16,6 +16,7 @@ func _ready():
 	play_again_button.pressed.connect(_on_play_again_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
 	submit_button.pressed.connect(_on_submit_button_pressed)
+	credits_button.pressed.connect(_on_credits_pressed)
 	for item_panel: Panel in item_panels:
 		item_panel.get_parent().remove_child(item_panel)
 		items_grid_container.add_child(item_panel)
@@ -38,7 +39,8 @@ func submit_score(player_name: String, wave: int, time_seconds: int) -> void:
 		"time": time_seconds
 	}
 	var json_body = JSON.stringify(data)
-	http.request(GlobalConfig.FIREBASE_URL, [], true, HTTPClient.METHOD_POST, json_body)
+	var headers = ["Content-Type: application/json"]
+	http.request(GlobalConfig.FIREBASE_URL, headers, HTTPClient.METHOD_POST, json_body)
 
 func _on_play_again_pressed():
 	GameManager.state = "PLAYING"
@@ -66,7 +68,7 @@ func _on_submit_button_pressed() -> void:
 			return
 		GlobalConfig.PlayerNickName = proposed_name
 		
-	submit_score(GlobalConfig.PlayerNickName, EntitiesManager.current_wave, EntitiesManager.won_time_sec)
+	submit_score(GlobalConfig.PlayerNickName, EntitiesManager.current_wave, round(EntitiesManager.won_time_sec))
 	nickname_input.visible = false
 	submit_button.disabled = true
 	submit_button_label.text = "Submited"

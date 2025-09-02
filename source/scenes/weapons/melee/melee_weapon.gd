@@ -76,7 +76,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 			if randf() <= holder.crit_chance:
 				damage *= holder.crit_damage_mul
 		else:
-			damage = stats.attack_damage
+			damage = stats.attack_damage * holder.ranged_damage_multiplier
 			
 		if is_attacking and body != holder:
 			if body is Player:  # Enemy hitting Player

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="MeleeData" load_steps=4 format=3 uid="uid://bn2twgx66oc6s"]
+[gd_resource type="Resource" script_class="MeleeData" load_steps=5 format=3 uid="uid://bn2twgx66oc6s"]
 
 [ext_resource type="Script" path="res://scenes/weapons/melee/MeleeData.gd" id="1_2rw5a"]
+[ext_resource type="AudioStream" uid="uid://u1bfdwjqntqq" path="res://assets/audio/sfx/swishes/sword.wav" id="1_y0hh6"]
 [ext_resource type="Texture2D" uid="uid://druopjjffki06" path="res://assets/sprites/weapons/32x32pixelmeleeweapon.png" id="2_y7v1y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s106d"]
@@ -19,5 +20,6 @@ swing_speed = 720.0
 knockback = 10.0
 automatic = false
 sprite = SubResource("AtlasTexture_s106d")
+attack_sound = ExtResource("1_y0hh6")
 volume_db = 0.0
-pitch_randomness = 0.0
+pitch_randomness = 0.5

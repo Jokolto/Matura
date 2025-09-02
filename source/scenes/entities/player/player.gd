@@ -48,7 +48,7 @@ signal healed(amount: int)
 signal died
 signal weapon_equipped(texture)
 signal weapon_nearby
-
+signal shot(gun)
 
 func _physics_process(delta: float) -> void:
 	var input_vector = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -86,6 +86,8 @@ func _handle_weapon_use(target_pos: Vector2) -> void:
 		if is_auto:
 			if Input.is_action_pressed("shoot"):
 				weapon_instance.use_weapon(target_pos)
+				if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
+					shot.emit(weapon_instance)
 		else:
 			if Input.is_action_just_pressed("shoot"):
 				weapon_instance.use_weapon(target_pos)
@@ -145,7 +147,7 @@ func _equip_weapon(res: Resource = null):
 		Logger.log("Player equipped weapon %s" % [weapon_res.resource_name], "DEBUG")
 		var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
 		sprite.texture = weapon_res.sprite
-		weapon_equipped.emit(sprite.texture)
+		weapon_equipped.emit(res)
 
 func _on_dash_timer_timeout() -> void:
 	is_dashing = false

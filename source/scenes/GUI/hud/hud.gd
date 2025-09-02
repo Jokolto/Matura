@@ -8,7 +8,9 @@ extends CanvasLayer
 @onready var wave_label = $MarginContainer/EnemiesVBoxContainer/Label
 @onready var enemies_bar_container = $MarginContainer/EnemiesVBoxContainer/MarginContainer
 
-@onready var gun_container = $GunMarginContainer/Panel/TextureRect
+@onready var gun_texture = $GunMarginContainer/TextureRect
+@onready var ammo_label = $GunMarginContainer/Label
+@onready var gun_hud = $GunMarginContainer
 
 @onready var item_container = $ItemsContainer/ItemsHBoxContainer
 
@@ -24,18 +26,21 @@ func _ready() -> void:
 	EntitiesManager.wave_end.connect(_on_wave_end)
 	
 	GameManager._set_hud(self)
-	
+	gun_hud.visible = false
 	wave_label.text = "Rest time"
 	enemies_bar_container.visible = false
+	
 	
 func set_item_manager(manager):
 	ItemManager = manager
 
 	
-func set_health(value: int, max_value: int) -> void:
+func set_health(value: float, max_value: float) -> void:
 	health_bar.max_value = max_value
 	health_bar.value = value
-	health_label.text = "%d / %d" % [value, max_value]
+	var hp_str = ("%.1f" % value).rstrip("0").rstrip(".")
+	var max_hp_str = ("%.1f" % max_value).rstrip("0").rstrip(".")
+	health_label.text = hp_str + " / " + max_hp_str
 
 func set_enemy_hud(value: int, max_value: int) -> void:
 	enemies_bar.max_value = max_value
@@ -80,9 +85,16 @@ func save_item_panels():
 	item_panels = item_container.get_children()
 	GameManager.stored_item_panels = item_panels
 	
-func _on_player_weapon_equiped(gun_texture):
-	gun_container.texture = gun_texture
+func _on_player_weapon_equiped(gun_stats):
+	gun_hud.visible = true
+	gun_texture.texture = gun_stats.sprite
+	if "ammo" in gun_stats:
+		ammo_label.text = "%d / %d" % [gun_stats.ammo, gun_stats.ammo]
+	else:
+		ammo_label.text = ''
 	
+func _on_player_shoot(gun):
+	ammo_label.text = "%d / %d" % [gun.ammo, gun.stats.ammo]
 
 func _on_player_healed(_value):
 	set_health(player.hp, player.max_hp)
