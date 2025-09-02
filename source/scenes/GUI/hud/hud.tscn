@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://c25l3kxm6g3wn"]
+[gd_scene load_steps=9 format=3 uid="uid://c25l3kxm6g3wn"]
 
 [ext_resource type="Script" path="res://scenes/GUI/hud/hud.gd" id="1_k5gjg"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_ua7wc"]
 [ext_resource type="PackedScene" uid="uid://ddwv0va7wls5j" path="res://scenes/GUI/hud/item_panel.tscn" id="3_v1w2q"]
+[ext_resource type="Shader" path="res://scenes/GUI/hud/dmgoverlay.gdshader" id="4_djpvi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkr40"]
 bg_color = Color(1, 0, 0, 1)
@@ -17,6 +18,13 @@ font_size = 32
 [sub_resource type="AtlasTexture" id="AtlasTexture_r0u0p"]
 atlas = ExtResource("2_ua7wc")
 region = Rect2(-0.139969, 118.003, 13.406, 10.0545)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yx22o"]
+shader = ExtResource("4_djpvi")
+shader_parameter/radius = 0.764
+shader_parameter/softness = 0.605
+shader_parameter/strength = 1.0
+shader_parameter/tint = Vector4(1, 0, 0, 1)
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_k5gjg")
@@ -127,3 +135,15 @@ theme_override_constants/separation = 20
 [node name="ItemPanel" parent="ItemsContainer/ItemsHBoxContainer" instance=ExtResource("3_v1w2q")]
 visible = false
 layout_mode = 2
+
+[node name="DamageOverlay" type="ColorRect" parent="."]
+visible = false
+z_index = -3
+material = SubResource("ShaderMaterial_yx22o")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.964706, 0, 0.0431373, 0.321569)

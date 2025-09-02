@@ -2,23 +2,23 @@
 
 [ext_resource type="PackedScene" uid="uid://cbryqu8vdrnku" path="res://scenes/weapons/weapon.tscn" id="1_n4pyr"]
 [ext_resource type="Script" path="res://scenes/weapons/guns/ranged_weapon.gd" id="2_isj3v"]
-[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://resources/weapons/guns/handgun.tres" id="3_ihk2m"]
+[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://scenes/objects/resources/guns/handgun.tres" id="3_ihk2m"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="3_jgaaf"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_cmix6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_nwhkk"]
 atlas = ExtResource("3_jgaaf")
-region = Rect2(-0.510231, 117.936, 12.4103, 10.0721)
+region = Rect2(-0.227226, 118.102, 12.4876, 9.5434)
 
 [node name="RangedWeapon" instance=ExtResource("1_n4pyr")]
 scale = Vector2(0.5, 0.5)
 script = ExtResource("2_isj3v")
 stats = ExtResource("3_ihk2m")
 
-[node name="Sprite2D" parent="." index="1"]
-position = Vector2(30, -5)
+[node name="Sprite2D" parent="weaponitself" index="0"]
+position = Vector2(30, -4)
 rotation = 0.0
 scale = Vector2(5, 5)
-texture = SubResource("AtlasTexture_cmix6")
+texture = SubResource("AtlasTexture_nwhkk")
 
 [node name="gun_point" type="Marker2D" parent="." index="2"]
 position = Vector2(66, -15)

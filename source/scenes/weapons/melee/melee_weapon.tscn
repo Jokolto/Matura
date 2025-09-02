@@ -1,9 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvljv2xvw80qv"]
+[gd_scene load_steps=10 format=3 uid="uid://cvljv2xvw80qv"]
 
 [ext_resource type="PackedScene" uid="uid://cbryqu8vdrnku" path="res://scenes/weapons/weapon.tscn" id="1_5ojid"]
 [ext_resource type="Script" path="res://scenes/weapons/melee/melee_weapon.gd" id="1_ln461"]
 [ext_resource type="Resource" uid="uid://bdcl1bl5dc7do" path="res://resources/weapons/melee/stick.tres" id="2_iikv8"]
+[ext_resource type="Texture2D" uid="uid://fex8rtsd2n2c" path="res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/full spritesheet.png" id="4_dluxl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5puui"]
+atlas = ExtResource("4_dluxl")
+region = Rect2(192, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ibdbu"]
+atlas = ExtResource("4_dluxl")
+region = Rect2(208, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2r1q"]
+atlas = ExtResource("4_dluxl")
+region = Rect2(224, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7qvv4"]
+atlas = ExtResource("4_dluxl")
+region = Rect2(240, 48, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m1gi2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5puui")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ibdbu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2r1q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7qvv4")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"nothing",
+"speed": 5.0
+}]
 
 [node name="melee_weapon" instance=ExtResource("1_5ojid")]
 script = ExtResource("1_ln461")
 stats = ExtResource("2_iikv8")
+
+[node name="effectsprite" parent="." index="1"]
+position = Vector2(18, 1.19209e-07)
+scale = Vector2(0.863999, 1.84)
+sprite_frames = SubResource("SpriteFrames_m1gi2")
+animation = &"attack"

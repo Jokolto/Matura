@@ -51,7 +51,7 @@ func equip_weapon(new_weapon_res = default_weapon_res): # very similar to same n
 	weapon_instance.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(weapon_instance)
 	enemy_type = weapon_instance.weapon_type
-	var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
+	var sprite = weapon_instance.sprite as Sprite2D
 	sprite.texture = new_weapon_res.sprite
 		
 

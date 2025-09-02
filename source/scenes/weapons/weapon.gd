@@ -2,10 +2,10 @@ extends Node2D
 class_name Weapon
 # somewhat abstract class
 
-@onready var hitbox: Area2D = $Area2D
-@onready var hitbox_shape: CollisionShape2D = $Area2D/CollisionShape2D
-@onready var sprite = $Sprite2D
-
+@onready var hitbox: Area2D = $weaponitself/Area2D
+@onready var hitbox_shape: CollisionShape2D = $weaponitself/Area2D/CollisionShape2D
+@onready var sprite = $weaponitself/Sprite2D
+@onready var effect_sprite = $effectsprite
 
 @export var stats: Resource
 var holder: CharacterBody2D = null
@@ -59,6 +59,7 @@ func set_projectiles_node(node: Node) -> void:
 	projectiles_node = node
 
 func enter_pickup_state():
+	effect_sprite.visible = false
 	is_lying_on_floor = true
 	hitbox.monitoring = true
 	hitbox.monitorable = true

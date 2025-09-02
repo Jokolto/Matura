@@ -2,6 +2,8 @@
 class_name MeleeWeapon
 extends Weapon
 
+@onready var blade = $weaponitself
+@onready var swoosh_sprite = $effectsprite
 var is_attacking: bool = false
 var current_angle: float = 0.0
 var swing_direction: int = 1
@@ -10,6 +12,8 @@ var damage: float
 
 func _ready():
 	super._ready()
+	if is_lying_on_floor or not is_attacking:
+		swoosh_sprite.visible = false
 	weapon_type = GlobalConfig.EnemyTypes.Melee
 	
 func _process(delta: float) -> void:
@@ -17,6 +21,7 @@ func _process(delta: float) -> void:
 		
 	if is_attacking and not is_lying_on_floor:
 		_swing_update(delta)
+		
 
 func use_weapon(direction: Vector2) -> void:
 	try_attack(direction)
@@ -24,15 +29,17 @@ func use_weapon(direction: Vector2) -> void:
 func try_attack(_direction: Vector2) -> void:
 	if not is_ready() or is_attacking:
 		return
-	
+	swoosh_sprite.visible = true
+	swoosh_sprite.frame = 0  
+	swoosh_sprite.play('attack', 2)
 	swing_speed = stats.swing_speed
 	if holder is Player:
 		swing_speed *= holder.fire_rate_multiplier
 	is_attacking = true
 	current_angle = -stats.swing_angle * 0.5
 	swing_direction = 1
-	rotation_degrees = current_angle
-	#global_position = holder.global_position + direction.normalized() * stats.reach
+	blade.rotation_degrees = current_angle
+	
 
 	hitbox.monitoring = true
 	hitbox.monitorable = true
@@ -46,26 +53,19 @@ func try_attack(_direction: Vector2) -> void:
 func _swing_update(delta: float) -> void:
 	var swing_step = swing_speed * delta
 	current_angle += swing_step * swing_direction
-	rotation_degrees = current_angle
+	blade.rotation_degrees = current_angle
+	
 
 	if current_angle >= stats.swing_angle * 0.5:
+		swoosh_sprite.visible = false
 		is_attacking = false
 		hitbox.monitoring = false
 		hitbox.monitorable = false
-		rotation_degrees = 0.0
+		swoosh_sprite.play('nothing')
+		blade.rotation_degrees = 0.0
 		if is_instance_valid(holder) and holder is Enemy:
 			holder.add_reward_event(GlobalConfig.RewardEvents["MISSED"], stored_state, stored_action)
 
-# not used yet
-func _adjust_hitbox():
-	var shape = hitbox_shape.shape
-	if shape is RectangleShape2D:
-		# Set size along X (forward direction)
-		shape.extents.x = 32 + stats.reach * 0.5  # Because extents is half-size, 32 cause weapon sprites are 32x32
-		shape.extents.y = 32 
-		
-		# Shift the shape forward along X
-		hitbox_shape.position.x = stats.reach * 0.5
 
 func _on_area_2d_body_entered(body: Node2D) -> void:	
 	if is_lying_on_floor:

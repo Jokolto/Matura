@@ -13,6 +13,7 @@ extends CanvasLayer
 @onready var gun_hud = $GunMarginContainer
 
 @onready var item_container = $ItemsContainer/ItemsHBoxContainer
+@onready var dmg_overlay = $DamageOverlay
 
 var player = null # set by level node
 var ItemManager = null # set by level node
@@ -20,6 +21,7 @@ var ItemManager = null # set by level node
 var item_panels: Array = []
 var ItemPanel: PackedScene = preload("res://scenes/GUI/hud/item_panel.tscn")
 
+var dmg_overlay_tween: Tween
 
 func _ready() -> void:
 	EntitiesManager.wave_start.connect(_on_wave_start)
@@ -50,7 +52,24 @@ func set_enemy_hud(value: int, max_value: int) -> void:
 func set_player(player_scene):
 	player = player_scene
 
+
+func save_item_panels():
+	item_panels = item_container.get_children()
+	GameManager.stored_item_panels = item_panels
+	
+	
+func show_damage_overlay():
+	dmg_overlay.visible = true
+	
+	if dmg_overlay_tween:
+		dmg_overlay_tween.kill()
+		
+	dmg_overlay.material.set("shader_parameter/strength", 0.5)
+	dmg_overlay_tween = get_tree().create_tween().set_trans(Tween.TRANS_SINE)
+	dmg_overlay_tween.tween_property(dmg_overlay.material, "shader_parameter/strength", 0.0, 0.5) # fade out in 0.5s
+	
 func _on_player_damaged(_damage):
+	show_damage_overlay()
 	set_health(player.hp, player.max_hp)
 
 func _on_enemy_death(_enemy):
@@ -81,10 +100,8 @@ func _on_upgrade_selected(item):
 		item_panel.change_item_amount_label(ItemManager.held_items[item])
 		item_panel.change_name(item['name'])
 
-func save_item_panels():
-	item_panels = item_container.get_children()
-	GameManager.stored_item_panels = item_panels
 	
+
 func _on_player_weapon_equiped(gun_stats):
 	gun_hud.visible = true
 	gun_texture.texture = gun_stats.sprite

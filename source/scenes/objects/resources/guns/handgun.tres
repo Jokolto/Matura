@@ -19,6 +19,7 @@ bullets_amount = 1
 bullet_piercing = 0
 shooting_range = 1000.0
 bullet_speed = 600.0
+ammo = 20
 sprite = SubResource("AtlasTexture_b1nbs")
 name = "Handgun"
 description = "A light, balanced sidearm with moderate damage and a steady fire rate — reliable and quick to wield."

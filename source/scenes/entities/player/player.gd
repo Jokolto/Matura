@@ -137,17 +137,12 @@ func _equip_weapon(res: Resource = null):
 	weapon_instance = scene.instantiate() as Weapon
 	
 	weapon_instance.import_res_stats(weapon_res)
-
-	if weapon_instance.has_method("set_projectiles_node") and projectiles_node:
-		weapon_instance.set_projectiles_node(projectiles_node)
-
+	weapon_instance.set_projectiles_node(projectiles_node)
 	weapon_holder.add_child(weapon_instance)
-
-	if weapon_instance.has_node("Sprite2D"):
-		Logger.log("Player equipped weapon %s" % [weapon_res.resource_name], "DEBUG")
-		var sprite = weapon_instance.get_node("Sprite2D") as Sprite2D
-		sprite.texture = weapon_res.sprite
-		weapon_equipped.emit(res)
+	Logger.log("Player equipped weapon %s" % [weapon_res.resource_name], "DEBUG")
+	var sprite = weapon_instance.sprite as Sprite2D
+	sprite.texture = weapon_res.sprite
+	weapon_equipped.emit(res)
 
 func _on_dash_timer_timeout() -> void:
 	is_dashing = false
