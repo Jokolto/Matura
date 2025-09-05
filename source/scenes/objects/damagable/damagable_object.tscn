@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://eudf7n14ext5"]
+
+[ext_resource type="Script" path="res://scenes/objects/damagable/DamagableObject.gd" id="1_6040r"]
+[ext_resource type="PackedScene" uid="uid://cxrxx16e4sw1p" path="res://scenes/components/hp_component.tscn" id="2_088q1"]
+
+[node name="DamagableObject" type="Node2D"]
+script = ExtResource("1_6040r")
+
+[node name="HpComponent" parent="." instance=ExtResource("2_088q1")]

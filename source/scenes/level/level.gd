@@ -54,7 +54,7 @@ func _ready() -> void:
 	EntitiesManager.enemy_dmg_mul = 1
 	
 	for gate: Gate in gates.get_children():
-		gate.gate_regenerated.connect(tutorial._on_gate_regen_first_time)
+		gate.regenerated.connect(tutorial._on_gate_regen_first_time)
 		gate.set_ui(UI)
 	
 	

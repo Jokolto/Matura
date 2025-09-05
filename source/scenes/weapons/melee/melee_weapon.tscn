@@ -51,7 +51,8 @@ script = ExtResource("1_ln461")
 stats = ExtResource("2_iikv8")
 
 [node name="effectsprite" parent="." index="1"]
-position = Vector2(18, 1.19209e-07)
+visible = false
+position = Vector2(18.4, 0.2)
 scale = Vector2(0.863999, 1.84)
 sprite_frames = SubResource("SpriteFrames_m1gi2")
 animation = &"attack"

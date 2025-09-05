@@ -29,6 +29,7 @@ region = Rect2(352, 163.6, 48.3, 28.5)
 [node name="gate" type="Node2D"]
 scale = Vector2(3, 3)
 script = ExtResource("1_2t0t8")
+hp_regeneration_per_sec = 20
 intact_texture = SubResource("AtlasTexture_4ogb5")
 broken_texture = SubResource("AtlasTexture_xtsq5")
 
@@ -38,6 +39,8 @@ position = Vector2(-9.33333, -26.3333)
 scale = Vector2(0.2, 0.2)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 16
+collision_mask = 11
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-0.166667, 5.16667)

@@ -112,7 +112,7 @@ func _update_animation(input_vec: Vector2) -> void:
 			body_sprite.play("idle")
 
 func take_damage(damage: float) -> void:
-	if vulnerable:
+	if vulnerable and damage > 0:
 		hp -= damage
 		damaged.emit(damage)
 		$Timers/InvulnerabilityTimer.start(invulnerable_period)

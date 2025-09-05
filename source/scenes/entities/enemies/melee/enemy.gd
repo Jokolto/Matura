@@ -3,6 +3,9 @@ class_name Enemy extends CharacterBody2D
 @export var stats: Resource = preload("res://resources/enemies/general_enemy.tres")
 
 @onready var body_sprite = $AnimatedSprite2D
+@onready var contact_damage_area = $Area2D
+@onready var hitbox = $CollisionShape2D
+@onready var contact_damage_hitbox = $Area2D/CollisionShape2D
 
 # assigned from spawner
 var player: CharacterBody2D = null  
@@ -19,6 +22,7 @@ var contact_damage: float
 var dir: Vector2 = Vector2.RIGHT
 
 var player_inside_contact_range: bool = false
+var is_dead: bool = false
 var enemy_id: int
 var enemy_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes.Generic # would change after equiping weapon
 
@@ -52,8 +56,8 @@ var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat", "
 signal enemy_death(enemy)
 
 func _ready() -> void:
-	$Area2D.body_entered.connect(_on_body_entered)
-	$Area2D.body_exited.connect(_on_body_exited)
+	contact_damage_area.body_entered.connect(_on_body_entered)
+	contact_damage_area.body_exited.connect(_on_body_exited)
 	#enemy_death.connect(_on_death)
 	enemy_death.connect(EntitiesManager._on_enemy_death)
 	enemy_death.connect(GameManager.hud._on_enemy_death)
@@ -66,7 +70,7 @@ func _ready() -> void:
 	
 
 func _process(delta: float) -> void:
-	if not player:
+	if not player or is_dead:
 		return
 	
 	if velocity > Vector2.ZERO:
@@ -80,7 +84,7 @@ func _process(delta: float) -> void:
 	
 	current_state = get_state() # returns something like "d20a90bd0ba0"
 	# Attacking with contact damage
-	if player_inside_contact_range:
+	if player_inside_contact_range and contact_damage > 0:
 		_deal_damage(player)
 		if player.contact_damage:
 			take_damage(player.contact_damage)
@@ -99,21 +103,52 @@ func set_projectiles_node(node: Node):
 	projectiles_node = node
 
 func take_damage(amount: float) -> void:
-	if health <= 0:   # multiple bullets could kill enemies multiple times without this
+	if is_dead:
 		return 
 		
 	health -= amount
 	ui.show_damage_ui(amount, global_position)
 	add_reward_event(GlobalConfig.RewardEvents["TOOK_DAMAGE"])
 	if health <= 0:
-		fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
-		enemy_death.emit(self)
-		add_reward_event(GlobalConfig.RewardEvents["DIED"])
-		if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
-			call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
-		queue_free()
+		die()
 		
 
+func die():
+	if is_dead:
+		return
+	is_dead = true
+	body_sprite.play("death")
+	fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
+	enemy_death.emit(self)
+	add_reward_event(GlobalConfig.RewardEvents["DIED"])
+	if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
+		call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
+	elif weapon_instance:
+		weapon_instance.queue_free()
+	
+	hitbox.set_deferred('disabled', true)
+	contact_damage_hitbox.set_deferred('disabled', true)
+	
+	# Create tween animation for death
+	var tween = create_tween()
+	tween.set_parallel()  
+	
+	# Fly upwards a bit
+	tween.tween_property(self, "position:y", position.y - 30, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	# Turn gray
+	tween.tween_property(body_sprite, "modulate", Color(0.3, 0.3, 0.3, 0.8), 0.1)
+	
+	var angle = deg_to_rad(70)  # 70° tilt
+	if dir.x < 0:
+		# Player is left, rotate clockwise, go right
+		tween.tween_property(self, "rotation", angle, 0.3)
+		tween.tween_property(self, "position:x", position.x + 30, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	else:
+		# Player is right, rotate counter-clockwise, go left
+		tween.tween_property(self, "rotation", -angle, 0.8)
+		tween.tween_property(self, "position:x", position.x - 30, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+	tween.finished.connect(queue_free)
 
 
 func execute_action(action: String):
@@ -208,7 +243,7 @@ func is_still_relevant(_event):
 func get_distance_and_angle_to_closest_ally() -> Array:
 	var min_distance = INF
 	var closest: Enemy = null
-	for other_enemy in enemies_node.get_enemies():
+	for other_enemy in enemies_node.get_alive_enemies():
 		if other_enemy and other_enemy != self:
 			var dist = global_position.distance_to(other_enemy.global_position)
 			if dist < min_distance:

@@ -7,7 +7,7 @@ func _ready() -> void:
 	EntitiesManager.wave_end.connect(_on_wave_end)
 
 func _process(_delta: float) -> void:
-	if len(get_enemies()) == 0:
+	if len(get_alive_enemies()) == 0:
 		return
 	
 	var states_msg = create_states_msg(get_all_states())
@@ -25,13 +25,17 @@ func get_next_enemy_id() -> int:
 	return id
 
 
-func get_enemies():
-	return get_children()
+func get_alive_enemies():
+	var alive = []
+	for enemy: Enemy in get_children():
+		if not enemy.is_dead:
+			alive.append(enemy)
+	return alive
 
 
 func get_all_states() -> Dictionary:
 	var state_bundle = {}
-	for enemy: Enemy in get_enemies():
+	for enemy: Enemy in get_alive_enemies():
 		state_bundle[enemy.enemy_id] = {
 			"state": enemy.get_state(),
 			"valid_actions": enemy.valid_actions,
@@ -42,7 +46,7 @@ func get_all_states() -> Dictionary:
 
 func get_all_events() -> Dictionary:
 	var event_bundle = {}
-	for enemy: Enemy in get_enemies():
+	for enemy: Enemy in get_alive_enemies():
 		var events = enemy.get_unsent_events()
 		if len(events) != 0:
 			event_bundle[enemy.enemy_id] = events
@@ -98,7 +102,7 @@ func create_fitness_msg(fitness_per_enemy: Dictionary) -> Dictionary:
 	}
 
 func get_enemy_by_id(id: int) -> Enemy:
-	for enemy: Enemy in get_enemies():
+	for enemy: Enemy in get_alive_enemies():
 		if enemy.enemy_id == id:
 			return enemy
 	return null
@@ -106,14 +110,14 @@ func get_enemy_by_id(id: int) -> Enemy:
 
 func process_actions(data_with_actions):
 	var data = data_with_actions.get("data", {})
-	for enemy: Enemy in get_enemies():
+	for enemy: Enemy in get_alive_enemies():
 		var action = data.get(str(enemy.enemy_id), "idle")
 		enemy.last_action = action
 		enemy.execute_action(action)
 
 # best function ever
 func kill_all():
-	for enemy: Enemy in get_enemies():
+	for enemy: Enemy in get_alive_enemies():
 		enemy.take_damage(99999)
 
 func _on_wave_end(fitness_per_enemy):

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://cigpx2g30eob8"]
+
+[ext_resource type="PackedScene" uid="uid://eudf7n14ext5" path="res://scenes/objects/damagable/damagable_object.tscn" id="1_f1xhc"]
+[ext_resource type="Texture2D" uid="uid://dvayiakhmpa8j" path="res://assets/sprites/Pixel Art Top Down - Basic v1.2.0/Texture/TX Props.png" id="2_fvy0p"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_86ct2"]
+atlas = ExtResource("2_fvy0p")
+region = Rect2(352.705, 269.928, 95.9605, 70.5592)
+
+[node name="Campfire" instance=ExtResource("1_f1xhc")]
+
+[node name="HpComponent" parent="." index="0"]
+position = Vector2(-51, 82)
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+scale = Vector2(2, 2)
+texture = SubResource("AtlasTexture_86ct2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="2"]
