@@ -1,3 +1,4 @@
+# gpt all the way. this script is not used in the final submission
 import random
 import copy
 from typing import List, Dict
