@@ -44,8 +44,22 @@ func _on_request_completed(_result, response_code, _headers, body):
 	by_wave.sort_custom(func(a, b): return a["wave"] > b["wave"])
 	
 	# Sort by time (ascending)
+	var sort_func = func sort_by_time(a, b):
+		var atime = a["time"]
+		var btime = b["time"]
+
+		# Push zeros to the bottom
+		if atime == 0 and btime != 0:
+			return false  # b goes before a
+		if btime == 0 and atime != 0:
+			return true   # a goes before b
+
+		# Otherwise, sort ascending
+		return atime < btime
+		
 	var by_time = entries.duplicate()
-	by_time.sort_custom(func(a, b): return a["time"] < b["time"])
+	by_time.sort_custom(sort_func)
+
 	
 	# Update UI
 	_update_leaderboard_ui(wave_reached_list, by_wave, "Wave", false)
