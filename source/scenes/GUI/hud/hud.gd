@@ -15,6 +15,8 @@ extends CanvasLayer
 @onready var item_container = $ItemsContainer/ItemsHBoxContainer
 @onready var dmg_overlay = $DamageOverlay
 
+@onready var wave_end_label = $Label
+
 var player = null # set by level node
 var ItemManager = null # set by level node
 
@@ -29,6 +31,7 @@ func _ready() -> void:
 	
 	GameManager._set_hud(self)
 	gun_hud.visible = false
+	wave_end_label.visible = false
 	wave_label.text = "Rest time"
 	enemies_bar_container.visible = false
 	
@@ -82,11 +85,16 @@ func _on_wave_start():
 func _on_wave_end(_fitness_dict):
 	enemies_bar_container.visible = false
 	wave_label.text = "Rest time"
+	wave_end_label.visible = true
+	wave_end_label.text = "Wave %s End" % [EntitiesManager.current_wave]
+
+	
 
 func _on_enemy_spawned():
 	set_enemy_hud(EntitiesManager.enemies_alive, EntitiesManager.enemies_per_wave)
 	
 func _on_upgrade_selected(item):
+	wave_end_label.visible = false
 	set_health(player.hp, player.max_hp)
 	if ItemManager.held_items.has(item):    # checking if item was registered successfully
 		for item_panel in item_container.get_children():   # checking if item is already there 

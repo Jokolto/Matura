@@ -58,7 +58,7 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		bullet.damage = final_damage
 		projectiles_node.player_projectile_node.add_child(bullet)
 	else:
-		bullet.damage = holder.ranged_damage_multiplier
+		bullet.damage = stats.bullet_damage * holder.ranged_damage_multiplier
 		bullet.shot_at_state = stored_state
 		bullet.stored_action = stored_action
 		projectiles_node.add_child(bullet)

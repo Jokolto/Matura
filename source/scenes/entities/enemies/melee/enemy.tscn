@@ -60,7 +60,7 @@ region = Rect2(80, 0, 16, 16)
 [sub_resource type="SpriteFrames" id="SpriteFrames_muuj8"]
 animations = [{
 "frames": [{
-"duration": 1.0,
+"duration": 10.0,
 "texture": SubResource("AtlasTexture_sx3jl")
 }],
 "loop": true,
@@ -128,7 +128,7 @@ script = ExtResource("1_pt0u1")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_muuj8")
-animation = &"idle"
+animation = &"death"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

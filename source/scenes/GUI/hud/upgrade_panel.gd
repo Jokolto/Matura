@@ -7,12 +7,12 @@ var rarity_namings: Dictionary = {1 : "common",  2 : "uncommon",  3 : "rare", 4 
 var input_ready = false
 var ItemManager = null
 var player: Player = null
-
 var gun_wave = false
+
+signal upgrade_selected
 
 func _ready():
 	blocker.mouse_filter = Control.MOUSE_FILTER_STOP
-	EntitiesManager.wave_end.connect(_on_wave_end)
 	for button in buttons:
 		button.pressed.connect(_on_upgrade_selected)
 		
@@ -87,16 +87,14 @@ func set_button_rarity_style(button: Button, rarity: String) -> void:
 	button.add_theme_stylebox_override("normal", stylebox)
 	#button.add_theme_stylebox_override("hover", stylebox)
 
-func _on_wave_end(_fitness_dict):
-	blocker.visible = true
+func _on_rest_time_end():
 	show_upgrade_panel()
-	await get_tree().create_timer(0.7).timeout
-	blocker.visible = false
-	
+
 
 func _on_upgrade_selected():
 	visible = false
 	get_tree().paused = false
+	upgrade_selected.emit()
 	
 
 	

@@ -18,13 +18,12 @@ class_name Player
 
 # item specific
 var weapons_automatic_override = false
-
 var fire_dmg: float = 0
 var fire_duration: float = 0 
-
 var stones_throw_amount: int = 0
 
 
+var aim_vector: Vector2
 var weapon_scene: PackedScene # will be assigned automatically from resource
 var default_weapon_res: Resource = preload("res://resources/weapons/melee/hammer.tres")
 @export var nearby_pickups: Array[Weapon] = []  
@@ -38,8 +37,8 @@ var invulnerable_period: float = 0.2
 
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
-@onready var projectiles_node: Node = null
 
+var projectiles_node: Node = null
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
 
@@ -58,9 +57,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _process(_delta: float) -> void:
-	var mouse_pos = get_global_mouse_position()
-	weapon_holder._aim_weapon(mouse_pos)
-	_handle_weapon_use(mouse_pos)
+	aim_vector = get_global_mouse_position()
+	weapon_holder._aim_weapon(aim_vector)
+	_handle_weapon_use(aim_vector)
 	_handle_pickups()
 
 func set_projectiles_node(node: Node):
