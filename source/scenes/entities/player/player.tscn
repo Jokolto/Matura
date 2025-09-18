@@ -117,10 +117,8 @@ shape = SubResource("RectangleShape2D_kc7ve")
 position = Vector2(-1, -6)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_xftwm")
-animation = &"idle"
+animation = &"run"
 autoplay = "idle"
-frame = 5
-frame_progress = 0.15794
 
 [node name="Weaponholder" type="Node2D" parent="."]
 position = Vector2(28, 8)

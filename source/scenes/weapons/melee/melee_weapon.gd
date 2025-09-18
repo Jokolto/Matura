@@ -86,6 +86,9 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 			
 			elif body is Enemy and holder is Player:  # Player hitting Enemy
 				body.take_damage(damage)
+				if stats.knockback > 0:
+					var dir = (body.global_position - global_position).normalized()
+					body.velocity += dir * stats.knockback
 			elif body is Enemy and holder is Enemy and EntitiesManager.friendly_fire: # Enemy vs Enemy
 				body.take_damage(damage)
 			elif body.get_parent() is Gate:

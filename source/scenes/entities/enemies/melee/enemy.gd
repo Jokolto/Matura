@@ -26,13 +26,20 @@ var is_dead: bool = false
 var enemy_id: int
 var enemy_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes.Generic # would change after equiping weapon
 
+# Knockback variables
+var knockback_velocity: Vector2 = Vector2.ZERO
+var knockback_decay := 800.0
+
+# Weapon variables. It is expanded in ranged weaopn subclass.
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
 var weapon_drop_chance: float = 0.2 # 20 percent
 
+# for state calculation
 var current_state = ""
 var last_action = ""
 var event_buffer := []
+var last_dist_to_player: float = INF
 
 # for fitness calculation
 var fitness: float = 0.0
@@ -51,7 +58,7 @@ var fitness_survivability_priority = func(life_time, dmg_dealt, _min_distance):
 var dist_batch_size = GlobalConfig.GameConfig["Y_MAP_SIZE"] # take the lower
 var valid_actions = ["move_forward", "strafe_left", "strafe_right", "retreat", "use_weapon"]
 
-
+var relative_sector: int = -1
 
 signal enemy_death(enemy)
 
@@ -154,34 +161,48 @@ func die():
 func execute_action(action: String):
 	dir = (player.global_position - global_position).normalized()
 	var shooting_dir = player.global_position
-	last_action = action
+
+	var ai_velocity := Vector2.ZERO
+
 	match action:
 		"move_forward":
-			velocity = dir * move_speed
+			ai_velocity = dir * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["MOVED_CLOSER"])
 		"retreat":
-			velocity = -dir * move_speed
+			ai_velocity = -dir * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["RETREATED"])
 		"strafe_left":
-			velocity = dir.rotated(-PI/2) * move_speed
+			ai_velocity = dir.rotated(-PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"strafe_right":
-			velocity = dir.rotated(PI/2) * move_speed
+			ai_velocity = dir.rotated(PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"use_weapon":
-			if weapon_instance and weapon_instance.is_ready():   # not very necessary check, but let it stay
+			if weapon_instance and weapon_instance.is_ready():
 				weapon_instance.use_weapon(shooting_dir)
 				weapon_instance.store_state(current_state, action)
-			# gets its reward from weapon if it hits player
 		_:
-			velocity = Vector2.ZERO
+			ai_velocity = Vector2.ZERO
+
+	# Combine AI movement + knockback
+	velocity = ai_velocity + knockback_velocity
 	move_and_slide()
+
+	# Decay knockback over time
+	if knockback_velocity.length() > 0.1:
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * get_process_delta_time())
+
+	last_action = action
+	var current_dist_to_player = global_position.distance_to(player.global_position)
+	if last_action == "move_forward" and current_dist_to_player == last_dist_to_player:
+		add_reward_event(GlobalConfig.RewardEvents["STUCK"])
 
 # a lot of magical numbers, that were found by trial and error
 func get_state() -> String:
-	#var pos_x = floor(global_position.x / 50.0)
-	#var pos_y = floor(global_position.y / 50.0)
+	var pos_x = floor(global_position.x / 200.0)
+	var pos_y = floor(global_position.y / 200.0)
 	var dist_not_batch = global_position.distance_to(player.global_position)
+	last_dist_to_player = dist_not_batch
 	if min_dist_to_player > dist_not_batch:
 		min_dist_to_player = dist_not_batch
 	var dist = floor(dist_not_batch / 200.0)   # 400 is aproximately 1/5 of the map
@@ -191,6 +212,7 @@ func get_state() -> String:
 	var dist_ally = floor(dist_and_angle_to_ally[0] / 200)
 	var angle_ally = (dist_and_angle_to_ally[1] / 200)
 	
+	var relative_dir = get_relative_sector(global_position, player.global_position, player.aim_vector)
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position)
 	var bullet_dist = -1  # no bullets flying
 	var bullet_angle = -1  # no bullets flying
@@ -204,10 +226,18 @@ func get_state() -> String:
 	dist_ally = clamp(dist_ally, 0, 2)
 	angle_ally = clamp(angle_ally, 0, 3)
 	var weapon_type = -1   # no weapon means -1 in state
-	if weapon_instance:
+	if is_instance_valid(weapon_instance):
 		weapon_type = weapon_instance.weapon_type  # distinguish between melee and ranged
-	return "wt{wt}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
-		"wt": weapon_type, "d": dist, "a":angle, "bd": bullet_dist, "ba": bullet_angle, "ad": dist_ally, "aa": angle_ally
+	var player_weapon_type = -1
+	if is_instance_valid(player.weapon_instance):
+		player_weapon_type = player.weapon_instance.weapon_type
+	# unused: px{px}py{py}
+	return "wt{wt}pw{pw}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
+		"wt": weapon_type, "pw": player_weapon_type, 
+		"px": pos_x, "py": pos_y,
+		"d": dist, "a": relative_dir, 
+		"bd": bullet_dist, "ba": bullet_angle, 
+		"ad": dist_ally, "aa": angle_ally
 		})
 
 func get_events():
@@ -257,6 +287,16 @@ func get_distance_and_angle_to_closest_ally() -> Array:
 	
 	return [min_distance, -1.0]
 
+# returns relative angle to player, with also accounting to player aim
+func get_relative_sector(enemy_pos: Vector2, player_pos: Vector2, aim_vector: Vector2, sectors: int = 8) -> int:
+	if aim_vector == Vector2.ZERO:
+		return -1
+	var to_enemy = (enemy_pos - player_pos).normalized()
+	var aim_angle = aim_vector.angle()
+	var relative_angle = wrapf(to_enemy.angle() - aim_angle, -PI, PI)
+	var sector_size = TAU / sectors
+	return int(floor((relative_angle + sector_size/2) / sector_size)) % sectors
+
 func generate_id():
 	if enemy_id == 0:
 		enemy_id = enemies_node.get_next_enemy_id()
@@ -267,6 +307,9 @@ func generate_id():
 	
 
 func _update_animation(input_vec: Vector2) -> void:
+	if is_dead:
+		body_sprite.play('death')
+		return
 	if input_vec != Vector2.ZERO:
 		if body_sprite.animation != "run":
 			body_sprite.play("run")

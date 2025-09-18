@@ -21,13 +21,19 @@ extends Node2D
 @onready var pickups_node: Node2D = $Objects/Pickups
 @onready var ItemManager = $ItemManager
 
+
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 var play_time: float = 0.0
 signal pause
+signal rest_time_end
 
 func _ready() -> void:
 	play_time = 0.0
 	pause.connect(PauseMenu._on_pause)
+	rest_time_end.connect(Upgradepanel._on_rest_time_end)
+	EntitiesManager.wave_end.connect(_on_wave_end)
+	
+	Upgradepanel.upgrade_selected.connect(_on_upgrade_selected)
 	EntitiesManager.wave_end.connect(player._on_wave_end)
 	
 	player.damaged.connect(hud._on_player_damaged)
@@ -42,6 +48,8 @@ func _ready() -> void:
 	world_boundary.won.connect(_on_win)
 	world_boundary.won.connect(hud._on_win)
 	world_boundary.won.connect(GameManager._on_win)
+	
+	
 	
 	EntitiesManager.wave_active = false
 	EntitiesManager.current_wave = 0
@@ -79,7 +87,7 @@ func _ready() -> void:
 	tutorial.show_tutorial_piece("move")
 
 func _process(delta: float) -> void:
-	if len(GameManager.shown_tutorials) == GameManager.tutorials_amount and not EntitiesManager.wave_active:
+	if len(GameManager.shown_tutorials) == GameManager.tutorials_amount and not EntitiesManager.wave_active and EntitiesManager.current_wave == 0:
 		EntitiesManager.start_wave()
 	play_time += delta
 
@@ -94,8 +102,15 @@ func _unhandled_input(event):
 		if GlobalConfig.DEBBUGGING:
 			enemies_node.kill_all()
 
+func _on_wave_end(_fitness):
+	WaveTimer.start(1.5)
+
 
 func _on_wave_timer_timeout() -> void:
+	rest_time_end.emit()
+
+func _on_upgrade_selected():
+	
 	EntitiesManager.start_wave()
 
 func _on_win():
