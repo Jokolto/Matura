@@ -4,7 +4,7 @@ import threading
 import copy
 import signal
 import sys
-
+import pandas as pd
 
 from q_learner import QLearner, SharedQLearner
 from config import ServerConfig, RewardConfig, Logger
@@ -15,11 +15,14 @@ logging = Logger.get_logger(__name__)
 
 
 class AIServer:
-    def __init__(self):
+    def __init__(self, csv_file='python_ai_scripts/data/results.csv'):
         self.agents = {}  # enemy_id (str): QLearner
         self.fitnesses = {}  # enemy_id (str) : float
         self.shared_brain = SharedQLearner()
         self.running = True
+        # for data handling
+        self.csv_file = csv_file
+        self.df = pd.DataFrame()
 
     def handle_client(self, conn, addr):
         with conn:
@@ -55,6 +58,8 @@ class AIServer:
                 self.handle_fitness_msg(data)
             case "WAVE_END":
                 self.handle_wave_end()
+            case "LOG":
+                self.handle_log_msg(data)
             case "SHUTDOWN":
                 self.shutdown(signal.SIGINT, None)
             case _:
@@ -123,7 +128,12 @@ class AIServer:
         logging.debug(f"Resulting fitnesses: {self.fitnesses}")
         self.handle_wave_end()  # Process the end of the wave after receiving fitness data
         
-
+    def handle_log_msg(self, data):
+        print(data)
+        # Expecting `data` to already be a flat dict with all columns
+        self.df = pd.concat([self.df, pd.DataFrame([data])], ignore_index=True)
+        # Save every time so you don’t lose data if crash
+        self.df.to_csv(self.csv_file, index=False)
 
     def get_or_create_agent(self, enemy_id: str):
         if enemy_id not in self.agents:

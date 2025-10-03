@@ -68,6 +68,7 @@ func _ready() -> void:
 	#enemy_death.connect(_on_death)
 	enemy_death.connect(EntitiesManager._on_enemy_death)
 	enemy_death.connect(GameManager.hud._on_enemy_death)
+	enemy_death.connect(enemies_node._on_enemy_death)
 	generate_id()
 	
 	move_speed = stats.move_speed

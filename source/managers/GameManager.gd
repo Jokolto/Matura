@@ -32,6 +32,9 @@ func _ready() -> void:
 	state = "MENU"
 	state_changed.emit(state)
 	current_scene = get_tree().current_scene
+	if GlobalConfig.DEBBUGGING:
+		tutorial_enabled = false
+		cutscene_enabled = false
 
 func change_scene():
 	var new_scene = Scenes[state].instantiate()

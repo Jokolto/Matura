@@ -44,10 +44,7 @@ func _ready() -> void:
 func _process(delta):
 	if not wave_active:
 		return
-	
-	
-	if wave_duration > 0:  
-		wave_timer += delta
+	wave_timer += delta
 
 	if (enemies_spawned >= enemies_per_wave) or (wave_timer >= wave_duration and wave_duration > 0):
 		if enemies_alive <= 0:

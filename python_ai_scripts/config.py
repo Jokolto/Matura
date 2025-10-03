@@ -8,20 +8,22 @@ class ServerConfig:
     BUFFER_SIZE = 2048
 
     # Q-learning constants
-    LEARNING_RATE = 0.1
+    LEARNING_RATE = 0.2
     DISCOUNT_FACTOR = 0.9
-    EPSILON = 0.1
+    EPSILON = 0.2
 
 
 class RewardConfig:
-    REWARDS = {    # not constant btw
-        "TOOK_DAMAGE": -1.0,
+    REWARDS = {    
+        "TOOK_DAMAGE": -2.0,
         "TIME_ALIVE": 0.05,
-        "HIT_PLAYER": 15.0,
-        "RETREATED": -2.0,
-        "WASTED_MOVEMENT": -1.0,
-        "MOVED_CLOSER": 1.0,
-        "MISSED": 0,
+        "HIT_PLAYER": 14.0,
+        "RETREATED": -0.2,
+        "WASTED_MOVEMENT": -0.1,
+        "MOVED_CLOSER": 0.05,
+        "MISSED": -0.2,
+        "DIED": -7,
+        "STUCK": -5
     }
 
     @classmethod

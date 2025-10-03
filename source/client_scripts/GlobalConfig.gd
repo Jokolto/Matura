@@ -2,7 +2,7 @@ extends Node
 # Uses dictionaries and consts instead of classes since classes work funny in gdscript
 
 # Python or not python, that is the question
-const USE_PYTHON_SERVER = false
+const USE_PYTHON_SERVER = true
 const DEBBUGGING = true
 
 enum EnemyTypes {Melee, Ranged, Generic}
@@ -15,7 +15,7 @@ var ClientConfig = {
 	"PORT": 9000,
 }
 
-# looks braindead, but it is the way. (no it is not)
+# looks braindead, but it is the way. (in case reward events names on server is different for some reason)
 var RewardEvents = {
 	"TOOK_DAMAGE": "TOOK_DAMAGE",
 	"HIT_PLAYER": "HIT_PLAYER",
@@ -52,5 +52,9 @@ var REWARDS := {
 	"MOVED_CLOSER": 0.05,
 	"MISSED": -0.2,
 	"DIED": -7,
-	"STUCK": -1
+	"STUCK": -5
 }
+
+# test config for experiments, should be set through python when conducting experiments
+var run_id = 0
+var config = "q_only" # should be only those: random, q_only, selection_only, selection_mut

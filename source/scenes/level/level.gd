@@ -87,7 +87,9 @@ func _ready() -> void:
 	tutorial.show_tutorial_piece("move")
 
 func _process(delta: float) -> void:
-	if len(GameManager.shown_tutorials) == GameManager.tutorials_amount and not EntitiesManager.wave_active and EntitiesManager.current_wave == 0:
+	var start_condition = (len(GameManager.shown_tutorials) == GameManager.tutorials_amount or not GameManager.tutorial_enabled) \
+		and not EntitiesManager.wave_active and EntitiesManager.current_wave == 0
+	if start_condition:
 		EntitiesManager.start_wave()
 	play_time += delta
 
@@ -101,7 +103,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("kill_all"):
 		if GlobalConfig.DEBBUGGING:
 			enemies_node.kill_all()
-
+	
 func _on_wave_end(_fitness):
 	WaveTimer.start(1.5)
 

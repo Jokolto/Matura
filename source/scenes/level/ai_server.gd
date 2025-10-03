@@ -1,4 +1,3 @@
-# ai_server.gd
 extends Node
 
 class_name AIServer

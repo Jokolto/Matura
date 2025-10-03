@@ -2,6 +2,8 @@ extends Node2D
 
 var next_enemy_id = 0
 var tick = 0
+var next_state_id = 0
+
 
 func _ready() -> void:
 	EntitiesManager.wave_end.connect(_on_wave_end)
@@ -10,10 +12,24 @@ func _process(_delta: float) -> void:
 	if len(get_alive_enemies()) == 0:
 		return
 	
+	# 1. Gather states for all enemies
 	var states_msg = create_states_msg(get_all_states())
-	var actions = get_actions_from_server(states_msg)
+	
+	# 2. Send states to Python server (non-blocking)
+	AiClient.send_message_to_server(states_msg)
+	
+	# 3. Process incoming messages (actions, logs, init) server should send actions after getting states
+	AiClient.process_incoming_bytes()
+	AiClient.handle_pending_messages()
+	
+	# 4. Pull latest actions dictionary
+	var actions = AiClient.get_latest_actions()
 	Logger.log("Got actions from server: %s" % [actions], "DEBUG")
+	
+	# 5. Execute actions for all enemies
 	process_actions(actions)
+	
+	 # 6. Collect events and send rewards
 	var events = get_all_events()
 	Logger.log("Sending reward events to server: %s" % [events], "DEBUG")
 	send_reward_requests_for_events(events)
@@ -52,10 +68,21 @@ func get_all_events() -> Dictionary:
 			event_bundle[enemy.enemy_id] = events
 	return event_bundle
 
-
-func send_states_to_server(states: Dictionary) -> void:
-	var msg = create_states_msg(states)
-	AiClient.send_json_from_dict_message(msg)
+func get_death_log(enemy: Enemy) -> Dictionary:
+	return {
+		"run_id": GlobalConfig.run_id,
+		"seed": seed,
+		"config": GlobalConfig.config,
+		"wave": EntitiesManager.current_wave,
+		"time": EntitiesManager.wave_timer,  # seconds since wave start
+		"log_type": "death",
+		"enemy_id": enemy.enemy_id,
+		"damage": enemy.damage_dealt,
+		"lifespan": enemy.life_time_sec,
+		"fitness": enemy.fitness,
+		#"mutations_applied": enemy.mut_count, 
+		#"parent_ids": enemy.parent_ids 
+	}
 
 func get_actions_from_server(states) -> Dictionary:
 	var response = AiClient.get_ai_actions(states)
@@ -73,11 +100,13 @@ func create_states_msg(states_bundle: Dictionary) -> Dictionary:
 	var payload = {}
 	for enemy_id in states_bundle.keys():
 		payload[enemy_id] = states_bundle[enemy_id]
+	next_state_id += 1
 	return {
 		"type": "STATE",
-		"data": payload
+		"data": payload, 
+		"state_id": next_state_id
 	}
-
+	
 
 func create_event_msg(event_bundle: Dictionary) -> Dictionary:
 	var reward_data = {}
@@ -101,6 +130,13 @@ func create_fitness_msg(fitness_per_enemy: Dictionary) -> Dictionary:
 		"data": fitness_per_enemy
 	}
 
+func create_death_log_msg(enemy: Enemy) -> Dictionary:
+	return {
+		"type": "LOG",
+		"data": get_death_log(enemy)
+	}
+
+
 func get_enemy_by_id(id: int) -> Enemy:
 	for enemy: Enemy in get_alive_enemies():
 		if enemy.enemy_id == id:
@@ -108,10 +144,9 @@ func get_enemy_by_id(id: int) -> Enemy:
 	return null
 
 
-func process_actions(data_with_actions):
-	var data = data_with_actions.get("data", {})
+func process_actions(actions):
 	for enemy: Enemy in get_alive_enemies():
-		var action = data.get(str(enemy.enemy_id), "idle")
+		var action = actions.get(str(enemy.enemy_id), "idle")
 		enemy.last_action = action
 		enemy.execute_action(action)
 
@@ -124,3 +159,8 @@ func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)
 	AiClient.send_message_to_server(fitness_msg)
 	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "DEBUG")
+
+
+func _on_enemy_death(enemy: Enemy):
+	var msg = create_death_log_msg(enemy)
+	AiClient.send_message_to_server(msg)
