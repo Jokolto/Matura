@@ -1,6 +1,8 @@
 extends Node
 
 class_name AIServer
+# made as "server" cause this is migrated code from real python server. To be able to run using this and python it mimics behavior of server.
+
 
 var agents = {}          # enemy_id (String): QLearner
 var fitnesses = {}       # enemy_id (String): float

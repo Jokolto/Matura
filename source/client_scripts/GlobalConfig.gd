@@ -2,8 +2,21 @@ extends Node
 # Uses dictionaries and consts instead of classes since classes work funny in gdscript
 
 # Python or not python, that is the question
-const USE_PYTHON_SERVER = true
-const DEBBUGGING = true
+const USE_PYTHON_SERVER = false   # must be true for experimenting 
+const DEBBUGGING = true # disables some stuff if true (tutorial, cutscene)
+
+# for experimentation
+const EXPERIMENTING = true      # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv
+var bot_player = true            # makes player not controlable, and replace with generic behavior defined in player.gd
+var infinite_ammo_ranged = true
+var no_weapon_variation = true  # makes all enemies spawn just with some default weapon defined in next line
+var path_to_default_weapon_resource = "res://scenes/objects/resources/guns/handgun.tres"
+
+var items_enabled = false        # skips upgrade panel
+var enemy_stat_scaling = false   # specific stat increase set in Entitiesmanager, this disables it.
+var enemy_amount_per_wave_increase = false   # normally each wave 10 percent more enemies is spawned with base amount 4. To change base go to Entitiesmanager 
+
+
 
 enum EnemyTypes {Melee, Ranged, Generic}
 enum WeaponType {MELEE, RANGED}
@@ -57,4 +70,5 @@ var REWARDS := {
 
 # test config for experiments, should be set through python when conducting experiments
 var run_id = 0
-var config = "q_only" # should be only those: random, q_only, selection_only, selection_mut
+var config = "q_only" # should be only those: random, q_only, selection_only, selection_mut   // could also make an enum but idk how they interact with python
+var seed_n = 0  # can't name seed, cause it is a method to set it. This seed is set in Gamemanager at begin if experimenting

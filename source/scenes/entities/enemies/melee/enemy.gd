@@ -19,7 +19,7 @@ var move_speed: float
 var max_health: float 
 var health: float
 var contact_damage: float
-var dir: Vector2 = Vector2.RIGHT
+var move_dir: Vector2 = Vector2.RIGHT
 
 var player_inside_contact_range: bool = false
 var is_dead: bool = false
@@ -47,8 +47,8 @@ var life_time_sec: float = 0
 var damage_dealt: float = 0
 var min_dist_to_player: float = INF
 
-var fitness_damage_priority_formula = func(life_time, dmg_dealt, min_distance): 
-	return dmg_dealt * 5.0 + life_time * 0.2 - min_distance * 0.005
+var fitness_damage_priority_formula = func(life_time, dmg_dealt, _min_distance): # earlier it used min distance as negative paramater
+	return dmg_dealt * 5.0 + life_time * 0.2
 
 var fitness_survivability_priority = func(life_time, dmg_dealt, _min_distance): 
 	return life_time * 1.0 + dmg_dealt * 0.5
@@ -126,7 +126,7 @@ func die():
 		return
 	is_dead = true
 	body_sprite.play("death")
-	fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
+	calculate_fitness()
 	enemy_death.emit(self)
 	add_reward_event(GlobalConfig.RewardEvents["DIED"])
 	if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
@@ -147,7 +147,7 @@ func die():
 	tween.tween_property(body_sprite, "modulate", Color(0.3, 0.3, 0.3, 0.8), 0.1)
 	
 	var angle = deg_to_rad(70)  # 70° tilt
-	if dir.x < 0:
+	if move_dir.x < 0:
 		# Player is left, rotate clockwise, go right
 		tween.tween_property(self, "rotation", angle, 0.3)
 		tween.tween_property(self, "position:x", position.x + 30, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
@@ -158,29 +158,32 @@ func die():
 
 	tween.finished.connect(queue_free)
 
+func calculate_fitness():
+	fitness = fitness_damage_priority_formula.call(life_time_sec, damage_dealt, min_dist_to_player)
+
 
 func execute_action(action: String):
-	dir = (player.global_position - global_position).normalized()
-	var shooting_dir = player.global_position
+	move_dir = (player.global_position - global_position).normalized()
+	var shooting_move_dir = player.global_position
 
 	var ai_velocity := Vector2.ZERO
 
 	match action:
 		"move_forward":
-			ai_velocity = dir * move_speed
+			ai_velocity = move_dir * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["MOVED_CLOSER"])
 		"retreat":
-			ai_velocity = -dir * move_speed
+			ai_velocity = -move_dir * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["RETREATED"])
 		"strafe_left":
-			ai_velocity = dir.rotated(-PI/2) * move_speed
+			ai_velocity = move_dir.rotated(-PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"strafe_right":
-			ai_velocity = dir.rotated(PI/2) * move_speed
+			ai_velocity = move_dir.rotated(PI/2) * move_speed
 			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
 		"use_weapon":
 			if weapon_instance and weapon_instance.is_ready():
-				weapon_instance.use_weapon(shooting_dir)
+				weapon_instance.use_weapon(shooting_move_dir)
 				weapon_instance.store_state(current_state, action)
 		_:
 			ai_velocity = Vector2.ZERO
@@ -209,11 +212,11 @@ func get_state() -> String:
 	var dist = floor(dist_not_batch / 200.0)   # 400 is aproximately 1/5 of the map
 	var angle = round(global_position.angle_to_point(player.global_position) / (PI / 2)) # 4 possible angles, divided by quadrants
 	
-	var dist_and_angle_to_ally = get_distance_and_angle_to_closest_ally()
+	var dist_and_angle_to_ally = enemies_node.get_distance_and_angle_to_closest_enemy_from(self) # also closest enemy instance at index 2
 	var dist_ally = floor(dist_and_angle_to_ally[0] / 200)
 	var angle_ally = (dist_and_angle_to_ally[1] / 200)
 	
-	var relative_dir = get_relative_sector(global_position, player.global_position, player.aim_vector)
+	var relative_move_dir = get_relative_sector(global_position, player.global_position, player.aim_vector)
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position)
 	var bullet_dist = -1  # no bullets flying
 	var bullet_angle = -1  # no bullets flying
@@ -236,7 +239,7 @@ func get_state() -> String:
 	return "wt{wt}pw{pw}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
 		"wt": weapon_type, "pw": player_weapon_type, 
 		"px": pos_x, "py": pos_y,
-		"d": dist, "a": relative_dir, 
+		"d": dist, "a": relative_move_dir, 
 		"bd": bullet_dist, "ba": bullet_angle, 
 		"ad": dist_ally, "aa": angle_ally
 		})
@@ -271,22 +274,6 @@ func cleanup_old_events():
 func is_still_relevant(_event):
 	return false
 
-func get_distance_and_angle_to_closest_ally() -> Array:
-	var min_distance = INF
-	var closest: Enemy = null
-	for other_enemy in enemies_node.get_alive_enemies():
-		if other_enemy and other_enemy != self:
-			var dist = global_position.distance_to(other_enemy.global_position)
-			if dist < min_distance:
-				min_distance = dist
-				closest = other_enemy
-			
-	if closest:
-		var to_ally = (closest.global_position - global_position).normalized()
-		var angle = dir.angle_to(to_ally)  # in radians
-		return [min_distance, angle]
-	
-	return [min_distance, -1.0]
 
 # returns relative angle to player, with also accounting to player aim
 func get_relative_sector(enemy_pos: Vector2, player_pos: Vector2, aim_vector: Vector2, sectors: int = 8) -> int:

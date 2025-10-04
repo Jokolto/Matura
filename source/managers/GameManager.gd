@@ -28,6 +28,20 @@ var tutorials_amount: int = 0
 
 signal state_changed(state)
 
+func _init() -> void:
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg.begins_with("--run_id="):
+			GlobalConfig.run_id = int(arg.substr("--run_id=".length()))
+		elif arg.begins_with("--seed="):
+			GlobalConfig.seed_n = int(arg.substr("--seed=".length()))
+		elif arg.begins_with("--config="):
+			GlobalConfig.config = arg.substr("--config=".length())
+		elif arg.begins_with("--port="):
+			GlobalConfig.ClientConfig['PORT'] = int(arg.substr("--port=".length()))
+	if GlobalConfig.EXPERIMENTING:
+		seed(GlobalConfig.seed_n)
+
 func _ready() -> void:
 	state = "MENU"
 	state_changed.emit(state)

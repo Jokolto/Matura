@@ -40,8 +40,9 @@ func handle_server_msg(msg: Dictionary):
 			latest_actions = data.duplicate() # dictionary of actions: {enemy_id: action}
 		"INIT":
 			GlobalConfig.run_id = data["run_id"]
-			GlobalConfig.seed = data["seed"]
+			GlobalConfig.seed_n = data["seed"]
 			GlobalConfig.config = data["config"]
+			seed(GlobalConfig.seed_n)
 		# maybe future message types
 		_:
 			Logger.log("Unknown msg type:" + str(msg_type), "WARNING")
@@ -73,9 +74,11 @@ func send_message_to_server(msg: Dictionary):
 			Logger.log("Failed to send message: not connected to server", "WARNING")
 			return
 		var json_msg = JSON.stringify(msg) + "\n"
-		var _err = client.put_data(json_msg.to_utf8_buffer())
+		var err = client.put_data(json_msg.to_utf8_buffer())
+		return err
 	else:
-		local_ai_server.handle_message(msg)
+		var server_responce = local_ai_server.handle_message(msg)
+		return server_responce
 
 
 func process_incoming_bytes():

@@ -17,7 +17,7 @@ func use_weapon(target_pos: Vector2) -> void:
 	try_fire(target_pos)
 
 func try_fire(target_pos: Vector2) -> void:
-	if not is_ready() or ammo < 1:
+	if not is_ready() or (ammo < 1 and not GlobalConfig.infinite_ammo_ranged):
 		return
 	
 	

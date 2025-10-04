@@ -1,5 +1,6 @@
 extends Node
-
+# maybe it was a bit unneccessary thing to make
+ 
 # too much logging, do not turn this thing on
 const PRINT_DEBUG = false
 
@@ -12,7 +13,7 @@ func log(msg: String, level: String) -> void:
 	var typed_msg = "[%s][%s] %s" % [timestamp, level, msg]
 	match level:
 		"WARNING":
-			push_warning(msg)
+			push_warning(msg)   # some disadvantage of pushing it here, is that in debugger it will say this is the source of warning
 		"ERROR":
-			push_error(msg)
+			push_error(msg)     # or error
 	print(typed_msg)

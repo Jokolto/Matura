@@ -16,6 +16,8 @@ class_name Player
 @export var damage_reduction: float = 0
 @export var dodge_chance: float = 0
 
+var move_dir: Vector2
+
 # item specific
 var weapons_automatic_override = false
 var fire_dmg: float = 0
@@ -25,8 +27,12 @@ var stones_throw_amount: int = 0
 
 var aim_vector: Vector2
 var weapon_scene: PackedScene # will be assigned automatically from resource
-var default_weapon_res: Resource = preload("res://resources/weapons/melee/hammer.tres")
+var default_weapon_res: Resource = preload("res://resources/weapons/melee/stick.tres")
 @export var nearby_pickups: Array[Weapon] = []  
+
+# starting weapons of player for experiments
+var gun_res: Resource = preload("res://resources/weapons/guns/handgun.tres")
+var melee_res: Resource = preload("res://resources/weapons/melee/sword.tres")
 
 var hurt_sound: AudioStream = preload("res://assets/audio/sfx/player/young-man-being-hurt-95628.mp3")
 
@@ -38,7 +44,10 @@ var invulnerable_period: float = 0.2
 @onready var weapon_holder: Node2D = $Weaponholder
 @onready var body_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
+# set in level.gd
 var projectiles_node: Node = null
+var enemies_node: Node = null
+
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
 
@@ -49,21 +58,50 @@ signal weapon_equipped(texture)
 signal weapon_nearby
 signal shot(gun)
 
+
+func _ready() -> void:
+	if GlobalConfig.bot_player:
+		global_position = Vector2(3370, 3150) # set position for experiments to go smoother
+
 func _physics_process(delta: float) -> void:
-	var input_vector = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var dash_vel = _handle_dash(delta, input_vector)
-	velocity = dash_vel if dash_vel != Vector2.ZERO else input_vector * move_speed
+	var input_vector: Vector2 = Vector2()
+	if not GlobalConfig.bot_player:
+		# normal controlled behavior
+		input_vector = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		var dash_vel = _handle_dash(delta, input_vector)
+		velocity = dash_vel if dash_vel != Vector2.ZERO else input_vector * move_speed
+		move_dir = input_vector
+	else:
+		# bot behaviour 
+		move_dir = Vector2(sin(Time.get_ticks_msec() / 2000.0), 0)   # horizontal movement side to side
+		input_vector = move_dir
+		velocity = move_dir * move_speed
+		
+	
 	_update_animation(input_vector)
 	move_and_slide()
 
 func _process(_delta: float) -> void:
-	aim_vector = get_global_mouse_position()
-	weapon_holder._aim_weapon(aim_vector)
-	_handle_weapon_use(aim_vector)
-	_handle_pickups()
-
+	if not GlobalConfig.bot_player:
+		aim_vector = get_global_mouse_position()
+		weapon_holder._aim_weapon(aim_vector)
+		_handle_weapon_use(aim_vector)
+		_handle_pickups()
+	else:
+		var closest_enemy = enemies_node.get_distance_and_angle_to_closest_enemy_from(self)[2] 
+		if is_instance_valid(closest_enemy):
+			aim_vector = closest_enemy.global_position
+			weapon_holder._aim_weapon(aim_vector)
+			if weapon_instance and weapon_instance.is_ready():
+				weapon_instance.use_weapon(aim_vector)
+				if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
+					shot.emit(weapon_instance)
+		
 func set_projectiles_node(node: Node):
 	projectiles_node = node
+
+func set_enemies_node(node: Node):
+	enemies_node = node
 
 func _handle_pickups():
 	if nearby_pickups.size() > 0:
@@ -85,11 +123,12 @@ func _handle_weapon_use(target_pos: Vector2) -> void:
 		if is_auto:
 			if Input.is_action_pressed("shoot"):
 				weapon_instance.use_weapon(target_pos)
-				if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
-					shot.emit(weapon_instance)
 		else:
 			if Input.is_action_just_pressed("shoot"):
 				weapon_instance.use_weapon(target_pos)
+				
+		if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
+			shot.emit(weapon_instance)
 
 func _handle_dash(_delta: float, input_vector: Vector2) -> Vector2:
 	if is_dashing:

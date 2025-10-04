@@ -22,6 +22,12 @@ extends Node2D
 @onready var ItemManager = $ItemManager
 
 
+# starting weapons of player for experiments
+var gun_res: Resource = preload("res://resources/weapons/guns/handgun.tres")
+var melee_res: Resource = preload("res://resources/weapons/melee/sword.tres")
+
+
+
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 var play_time: float = 0.0
 signal pause
@@ -80,8 +86,11 @@ func _ready() -> void:
 	
 	# passing ui node
 	spawners_node.set_ui(UI)
+	
 	spawners_node.set_pickups_node(pickups_node)
+	
 	spawners_node.set_enemies_node(enemies_node)
+	player.set_enemies_node(enemies_node)
 		
 	set_default_nodes()
 	tutorial.show_tutorial_piece("move")
@@ -95,6 +104,8 @@ func _process(delta: float) -> void:
 
 func set_default_nodes():
 	hud.set_health(player.hp, player.max_hp)
+	player._equip_weapon(gun_res)
+	
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"): # Typically Escape

@@ -1,8 +1,8 @@
 extends Node2D
 
 var next_enemy_id = 0
-var tick = 0
 var next_state_id = 0
+var last_snapshot: int = 0 # sec
 
 
 func _ready() -> void:
@@ -12,19 +12,29 @@ func _process(_delta: float) -> void:
 	if len(get_alive_enemies()) == 0:
 		return
 	
+	# data collection
+	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete:
+		last_snapshot = EntitiesManager.wave_timer_discrete
+		AiClient.send_message_to_server(create_wave_snapshot_msg())
+	
+	
 	# 1. Gather states for all enemies
 	var states_msg = create_states_msg(get_all_states())
 	
 	# 2. Send states to Python server (non-blocking)
-	AiClient.send_message_to_server(states_msg)
-	
-	# 3. Process incoming messages (actions, logs, init) server should send actions after getting states
-	AiClient.process_incoming_bytes()
-	AiClient.handle_pending_messages()
-	
-	# 4. Pull latest actions dictionary
-	var actions = AiClient.get_latest_actions()
-	Logger.log("Got actions from server: %s" % [actions], "DEBUG")
+	var response_or_error = AiClient.send_message_to_server(states_msg)   # actions if no python server, otherwise error code
+	var actions: Dictionary = Dictionary()
+	if GlobalConfig.USE_PYTHON_SERVER:
+		# 3. Process incoming messages (actions, logs, init) server should send actions after getting states
+		AiClient.process_incoming_bytes()
+		AiClient.handle_pending_messages()
+		
+		# 4. Pull latest actions dictionary
+		actions = AiClient.get_latest_actions()
+		Logger.log("Got actions from server: %s" % [actions], "DEBUG")
+	else:
+		# or 4. get action directly from message
+		actions = response_or_error['data']
 	
 	# 5. Execute actions for all enemies
 	process_actions(actions)
@@ -71,7 +81,7 @@ func get_all_events() -> Dictionary:
 func get_death_log(enemy: Enemy) -> Dictionary:
 	return {
 		"run_id": GlobalConfig.run_id,
-		"seed": seed,
+		"seed": GlobalConfig.seed_n,
 		"config": GlobalConfig.config,
 		"wave": EntitiesManager.current_wave,
 		"time": EntitiesManager.wave_timer,  # seconds since wave start
@@ -82,6 +92,28 @@ func get_death_log(enemy: Enemy) -> Dictionary:
 		"fitness": enemy.fitness,
 		#"mutations_applied": enemy.mut_count, 
 		#"parent_ids": enemy.parent_ids 
+	}
+
+# Collect aggregate snapshot (e.g., called every second)
+func get_wave_snapshot_log() -> Dictionary:
+	var enemies: Array = get_alive_enemies()
+	var n_alive = enemies.size()
+	var mean_fit = 0.0
+	if n_alive > 0:
+		for enemy: Enemy in enemies:
+			enemy.calculate_fitness()
+			mean_fit += enemy.fitness
+		mean_fit /= n_alive
+
+	return {
+		"run_id": GlobalConfig.run_id,
+		"seed": GlobalConfig.seed_n,
+		"config": GlobalConfig.config,
+		"wave": EntitiesManager.current_wave,
+		"time": EntitiesManager.wave_timer_discrete,
+		"log_type": "wave_snapshot",
+		"mean_fitness_alive": mean_fit,
+		"n_alive": n_alive
 	}
 
 func get_actions_from_server(states) -> Dictionary:
@@ -136,6 +168,11 @@ func create_death_log_msg(enemy: Enemy) -> Dictionary:
 		"data": get_death_log(enemy)
 	}
 
+func create_wave_snapshot_msg() -> Dictionary:
+	return {
+		"type": "LOG",
+		"data": get_wave_snapshot_log()
+	}
 
 func get_enemy_by_id(id: int) -> Enemy:
 	for enemy: Enemy in get_alive_enemies():
@@ -155,12 +192,31 @@ func kill_all():
 	for enemy: Enemy in get_alive_enemies():
 		enemy.take_damage(99999)
 
+func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:
+	var min_distance = INF
+	var closest: Enemy = null
+	for other_enemy in get_alive_enemies():
+		if other_enemy and other_enemy != entity:
+			var dist = entity.global_position.distance_to(other_enemy.global_position)
+			if dist < min_distance:
+				min_distance = dist
+				closest = other_enemy
+			
+	if closest:
+		var to_ally = (closest.global_position - entity.global_position).normalized()
+		var angle = entity.move_dir.angle_to(to_ally)  # in radians
+		return [min_distance, angle, closest]
+	
+	return [min_distance, -1.0, null]
+
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)
 	AiClient.send_message_to_server(fitness_msg)
 	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "DEBUG")
+	last_snapshot = 0
 
 
 func _on_enemy_death(enemy: Enemy):
-	var msg = create_death_log_msg(enemy)
-	AiClient.send_message_to_server(msg)
+	if GlobalConfig.EXPERIMENTING:
+		var msg = create_death_log_msg(enemy)
+		AiClient.send_message_to_server(msg)
