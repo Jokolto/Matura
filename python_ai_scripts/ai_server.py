@@ -5,6 +5,7 @@ import copy
 import signal
 import sys
 import pandas as pd
+import argparse
 
 from q_learner import QLearner, SharedQLearner
 from config import ServerConfig, RewardConfig, Logger
@@ -15,11 +16,20 @@ logging = Logger.get_logger(__name__)
 
 
 class AIServer:
-    def __init__(self, csv_file='python_ai_scripts/data/results.csv'):
+    def __init__(self, server_cfg, reward_cfg, csv_file='python_ai_scripts/data/results2.csv', run_id=0, exp_config='gen_q_learning'):
         self.agents = {}  # enemy_id (str): QLearner
         self.fitnesses = {}  # enemy_id (str) : float
         self.shared_brain = SharedQLearner()
         self.running = True
+
+        # configs
+        self.server_cfg = server_cfg
+        self.reward_cfg = reward_cfg
+
+        # experiment info, not really used, as it is provided indirectly by client
+        self.run_id = run_id
+        self.exp_config = exp_config
+
         # for data handling
         self.csv_file = csv_file
         self.df = pd.DataFrame()
@@ -29,7 +39,7 @@ class AIServer:
             logging.info(f"[Connection] Accepted connection from {addr}")
             buffer = ""
             while True:
-                data = conn.recv(ServerConfig.BUFFER_SIZE)
+                data = conn.recv(self.server_cfg.BUFFER_SIZE)
                 if not data:
                     logging.info(f"[Connection] Client {addr} disconnected.")
                     break
@@ -101,7 +111,7 @@ class AIServer:
                 state_to_reward = event["state_to_reward"]
 
 
-                reward = RewardConfig.get(event_type)
+                reward = self.reward_cfg.get(event_type)
                 
                 if reward is None:
                     logging.warning(f"Unknown event type '{event_type}' for enemy {enemy_id}, no reward applied.")
@@ -129,7 +139,6 @@ class AIServer:
         self.handle_wave_end()  # Process the end of the wave after receiving fitness data
         
     def handle_log_msg(self, data):
-        print(data)
         # Expecting `data` to already be a flat dict with all columns
         self.df = pd.concat([self.df, pd.DataFrame([data])], ignore_index=True)
         # Save every time so you don’t lose data if crash
@@ -147,9 +156,9 @@ class AIServer:
         self.running = True
         logging.info("[Python AI Server] Starting server...")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind((ServerConfig.HOST, ServerConfig.PORT))
+            s.bind((self.server_cfg.HOST, self.server_cfg.PORT))
             s.listen()
-            logging.info(f"[Python AI Server] Server listening on {ServerConfig.HOST}:{ServerConfig.PORT}")
+            logging.info(f"[Python AI Server] Server listening on {self.server_cfg.HOST}:{self.server_cfg.PORT}")
             while self.running:
                 conn, addr = s.accept()
                 self.handle_client(conn, addr)
@@ -160,8 +169,33 @@ class AIServer:
         self.running = False
         sys.exit(0)
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=9000)
+    parser.add_argument("--run_id", type=int, default=0)  # not really used in server currently, client sends this indirectly in data
+    parser.add_argument("--config", type=str, default='gen_q_learning') # not really used in server currently, client sends this indirectly in data
+    parser.add_argument("--learning_rate", type=float, default=0.2)
+    parser.add_argument("--discount_factor", type=float, default=0.9)
+    parser.add_argument("--epsilon", type=float, default=0.2)
+    parser.add_argument("--output_csv", type=str, default='python_ai_scripts/data/results2.csv')
 
-if __name__ == "__main__":
-    server = AIServer()
+    args = parser.parse_args()
+
+    srv_cgf = ServerConfig(
+        port=args.port,
+        learning_rate=args.learning_rate,
+        discount_factor=args.discount_factor,
+        epsilon=args.epsilon
+    )
+
+    # default now, but making possible to expand experiments with varying rewards
+    reward_cfg = RewardConfig()
+
+    server = AIServer(server_cfg=srv_cgf, reward_cfg=reward_cfg, csv_file=args.output_csv)
     signal.signal(signal.SIGINT, server.shutdown)
     server.run()
+
+
+if __name__ == "__main__":
+    main()
+    
