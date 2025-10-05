@@ -1,0 +1,15 @@
+config,log_type,mean_fitness_alive,n_alive,run_id,seed,time,wave,damage,enemy_id,fitness,lifespan
+gen_q_learning,wave_snapshot,0.159234709523809,2.0,3,103670,1.0,1,,,,
+gen_q_learning,wave_snapshot,0.358770643650794,4.0,3,103670,2.0,1,,,,
+gen_q_learning,wave_snapshot,0.758890732539685,4.0,3,103670,3.0,1,,,,
+gen_q_learning,wave_snapshot,1.15765555476191,4.0,3,103670,4.0,1,,,,
+gen_q_learning,death,,,3,103670,4.51055555555561,1,0.0,0.0,1.66196941904763,8.30984709523816
+gen_q_learning,wave_snapshot,1.45744462222223,3.0,3,103670,5.0,1,,,,
+gen_q_learning,wave_snapshot,1.85758780000002,3.0,3,103670,6.0,1,,,,
+gen_q_learning,death,,,3,103670,6.44272588888899,1,0.0,3.0,1.83298962222224,9.1649481111112
+gen_q_learning,wave_snapshot,2.35807075555559,2.0,3,103670,7.0,1,,,,
+gen_q_learning,wave_snapshot,2.75815922222227,2.0,3,103670,8.0,1,,,,
+gen_q_learning,death,,,3,103670,8.54722222222236,1,0.0,1.0,3.07583333333339,15.3791666666669
+gen_q_learning,wave_snapshot,3.05773206666672,1.0,3,103670,9.0,1,,,,
+gen_q_learning,wave_snapshot,3.45771606666673,1.0,3,103670,10.0,1,,,,
+gen_q_learning,death,,,3,103670,10.9268669999999,1,0.0,2.0,3.82724140000008,19.1362070000004
