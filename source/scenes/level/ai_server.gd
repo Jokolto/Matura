@@ -27,6 +27,8 @@ func handle_message(msg: Dictionary) -> Dictionary:
 			handle_fitness_msg(data)
 		"WAVE_END":
 			handle_wave_end()
+		"SHUTDOWN":
+			pass
 		_:
 			Logger.log("Unknown message type: %s" % msg_type, "DEBUG")
 

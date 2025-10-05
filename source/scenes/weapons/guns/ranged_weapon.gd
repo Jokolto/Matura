@@ -24,7 +24,7 @@ func try_fire(target_pos: Vector2) -> void:
 	for bullet in range(stats.bullets_amount):
 		_spawn_bullet(target_pos)
 	
-	AudioManager.play_sfx_positional(
+	AudioManager.play_sfx(
 		stats.on_shoot_sound, global_position,
 		stats.shoot_sound_volume_db, stats.shoot_sound_pitch_randomness
 	)

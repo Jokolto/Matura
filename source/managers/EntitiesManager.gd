@@ -85,7 +85,22 @@ func end_wave():
 	Logger.log("Wave ended (enemies are dead)", "INFO")
 	wave_end.emit(enemy_fitness)
 	enemy_fitness = {}
+	
+	if GlobalConfig.EXPERIMENTING:
+		var quit_condition = (current_wave >= GlobalConfig.waves_amount and GlobalConfig.waves_amount > 0) \
+		or GameManager.state == 'GAME_OVER'
+		
+		if quit_condition:
+			end_experiment()
 
+func end_experiment():
+	var msg = {"type": "SHUTDOWN"}
+	AiClient.send_message_to_server(msg)
+	
+	# Give the server a moment to process
+	await get_tree().create_timer(0.3).timeout
+	
+	get_tree().quit()
 
 func _on_player_death():
 	wave_active = false

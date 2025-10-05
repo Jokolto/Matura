@@ -2,21 +2,22 @@ extends Node
 # Uses dictionaries and consts instead of classes since classes work funny in gdscript
 
 # Python or not python, that is the question
-const USE_PYTHON_SERVER = false   # must be true for experimenting 
-const DEBBUGGING = true # disables some stuff if true (tutorial, cutscene)
+const USE_PYTHON_SERVER = true   # must be true for experimenting 
+const DEBBUGGING = true # disables some stuff if true (tutorial, cutscene) enables ctr K to kill all enemies
 
-# for experimentation
+# For experimentation
 const EXPERIMENTING = true      # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv
 var bot_player = true            # makes player not controlable, and replace with generic behavior defined in player.gd
 var infinite_ammo_ranged = true
 var no_weapon_variation = true  # makes all enemies spawn just with some default weapon defined in next line
 var path_to_default_weapon_resource = "res://scenes/objects/resources/guns/handgun.tres"
 
+var menus_enabled = false        # skips main menu to go to main gameplay loop
 var items_enabled = false        # skips upgrade panel
 var enemy_stat_scaling = false   # specific stat increase set in Entitiesmanager, this disables it.
 var enemy_amount_per_wave_increase = false   # normally each wave 10 percent more enemies is spawned with base amount 4. To change base go to Entitiesmanager 
-
-
+var waves_amount = 3      # runs for this amount of waves and leaves
+#
 
 enum EnemyTypes {Melee, Ranged, Generic}
 enum WeaponType {MELEE, RANGED}

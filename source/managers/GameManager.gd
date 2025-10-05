@@ -29,7 +29,7 @@ var tutorials_amount: int = 0
 signal state_changed(state)
 
 func _init() -> void:
-	var args = OS.get_cmdline_args()
+	var args = OS.get_cmdline_user_args()
 	for arg in args:
 		if arg.begins_with("--run_id="):
 			GlobalConfig.run_id = int(arg.substr("--run_id=".length()))
@@ -37,11 +37,13 @@ func _init() -> void:
 			GlobalConfig.seed_n = int(arg.substr("--seed=".length()))
 		elif arg.begins_with("--config="):
 			GlobalConfig.config = arg.substr("--config=".length())
+		elif arg.begins_with("--waves="):
+			GlobalConfig.waves_amount = int(arg.substr("--waves=".length()))
 		elif arg.begins_with("--port="):
 			GlobalConfig.ClientConfig['PORT'] = int(arg.substr("--port=".length()))
 	if GlobalConfig.EXPERIMENTING:
 		seed(GlobalConfig.seed_n)
-
+		
 func _ready() -> void:
 	state = "MENU"
 	state_changed.emit(state)
@@ -49,18 +51,19 @@ func _ready() -> void:
 	if GlobalConfig.DEBBUGGING:
 		tutorial_enabled = false
 		cutscene_enabled = false
+	
+	
+	
 
 func change_scene():
 	var new_scene = Scenes[state].instantiate()
-	get_tree().get_root().add_child(new_scene)
+	get_tree().get_root().add_child.call_deferred(new_scene)
 	if state == "PLAYING":
 		Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW,  Vector2(16, 16) )
 	else:
 		Input.set_custom_mouse_cursor(null)
 	if current_scene:
-		#print(str(current_scene) + "deleted")
 		current_scene.queue_free()
-	get_tree().current_scene = new_scene
 	current_scene = new_scene
 	state_changed.emit(state)
 

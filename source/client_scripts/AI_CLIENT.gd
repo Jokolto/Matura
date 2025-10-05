@@ -43,6 +43,8 @@ func handle_server_msg(msg: Dictionary):
 			GlobalConfig.seed_n = data["seed"]
 			GlobalConfig.config = data["config"]
 			seed(GlobalConfig.seed_n)
+		"SHUTDOWN":   # not used
+			get_tree().quit()
 		# maybe future message types
 		_:
 			Logger.log("Unknown msg type:" + str(msg_type), "WARNING")
@@ -64,14 +66,14 @@ func connect_to_server():
 		Logger.log("[AIClient] Connected to Python AI at %s:%d" % [client.get_connected_host(), client.get_connected_port()], "INFO")
 		connected = true
 	else:
-		Logger.log("[AIClient] Failed to connect to AI server with status:" + str(status), "WARNING")
+		Logger.log("[AIClient] Failed to connect to AI server with port %s with status: %s" \
+		 % [GlobalConfig.ClientConfig['PORT'], status], "WARNING")
 		connected = false
 
 
 func send_message_to_server(msg: Dictionary):
 	if GlobalConfig.USE_PYTHON_SERVER:
 		if not connected:
-			Logger.log("Failed to send message: not connected to server", "WARNING")
 			return
 		var json_msg = JSON.stringify(msg) + "\n"
 		var err = client.put_data(json_msg.to_utf8_buffer())
@@ -82,6 +84,8 @@ func send_message_to_server(msg: Dictionary):
 
 
 func process_incoming_bytes():
+	if not connected:
+		return
 	# Read all available bytes
 	if client.get_available_bytes() > 0:
 		var msg_in_bytes = client.get_data(client.get_available_bytes())[1]
@@ -106,4 +110,15 @@ func handle_pending_messages():
 
 # Called in enemies.gd
 func get_latest_actions() -> Dictionary:
-	return latest_actions.duplicate()  # duplicate so consumers can modify safely
+	return latest_actions.duplicate()  
+
+
+# so stuff does not leak in build
+func _exit_tree():
+	if is_instance_valid(local_ai_server):
+		local_ai_server.queue_free()
+	local_ai_server = null
+	
+	if client:
+		client.disconnect_from_host()
+		client = null
