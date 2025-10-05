@@ -16,6 +16,14 @@ var death_music: AudioStream
 const MUSIC_BUS := "Music"
 const SFX_BUS := "SFX"
 
+# Number of players to preload in the pool
+const POOL_SIZE := 50.0
+
+# Separate pools for 2D and regular SFX
+var pool: Array[AudioStreamPlayer] = []
+var pool_2d: Array[AudioStreamPlayer2D] = []
+
+
 func _ready():
 	music_volume = AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music"))
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -30,9 +38,22 @@ func _ready():
 	
 	music_player.bus = MUSIC_BUS
 	add_child(music_player)
+	# Preload regular AudioStreamPlayers
+	for i in floor(POOL_SIZE/5):
+		var player = AudioStreamPlayer.new()
+		player.bus = "SFX"
+		add_child(player)
+		pool.append(player)
+
+	# Preload 2D AudioStreamPlayers
+	for i in ceil(POOL_SIZE*4/5):
+		var player2d = AudioStreamPlayer2D.new()
+		player2d.bus = "SFX"
+		add_child(player2d)
+		pool_2d.append(player2d)
 
 
-# === MUSIC ===
+# music
 func play_music(stream: AudioStream, loop: bool = true):
 	if current_music == stream:
 		return
@@ -64,36 +85,50 @@ func _fade_to_music(new_music: AudioStream, duration: float, loop: bool = true):
 
 
 
-# === SFX ===
-func play_sfx(stream: AudioStream, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
-	var sfx_player = AudioStreamPlayer.new()
-	sfx_player.bus = SFX_BUS
-	sfx_player.stream = stream
-	sfx_player.volume_db = volume
+# sfx
+func play_sfx(stream: AudioStream, pos = null, volume: float = 0.0, pitch_randomness: float = 0.0,  parent: Node = self):
+	var player
+	# Decide which pool to use
+	if pos != null:
+		if len(pool_2d) == 0:
+			push_warning("No available AudioStreamPlayer2D in pool! Increase POOL_SIZE.")
+			return
+		player = pool_2d.pop_front()
+		player.global_position = pos
+	else:
+		if len(pool) == 0:
+			push_warning("No available AudioStreamPlayer in pool! Increase POOL_SIZE.")
+			return
+		player = pool.pop_front()
 
+	# Stop previous playback and assign stream
+	player.stop()
+	player.stream = stream
+	player.volume_db = volume
+	
+	# Pitch randomness
 	if pitch_randomness > 0.0:
-		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
+		player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
+	else:
+		player.pitch_scale = 1.0
 
-	parent.add_child(sfx_player)
-	sfx_player.play()
-	sfx_player.connect("finished", Callable(sfx_player, "queue_free"))
+	# Reparent if necessary
+	if player.get_parent() != parent:
+		player.get_parent().remove_child(player)
+		parent.add_child(player)
+
+	# Disconnect previous connections
+	#player.finished.disconnect()
 	
-	
-func play_sfx_positional(stream: AudioStream, play_at_position: Vector2, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
-	var sfx_player = AudioStreamPlayer2D.new()
-	sfx_player.bus = SFX_BUS
-	sfx_player.stream = stream
-	sfx_player.volume_db = volume
-	sfx_player.global_position = play_at_position
+	if not player.finished.is_connected(_return_player_to_pool.bind(player)):
+		player.finished.connect(_return_player_to_pool.bind(player))
+	player.play()
 
-	if pitch_randomness > 0.0:
-		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
-
-	parent.add_child(sfx_player)
-	sfx_player.play()
-	
-	sfx_player.connect("finished", Callable(sfx_player, "queue_free"))
-
+func _return_player_to_pool(player):
+	if player is AudioStreamPlayer2D:
+		pool_2d.append(player)
+	else:
+		pool.append(player)
 
 func _on_game_state_changed(state: String):
 	match state:
@@ -106,3 +141,15 @@ func _on_game_state_changed(state: String):
 		"GAME_OVER":
 			if music_player.stream != death_music:
 				_fade_to_music(death_music, 0.25)
+
+# so nothing leaks
+func _exit_tree():
+	if is_instance_valid(music_player):
+		music_player.queue_free()
+	music_player = null
+	
+	# all audio stream must queued free before closing the game
+	for child in get_children():
+		if child is AudioStreamPlayer2D:
+			child.stop()
+			child.queue_free()
