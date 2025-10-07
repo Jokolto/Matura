@@ -44,8 +44,13 @@ class QLearner:
         
         self.q_table[state][action] = new_value
 
-    def choose_action(self, state: str, valid_actions: list[str], epsilon: float = 0.1) -> str:
+    def choose_action(self, state: str, valid_actions: list[str], epsilon: float = 0.1, random_q: bool = False) -> str:  # last parameter is true in base and ga_only configs
         self.last_state = state
+
+        if random_q:
+            epsilon = 0.0 
+            if state not in self.q_table:
+                self.q_table[state] = {action: random.uniform(-1, 1) for action in valid_actions} # random q values for actions that persists for agents
 
          # Explore if epsilon hits or state is unknown
         if random.random() < epsilon or state not in self.q_table or not self.q_table[state]:
@@ -70,6 +75,7 @@ class SharedQLearner(QLearner):
     def __init__(self):
         super().__init__(enemy_id="shared")
 
+    # averaging crossover used earlier
     def merge_from(self, other, weight=1.0):
         for state, actions in other.q_table.items():
             if state not in self.q_table:
@@ -89,3 +95,28 @@ class SharedQLearner(QLearner):
 
         for learner, fitness in learners_with_fitness:
             self.merge_from(learner, weight=(fitness / total_fitness))
+    #
+
+
+    def per_state_crossover(self, parents, mutation_prob=0.05, mutation_range=0.1):
+        ''' new crossover, where top candidates individual with highest fitness produce new q table. For each state random parents q values are taken '''
+        # Collect all states across all candidates
+        all_states = set()
+        for candidate in parents:
+            all_states.update(candidate.q_table.keys())
+        
+        for state in all_states:
+            # Candidates that have this state
+            candidates_with_state = [c for c in parents if state in c.q_table]
+            # Pick one randomly
+            parent = random.choice(candidates_with_state)
+            self.q_table[state] = parent.q_table[state].copy()
+
+            # Apply mutation
+            for action, value in self.q_table[state].items():
+                if random.random() < mutation_prob:
+                    # Add or subtract a small random number
+                    self.q_table[state][action] += random.uniform(-mutation_range, mutation_range)
+
+
+    

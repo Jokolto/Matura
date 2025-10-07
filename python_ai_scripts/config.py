@@ -8,9 +8,9 @@ class ServerConfig:
         host="localhost",
         port=9000,
         buffer_size=2048,
-        learning_rate=0.2,
+        learning_rate=0.1,
         discount_factor=0.9,
-        epsilon=0.2
+        epsilon=0.1
     ):
         self.HOST = host
         self.PORT = port
@@ -24,15 +24,15 @@ class ServerConfig:
 class RewardConfig:
     def __init__(self, rewards=None):
         self.REWARDS = {
-            "TOOK_DAMAGE": -2.0,
-            "TIME_ALIVE": 0.05,
-            "HIT_PLAYER": 14.0,
+            "TOOK_DAMAGE": -0.5,
+            "TIME_ALIVE": 0.01,
+            "HIT_PLAYER": 1,
             "RETREATED": -0.2,
             "WASTED_MOVEMENT": -0.1,
             "MOVED_CLOSER": 0.05,
             "MISSED": -0.2,
-            "DIED": -7,
-            "STUCK": -5
+            "DIED": -1,
+            "STUCK": -0.4
         }
         if rewards:
             self.REWARDS.update(rewards)

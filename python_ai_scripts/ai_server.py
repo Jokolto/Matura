@@ -6,6 +6,7 @@ import signal
 import sys
 import pandas as pd
 import argparse
+import random
 
 from q_learner import QLearner, SharedQLearner
 from config import ServerConfig, RewardConfig, Logger
@@ -16,7 +17,7 @@ logging = Logger.get_logger(__name__)
 
 
 class AIServer:
-    def __init__(self, server_cfg, reward_cfg, csv_file='python_ai_scripts/data/results2.csv', run_id=0, exp_config='gen_q_learning'):
+    def __init__(self, server_cfg, reward_cfg, csv_file='', run_id=0, exp_config='gen_q_learning'):
         self.agents = {}  # enemy_id (str): QLearner
         self.fitnesses = {}  # enemy_id (str) : float
         self.shared_brain = SharedQLearner()
@@ -86,10 +87,11 @@ class AIServer:
             valid_actions = enemy_info["valid_actions"]
 
 
-            agent = self.get_or_create_agent(str(enemy_id))
+            agent = self.get_or_create_agent(str(enemy_id))  # q table
 
             # Choose action based on current state and valid actions
-            action = agent.choose_action(state, valid_actions)
+            random_q_condition = self.exp_config in ['base', 'ga_only'] 
+            action = agent.choose_action(state, valid_actions, random_q=random_q_condition)
 
             msg["data"][str(enemy_id)] = action
 
@@ -100,6 +102,8 @@ class AIServer:
 
 
     def handle_reward_msg(self, data):
+        if self.exp_config == 'base':
+            return
         for enemy_id_str, events in data.items():
             enemy_id = int(enemy_id_str)
             agent = self.get_or_create_agent(enemy_id_str)
@@ -121,11 +125,26 @@ class AIServer:
     
     def handle_wave_end(self):
         self.shared_brain.q_table = {}  # Reset shared brain
-        # Merge all agents' Q-tables into the shared brain
-        learners = [(agent, self.fitnesses.get(agent.enemy_id, 0.0)) for agent in self.agents.values()]
-        logging.debug(f"Merging {learners} into shared brain.")
-        self.shared_brain.average_all(learners)
-        logging.debug(f"Shared brain updated from wave. Resulting Shared Q-table: {self.shared_brain.q_table}")
+
+        if self.exp_config in ["base", "q_only"]:
+            self.agents.clear()
+            self.fitnesses.clear()
+            return
+
+        # selection
+        top_two_ids = [k for k, v in sorted(self.fitnesses.items(), key=lambda item: item[1], reverse=True)[:2]]
+        top_two = [self.agents[enemy_id] for enemy_id in top_two_ids]
+
+        # crossover + mutation
+        mutation_prob = 0.05
+        mutation_range = 0.1
+        self.shared_brain.per_state_crossover(top_two, mutation_prob, mutation_range)
+
+        # older approach> Merge all agents' Q-tables into the shared brain
+        # learners = [(agent, self.fitnesses.get(agent.enemy_id, 0.0)) for agent in self.agents.values()]
+        # logging.debug(f"Merging {learners} into shared brain.")
+        # self.shared_brain.average_all(learners)
+        # logging.debug(f"Shared brain updated from wave. Resulting Shared Q-table: {self.shared_brain.q_table}")
         
         # Clear agents and fitnesses for the next wave
         self.agents.clear()
@@ -139,6 +158,8 @@ class AIServer:
         self.handle_wave_end()  # Process the end of the wave after receiving fitness data
         
     def handle_log_msg(self, data):
+        if not self.csv_file:
+            return
         # Expecting `data` to already be a flat dict with all columns
         self.df = pd.concat([self.df, pd.DataFrame([data])], ignore_index=True)
         # Save every time so you don’t lose data if crash
@@ -177,9 +198,12 @@ def main():
     parser.add_argument("--learning_rate", type=float, default=0.2)
     parser.add_argument("--discount_factor", type=float, default=0.9)
     parser.add_argument("--epsilon", type=float, default=0.2)
-    parser.add_argument("--output_csv", type=str, default='python_ai_scripts/data/results2.csv')
+    parser.add_argument("--output_csv", type=str, default='')
+    parser.add_argument("--seed", type=int, default=0)
 
     args = parser.parse_args()
+
+    random.seed(args.seed)
 
     srv_cgf = ServerConfig(
         port=args.port,
