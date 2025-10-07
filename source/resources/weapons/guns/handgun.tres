@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="GunData" load_steps=5 format=3 uid="uid://dus75rv66cxsy"]
+[gd_resource type="Resource" script_class="GunData" load_steps=6 format=3 uid="uid://dus75rv66cxsy"]
 
 [ext_resource type="Script" path="res://scenes/weapons/guns/GunData.gd" id="1_4s8yd"]
 [ext_resource type="AudioStream" uid="uid://ct4xxdscgl60h" path="res://assets/audio/sfx/guns_shooting/handgun.wav" id="1_fh04v"]
+[ext_resource type="AudioStream" uid="uid://bbdylqjkty6ee" path="res://assets/audio/sfx/guns_shooting/jammed.wav" id="1_gle82"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_8bodg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b1nbs"]
@@ -25,5 +26,6 @@ sprite = SubResource("AtlasTexture_b1nbs")
 name = "Handgun"
 description = "A light, balanced sidearm with moderate damage and a steady fire rate — reliable and quick to wield."
 on_shoot_sound = ExtResource("1_fh04v")
-shoot_sound_pitch_randomness = 0.3
+shoot_sound_pitch_randomness = 0.2
 shoot_sound_volume_db = 0.0
+jammed_sound = ExtResource("1_gle82")

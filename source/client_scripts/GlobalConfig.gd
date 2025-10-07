@@ -2,21 +2,25 @@ extends Node
 # Uses dictionaries and consts instead of classes since classes work funny in gdscript
 
 # Python or not python, that is the question
-const USE_PYTHON_SERVER = true   # must be true for experimenting 
-const DEBBUGGING = true # disables some stuff if true (tutorial, cutscene) enables ctr K to kill all enemies
+var USE_PYTHON_SERVER = true   # must be true for experimenting 
+var DEBBUGGING = false # disables some stuff if true (tutorial, cutscene) enables ctr K to kill all enemies
 
 # For experimentation
-const EXPERIMENTING = true      # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv
-var bot_player = true            # makes player not controlable, and replace with generic behavior defined in player.gd
-var infinite_ammo_ranged = true
+var EXPERIMENTING = false     # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv. also enables some of below parameter automatically
+var bot_player = false          # makes player not controlable, and replace with generic behavior defined in player.gd
+var no_q_learning = false    # makes enemies chose their actions randomly instead of using q learning. used for base config
+var wave_time_threshold = 30    # seconds after which all enemies are killed in wave to ensure experiments are running forward. Used only when experimenting
+var infinite_ammo_ranged = false
 var no_weapon_variation = true  # makes all enemies spawn just with some default weapon defined in next line
-var path_to_default_weapon_resource = "res://scenes/objects/resources/guns/handgun.tres"
+var path_to_default_weapon_resource = "res://resources/weapons/guns/handgun.tres"
+var player_health = 999999    # overwrite player health, making player immortal (almost). Only used when expereminting
+#var path_to_default_weapon_resource = "res://resources/weapons/melee/stick.tres"
 
-var menus_enabled = false        # skips main menu to go to main gameplay loop
+var menus_enabled = true        # skips main menu to go to main gameplay loop
 var items_enabled = false        # skips upgrade panel
 var enemy_stat_scaling = false   # specific stat increase set in Entitiesmanager, this disables it.
 var enemy_amount_per_wave_increase = false   # normally each wave 10 percent more enemies is spawned with base amount 4. To change base go to Entitiesmanager 
-var waves_amount = 3      # runs for this amount of waves and leaves
+var waves_amount = -1      # runs for this amount of waves and leaves. is actually set through python. this is defined in Gamemanager init
 #
 
 enum EnemyTypes {Melee, Ranged, Generic}
@@ -71,5 +75,11 @@ var REWARDS := {
 
 # test config for experiments, should be set through python when conducting experiments
 var run_id = 0
-var config = "q_only" # should be only those: random, q_only, selection_only, selection_mut   // could also make an enum but idk how they interact with python
+var config = "gen_q_learning" # should be only those: base, q_only, ga_only, gen_q_learning   // could also make an enum but idk how they interact with python
 var seed_n = 0  # can't name seed, cause it is a method to set it. This seed is set in Gamemanager at begin if experimenting
+
+# what each config does. Config effects work only if EXPERIMENTING in godot is true:
+# base - enemies have random q values without rewards. Implemented in godot with no_q_learning parameter and in python with condition of config
+# q_only - enemies learn intra wave, but not with each wave. Implemented in python server with not filling shared q table
+# ga_only - enemies have random q values without rewards, but best are selected at wave end to be reproduced in next with some mutation. uses no_q_learning parameter in godot and in python with condition of config
+# gen_q_learning - uses both algorithms, default in release.

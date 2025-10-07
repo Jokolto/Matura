@@ -45,7 +45,7 @@ func try_attack(_direction: Vector2) -> void:
 	hitbox.monitorable = true
 	trigger_cooldown(holder.fire_rate_multiplier)
 
-	AudioManager.play_sfx_positional(
+	AudioManager.play_sfx(
 		stats.attack_sound, global_position,
 		stats.volume_db, stats.pitch_randomness
 	)
@@ -81,6 +81,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		if is_attacking and body != holder:
 			if body is Player:  # Enemy hitting Player
 				body.take_damage(damage)
+				holder.damage_dealt += damage
 				if is_instance_valid(holder):
 					holder.add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"], stored_state, stored_action)
 			

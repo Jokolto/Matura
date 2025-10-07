@@ -9,6 +9,10 @@ func _ready() -> void:
 	EntitiesManager.wave_end.connect(_on_wave_end)
 
 func _process(_delta: float) -> void:
+	if GlobalConfig.EXPERIMENTING and GlobalConfig.wave_time_threshold > 0 \
+	 and EntitiesManager.wave_timer >= GlobalConfig.wave_time_threshold:
+		kill_all()
+	
 	if len(get_alive_enemies()) == 0:
 		return
 	
@@ -16,7 +20,6 @@ func _process(_delta: float) -> void:
 	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete:
 		last_snapshot = EntitiesManager.wave_timer_discrete
 		AiClient.send_message_to_server(create_wave_snapshot_msg())
-	
 	
 	# 1. Gather states for all enemies
 	var states_msg = create_states_msg(get_all_states())
@@ -38,6 +41,9 @@ func _process(_delta: float) -> void:
 	
 	# 5. Execute actions for all enemies
 	process_actions(actions)
+	
+	if GlobalConfig.no_q_learning:
+		return
 	
 	 # 6. Collect events and send rewards
 	var events = get_all_events()

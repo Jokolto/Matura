@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cbryqu8vdrnku" path="res://scenes/weapons/weapon.tscn" id="1_n4pyr"]
 [ext_resource type="Script" path="res://scenes/weapons/guns/ranged_weapon.gd" id="2_isj3v"]
-[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://scenes/objects/resources/guns/handgun.tres" id="3_ihk2m"]
+[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://resources/weapons/guns/handgun.tres" id="3_ihk2m"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="3_jgaaf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwhkk"]

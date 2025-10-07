@@ -87,7 +87,9 @@ func _ready() -> void:
 	# passing ui node
 	spawners_node.set_ui(UI)
 	
+	# pickup
 	spawners_node.set_pickups_node(pickups_node)
+	player.set_pickups_node(pickups_node)
 	
 	spawners_node.set_enemies_node(enemies_node)
 	player.set_enemies_node(enemies_node)

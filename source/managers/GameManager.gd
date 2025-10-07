@@ -43,6 +43,11 @@ func _init() -> void:
 			GlobalConfig.ClientConfig['PORT'] = int(arg.substr("--port=".length()))
 	if GlobalConfig.EXPERIMENTING:
 		seed(GlobalConfig.seed_n)
+		GlobalConfig.DEBBUGGING = true
+		GlobalConfig.USE_PYTHON_SERVER = true
+	
+	if GlobalConfig.config in ['base', 'ga_only']:
+		GlobalConfig.no_q_learning = true
 		
 func _ready() -> void:
 	state = "MENU"

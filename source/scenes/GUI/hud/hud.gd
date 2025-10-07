@@ -120,6 +120,8 @@ func _on_player_weapon_equiped(gun_stats):
 	
 func _on_player_shoot(gun):
 	ammo_label.text = "%d / %d" % [gun.ammo, gun.stats.ammo]
+	if GlobalConfig.infinite_ammo_ranged:
+		ammo_label.text = "∞ / ∞"
 
 func _on_player_healed(_value):
 	set_health(player.hp, player.max_hp)

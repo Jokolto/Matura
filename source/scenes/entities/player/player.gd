@@ -47,6 +47,7 @@ var invulnerable_period: float = 0.2
 # set in level.gd
 var projectiles_node: Node = null
 var enemies_node: Node = null
+var pickups_node: Node = null
 
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
@@ -62,6 +63,8 @@ signal shot(gun)
 func _ready() -> void:
 	if GlobalConfig.bot_player:
 		global_position = Vector2(3370, 3150) # set position for experiments to go smoother
+	if GlobalConfig.EXPERIMENTING and GlobalConfig.player_health:
+		hp = GlobalConfig.player_health
 
 func _physics_process(delta: float) -> void:
 	var input_vector: Vector2 = Vector2()
@@ -96,12 +99,16 @@ func _process(_delta: float) -> void:
 				weapon_instance.use_weapon(aim_vector)
 				if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
 					shot.emit(weapon_instance)
-		
+
+# some unnecesary setters, introspectively looking.	
 func set_projectiles_node(node: Node):
 	projectiles_node = node
 
 func set_enemies_node(node: Node):
 	enemies_node = node
+
+func set_pickups_node(node: Node):
+	pickups_node = node
 
 func _handle_pickups():
 	if nearby_pickups.size() > 0:

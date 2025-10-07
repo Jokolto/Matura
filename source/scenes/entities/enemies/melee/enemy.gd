@@ -223,7 +223,7 @@ func get_state() -> String:
 	if nearest_bullet:
 		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 100.0) # Here short distance is quite important, therefore 200 which is 1/10 of map
 		bullet_angle = round(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 2))
-	bullet_dist = clamp(dist, 0, 1)   # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
+	bullet_dist = clamp(dist, 0, 2)   # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
 	bullet_angle = clamp(angle, 0, 3)			
 	dist = clamp(dist, 0, 2)
 	angle = clamp(angle, 0, 3)

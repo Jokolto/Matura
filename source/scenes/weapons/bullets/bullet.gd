@@ -79,6 +79,7 @@ func _on_body_entered(body: Node2D) -> void:
 	
 	if is_instance_valid(shooter) and shooter is Enemy:
 		if hit_player:
+			shooter.damage_dealt += damage
 			if shot_at_state:
 				shooter.add_reward_event("HIT_PLAYER", shot_at_state, stored_action)
 		else:

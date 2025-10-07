@@ -30,7 +30,8 @@ func _ready() -> void:
 	spawners = get_children()
 	melee_weapons_res.load_all_into(melee_weapons_pool)
 	ranged_weapons_res.load_all_into(ranged_weapons_pool)
-	default_weapon_res = load(GlobalConfig.path_to_default_weapon_resource)
+	if GlobalConfig.no_weapon_variation:
+		default_weapon_res = load(GlobalConfig.path_to_default_weapon_resource)
 
 func _process(delta: float) -> void:
 	timer += delta
@@ -66,8 +67,10 @@ func spawn_enemy() -> void:
 		enemy_spawned.connect(GameManager.hud._on_enemy_spawned)
 	
 	var enemy = ranged_enemy_scene.instantiate() as RangedEnemy
-	var chosen_weapon_res = default_weapon_res
-	if not GlobalConfig.no_weapon_variation:
+	var chosen_weapon_res
+	if GlobalConfig.no_weapon_variation:
+		chosen_weapon_res = default_weapon_res
+	else:
 		var chosen_weapon_pool = choose_enemy_type(EntitiesManager.current_wave) # chooses between melee weapons or ranged, where ranged is rarer
 		chosen_weapon_res = item_manager.get_random_item(chosen_weapon_pool, [], rarity_distribution)
 	
