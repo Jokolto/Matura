@@ -2,7 +2,7 @@ import random
 from collections import deque
 from config import Logger
 
-MAX_PENDING = 100
+MAX_PENDING = 300
 
 Logger.init()
 logging = Logger.get_logger(__name__) 

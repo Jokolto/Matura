@@ -7,6 +7,7 @@ import sys
 import pandas as pd
 import argparse
 import random
+import numpy as np
 
 from q_learner import QLearner, SharedQLearner
 from config import ServerConfig, RewardConfig, Logger
@@ -124,6 +125,12 @@ class AIServer:
                     agent.apply_reward(reward, new_state, action_to_reward, state_to_reward)
     
     def handle_wave_end(self):
+        
+        # to see table 
+        # Q = self.agents['0'].q_table
+        # q_values = [v for actions in Q.values() for v in actions.values()]
+        # print(f"Q stats → min: {np.min(q_values):.3f}, max: {np.max(q_values):.3f}, mean: {np.mean(q_values):.3f}")
+
         self.shared_brain.q_table = {}  # Reset shared brain
 
         if self.exp_config in ["base", "q_only"]:
@@ -136,10 +143,9 @@ class AIServer:
         top_two = [self.agents[enemy_id] for enemy_id in top_two_ids]
 
         # crossover + mutation
-        mutation_prob = 0.05
-        mutation_range = 0.1
-        self.shared_brain.per_state_crossover(top_two, mutation_prob, mutation_range)
-
+        self.shared_brain.per_state_crossover(top_two, self.server_cfg.MUTATION_PROB, self.server_cfg.MUTATION_RANGE)
+        # print(f"shared q table: {self.shared_brain.q_table}")
+        
         # older approach> Merge all agents' Q-tables into the shared brain
         # learners = [(agent, self.fitnesses.get(agent.enemy_id, 0.0)) for agent in self.agents.values()]
         # logging.debug(f"Merging {learners} into shared brain.")
@@ -175,7 +181,7 @@ class AIServer:
 
     def run(self):
         self.running = True
-        logging.info("[Python AI Server] Starting server...")
+        logging.info(f"[Python AI Server] Starting server on on {self.server_cfg.HOST}:{self.server_cfg.PORT}")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.server_cfg.HOST, self.server_cfg.PORT))
             s.listen()
@@ -192,14 +198,17 @@ class AIServer:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=9000)
+    parser.add_argument("--port", type=int, default=10000)
     parser.add_argument("--run_id", type=int, default=0)  # not really used in server currently, client sends this indirectly in data
     parser.add_argument("--config", type=str, default='gen_q_learning') # not really used in server currently, client sends this indirectly in data
     parser.add_argument("--learning_rate", type=float, default=0.2)
     parser.add_argument("--discount_factor", type=float, default=0.9)
     parser.add_argument("--epsilon", type=float, default=0.2)
+    parser.add_argument("--mutation_prob", type=float, default=0.05)
+    parser.add_argument("--mutation_range", type=float, default=0.1)
     parser.add_argument("--output_csv", type=str, default='')
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument('--reward_dict', type=str, default='{}')
 
     args = parser.parse_args()
 
@@ -209,11 +218,17 @@ def main():
         port=args.port,
         learning_rate=args.learning_rate,
         discount_factor=args.discount_factor,
-        epsilon=args.epsilon
+        epsilon=args.epsilon,
+        mutation_prob=args.mutation_prob,
+        mutation_range=args.mutation_range
     )
 
     # default now, but making possible to expand experiments with varying rewards
+    reward_dict = json.loads(args.reward_dict)
     reward_cfg = RewardConfig()
+    if len(args.reward_dict) >= 1:
+        reward_cfg.update_rewards(reward_dict)
+   
 
     server = AIServer(server_cfg=srv_cgf, reward_cfg=reward_cfg, csv_file=args.output_csv)
     signal.signal(signal.SIGINT, server.shutdown)

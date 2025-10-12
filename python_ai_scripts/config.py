@@ -10,7 +10,9 @@ class ServerConfig:
         buffer_size=2048,
         learning_rate=0.1,
         discount_factor=0.9,
-        epsilon=0.1
+        epsilon=0.1,
+        mutation_prob=0.05,
+        mutation_range=0.1
     ):
         self.HOST = host
         self.PORT = port
@@ -18,21 +20,24 @@ class ServerConfig:
         self.LEARNING_RATE = learning_rate
         self.DISCOUNT_FACTOR = discount_factor
         self.EPSILON = epsilon
+        self.MUTATION_PROB = mutation_prob
+        self.MUTATION_RANGE = mutation_range
 
 
 # same thing, also no classmethods now.
 class RewardConfig:
     def __init__(self, rewards=None):
         self.REWARDS = {
-            "TOOK_DAMAGE": -0.5,
-            "TIME_ALIVE": 0.01,
-            "HIT_PLAYER": 1,
+            "TOOK_DAMAGE": -5,
+            "TIME_ALIVE": 0.0,
+            "HIT_PLAYER": 10,
             "RETREATED": -0.2,
-            "WASTED_MOVEMENT": -0.1,
+            "WASTED_MOVEMENT": -0.05,
             "MOVED_CLOSER": 0.05,
             "MISSED": -0.2,
-            "DIED": -1,
-            "STUCK": -0.4
+            "DIED": -5,
+            "STUCK": -1,
+            "DODGED_BULLET": 6
         }
         if rewards:
             self.REWARDS.update(rewards)
