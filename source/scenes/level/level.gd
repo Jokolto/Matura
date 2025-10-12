@@ -106,7 +106,8 @@ func _process(delta: float) -> void:
 
 func set_default_nodes():
 	hud.set_health(player.hp, player.max_hp)
-	player._equip_weapon(gun_res)
+	if GlobalConfig.player_starts_with_weapon:
+		player._equip_weapon(gun_res)
 	
 
 func _unhandled_input(event):

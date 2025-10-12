@@ -1,6 +1,6 @@
 extends Node
 
-@export var spawn_rate: float = 0.5  # Seconds between spawns
+@export var spawn_rate: float = 0.25  # Seconds between spawns
 @export var enemy_scene: PackedScene = preload("res://scenes/entities/enemies/melee/enemy.tscn")
 @export var ranged_enemy_scene: PackedScene = preload("res://scenes/entities/enemies/ranged/ranged_enemy.tscn")
 

@@ -18,8 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalConfig="*res://client_scripts/GlobalConfig.gd"
-GameManager="*res://managers/GameManager.gd"
 AudioManager="*res://managers/AudioManager.gd"
+GameManager="*res://managers/GameManager.gd"
 EntitiesManager="*res://managers/EntitiesManager.gd"
 Logger="*res://managers/Logger.gd"
 AiClient="*res://client_scripts/AI_CLIENT.gd"

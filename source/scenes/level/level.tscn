@@ -2606,7 +2606,7 @@ tile_map_data = PackedByteArray("AAA7AB4AAAAGAAQAAAA7AB0AAAAGAAQAAAA7ABwAAAAGAAQ
 tile_set = SubResource("TileSet_1p3tx")
 
 [node name="Spawners" type="Node2D" parent="Objects"]
-position = Vector2(1410, 1412)
+position = Vector2(1412, 1439)
 script = ExtResource("6_8m46x")
 
 [node name="EnemySpawner2" parent="Objects/Spawners" instance=ExtResource("3_iwmw6")]

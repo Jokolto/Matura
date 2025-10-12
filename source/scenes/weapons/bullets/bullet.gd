@@ -2,8 +2,9 @@ extends Area2D
 class_name Bullet
 
 var direction: Vector2 = Vector2.ZERO
-var bullet_id = 0
+var bullet_id = -1
 var shot_at_pos: Vector2 = Vector2.ZERO 
+
 
 var damage: float # assigned by gun
 var speed: float # assigned by gun
@@ -19,12 +20,12 @@ var gun_node: Node = null  # assigned by gun
 
 var hit_entities = []
 
-# enemy specific (could have made enemy-gun subclass, but i am too lazy)
+# enemy specific (could have made enemy-bullet subclass, but i am too lazy)
 var hit_player = false
-
 var shot_at_state = ""
 var stored_action = "use_weapon"
-
+var dodged = false
+var last_dist_to_enemy: float = INF
 
 func _ready() -> void: 
 	# match does not work with types in gdscript, hence if elif...
@@ -50,22 +51,24 @@ func _process(delta: float) -> void:
 # quite a bad handling, but i don't care
 func _on_body_entered(body: Node2D) -> void:
 	hit_player = false
-	hit_entities = []
 	if body == shooter:   
 		return  # ensure no self colision
 		
 	if (body is CharacterBody2D):    # colision with entities
 		if (shooter_type == ShooterType.PLAYER):   # player hitting enemy
-			if not body in hit_entities:
-				hit_entities.append(body)
+			if not body.enemy_id in hit_entities:
+				hit_entities.append(body.enemy_id)
 				if randf() <= shooter.crit_chance:
 					damage *= shooter.crit_damage_mul
 				body.take_damage(damage)
 				if piercing >= 1:
 					piercing -= 1
 					return
+				last_dist_to_enemy = -1
 				projectiles_node.proj_amount -= 1
 				queue_free()
+				return
+				
 		elif shooter_type == ShooterType.ENEMY: # enemy hitting player or another enemy
 			if body is Player:
 				body.take_damage(damage)
@@ -80,8 +83,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if is_instance_valid(shooter) and shooter is Enemy:
 		if hit_player:
 			shooter.damage_dealt += damage
-			if shot_at_state:
-				shooter.add_reward_event("HIT_PLAYER", shot_at_state, stored_action)
+			shooter.add_reward_event("HIT_PLAYER", shot_at_state, stored_action)
 		else:
 			shooter.add_reward_event("MISSED", shot_at_state, stored_action)
 	

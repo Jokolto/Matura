@@ -12,7 +12,7 @@ var enemies_alive: int = 0
 
 var friendly_fire = false
 
-var base_amount: int = 5 # first wave
+var base_amount: int = 15 # first wave
 var growth_rate: float = 1.1
 var enemy_count_func = func(wave: int) -> int:
 	return floor(base_amount * pow(growth_rate, wave))
@@ -81,6 +81,7 @@ func start_wave():
 	wave_start.emit()
 	
 func end_wave():
+	wave_timer = 0
 	wave_active = false
 	Logger.log("Wave ended (enemies are dead)", "INFO")
 	wave_end.emit(enemy_fitness)

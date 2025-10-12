@@ -24,13 +24,13 @@ func _ready() -> void:
 		equip_weapon()
 
 
-func _physics_process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if is_instance_valid(player):
 		var pos = player.global_position
 		move_dir = (player.global_position - global_position).normalized()	
 		weapon_holder._aim_weapon(pos)
 			
-	super._process(_delta)
+	super._process(delta)
 	
 	
 	if player_inside_contact_range:

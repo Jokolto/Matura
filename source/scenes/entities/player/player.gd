@@ -4,8 +4,8 @@ class_name Player
 @export var move_speed: float = 200.0
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.25
-@export var max_hp: float = 15.0
-@export var hp: float = 15.0
+@export var max_hp: float = 20.0
+@export var hp: float = 20.0
 @export var fire_rate_multiplier: float = 1
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
@@ -62,7 +62,7 @@ signal shot(gun)
 
 func _ready() -> void:
 	if GlobalConfig.bot_player:
-		global_position = Vector2(3370, 3150) # set position for experiments to go smoother
+		global_position = Vector2(2800, 3200) # set position for experiments to go smoother
 	if GlobalConfig.EXPERIMENTING and GlobalConfig.player_health:
 		hp = GlobalConfig.player_health
 
@@ -76,7 +76,7 @@ func _physics_process(delta: float) -> void:
 		move_dir = input_vector
 	else:
 		# bot behaviour 
-		move_dir = Vector2(sin(Time.get_ticks_msec() / 2000.0), 0)   # horizontal movement side to side
+		move_dir = Vector2(1 if int(EntitiesManager.wave_timer / 5) % 2 == 0 else -1, 0) # movement side to side
 		input_vector = move_dir
 		velocity = move_dir * move_speed
 		
@@ -207,4 +207,6 @@ func heal(heal_value: int):
 
 func _on_wave_end(_fitness_dict):
 	heal(floor(EntitiesManager.player_heal_after_wave_percentage * max_hp))
+	if GlobalConfig.bot_player:
+		global_position = Vector2(2800, 3200) # set position for experiments to go smoother
 	

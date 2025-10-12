@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://hk5nbfxpbbsi" path="res://assets/sprites/items/absgpt.png" id="2_7yuti"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xkw3u"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [node name="ItemPanel" type="Panel"]
 custom_minimum_size = Vector2(40, 40)

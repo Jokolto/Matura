@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="1_vt1sm"]
 [ext_resource type="Script" path="res://scenes/weapons/guns/ranged_weapon.gd" id="1_ynd5q"]
-[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://resources/weapons/guns/handgun.tres" id="2_bhpbx"]
+[ext_resource type="Resource" uid="uid://dus75rv66cxsy" path="res://scenes/objects/resources/guns/handgun.tres" id="2_bhpbx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5475d"]
 atlas = ExtResource("1_vt1sm")

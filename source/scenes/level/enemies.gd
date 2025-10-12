@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 		return
 	
 	# data collection
-	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete:
+	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete and GlobalConfig.config:
 		last_snapshot = EntitiesManager.wave_timer_discrete
 		AiClient.send_message_to_server(create_wave_snapshot_msg())
 	
@@ -27,6 +27,7 @@ func _process(_delta: float) -> void:
 	# 2. Send states to Python server (non-blocking)
 	var response_or_error = AiClient.send_message_to_server(states_msg)   # actions if no python server, otherwise error code
 	var actions: Dictionary = Dictionary()
+	
 	if GlobalConfig.USE_PYTHON_SERVER:
 		# 3. Process incoming messages (actions, logs, init) server should send actions after getting states
 		AiClient.process_incoming_bytes()
@@ -94,6 +95,7 @@ func get_death_log(enemy: Enemy) -> Dictionary:
 		"log_type": "death",
 		"enemy_id": enemy.enemy_id,
 		"damage": enemy.damage_dealt,
+		"dodged_bullets": enemy.dodged_bullets,
 		"lifespan": enemy.life_time_sec,
 		"fitness": enemy.fitness,
 		#"mutations_applied": enemy.mut_count, 
@@ -213,7 +215,7 @@ func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:
 		var angle = entity.move_dir.angle_to(to_ally)  # in radians
 		return [min_distance, angle, closest]
 	
-	return [min_distance, -1.0, null]
+	return [-1.0, -1.0, null]
 
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)
