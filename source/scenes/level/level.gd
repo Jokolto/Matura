@@ -22,6 +22,12 @@ extends Node2D
 @onready var ItemManager = $ItemManager
 
 
+# starting weapons of player for experiments
+var gun_res: Resource = preload("res://resources/weapons/guns/handgun.tres")
+var melee_res: Resource = preload("res://resources/weapons/melee/sword.tres")
+
+
+
 var cursor_texture = preload("res://assets/sprites/v1.1 dungeon crawler 16X16 pixel pack/ui (new)/crosshair_1.png")
 var play_time: float = 0.0
 signal pause
@@ -80,19 +86,29 @@ func _ready() -> void:
 	
 	# passing ui node
 	spawners_node.set_ui(UI)
+	
+	# pickup
 	spawners_node.set_pickups_node(pickups_node)
+	player.set_pickups_node(pickups_node)
+	
 	spawners_node.set_enemies_node(enemies_node)
+	player.set_enemies_node(enemies_node)
 		
 	set_default_nodes()
 	tutorial.show_tutorial_piece("move")
 
 func _process(delta: float) -> void:
-	if len(GameManager.shown_tutorials) == GameManager.tutorials_amount and not EntitiesManager.wave_active and EntitiesManager.current_wave == 0:
+	var start_condition = (len(GameManager.shown_tutorials) == GameManager.tutorials_amount or not GameManager.tutorial_enabled) \
+		and not EntitiesManager.wave_active and EntitiesManager.current_wave == 0
+	if start_condition:
 		EntitiesManager.start_wave()
 	play_time += delta
 
 func set_default_nodes():
 	hud.set_health(player.hp, player.max_hp)
+	if GlobalConfig.player_starts_with_weapon:
+		player._equip_weapon(gun_res)
+	
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"): # Typically Escape
@@ -101,7 +117,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("kill_all"):
 		if GlobalConfig.DEBBUGGING:
 			enemies_node.kill_all()
-
+	
 func _on_wave_end(_fitness):
 	WaveTimer.start(1.5)
 

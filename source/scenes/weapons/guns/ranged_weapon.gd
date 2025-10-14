@@ -17,20 +17,29 @@ func use_weapon(target_pos: Vector2) -> void:
 	try_fire(target_pos)
 
 func try_fire(target_pos: Vector2) -> void:
-	if not is_ready() or ammo < 1:
+	if not is_ready():
+		return
+	
+	if (ammo < 1 and not GlobalConfig.infinite_ammo_ranged):
+		AudioManager.play_sfx(
+		stats.jammed_sound, global_position,
+		stats.shoot_sound_volume_db, stats.shoot_sound_pitch_randomness
+	)	
+		trigger_cooldown(holder.fire_rate_multiplier)
 		return
 	
 	
 	for bullet in range(stats.bullets_amount):
 		_spawn_bullet(target_pos)
-	
-	AudioManager.play_sfx_positional(
+
+	AudioManager.play_sfx(
 		stats.on_shoot_sound, global_position,
 		stats.shoot_sound_volume_db, stats.shoot_sound_pitch_randomness
 	)
 
 	trigger_cooldown(holder.fire_rate_multiplier)
-	ammo -= 1
+	if not (ammo < 1 and not GlobalConfig.infinite_ammo_ranged):
+		ammo -= 1
 	
 func _spawn_bullet(target_pos: Vector2) -> void:
 	var bullet = bullet_scene.instantiate()

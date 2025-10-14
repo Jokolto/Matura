@@ -16,6 +16,7 @@ var death_music: AudioStream
 const MUSIC_BUS := "Music"
 const SFX_BUS := "SFX"
 
+
 func _ready():
 	music_volume = AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music"))
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -32,7 +33,7 @@ func _ready():
 	add_child(music_player)
 
 
-# === MUSIC ===
+# music
 func play_music(stream: AudioStream, loop: bool = true):
 	if current_music == stream:
 		return
@@ -64,36 +65,40 @@ func _fade_to_music(new_music: AudioStream, duration: float, loop: bool = true):
 
 
 
-# === SFX ===
-func play_sfx(stream: AudioStream, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
-	var sfx_player = AudioStreamPlayer.new()
-	sfx_player.bus = SFX_BUS
-	sfx_player.stream = stream
-	sfx_player.volume_db = volume
+# sfx
+func play_sfx(stream: AudioStream, pos = null, volume := 0.0, pitch_randomness := 0.0, parent: Node = self) -> void:
+	# Choose class depending on whether positional audio is needed
+	var player_class = AudioStreamPlayer if pos == null else AudioStreamPlayer2D
+	var player: Node = player_class.new()
+	parent.add_child(player)
 
+	# assign stream and props
+	player.stream = stream
+	player.volume_db = volume
 	if pitch_randomness > 0.0:
-		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
+		player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
+	else:
+		player.pitch_scale = 1.0
 
-	parent.add_child(sfx_player)
-	sfx_player.play()
-	sfx_player.connect("finished", Callable(sfx_player, "queue_free"))
-	
-	
-func play_sfx_positional(stream: AudioStream, play_at_position: Vector2, volume: float = 0.0, pitch_randomness: float = 0.0, parent=self):
-	var sfx_player = AudioStreamPlayer2D.new()
-	sfx_player.bus = SFX_BUS
-	sfx_player.stream = stream
-	sfx_player.volume_db = volume
-	sfx_player.global_position = play_at_position
+	if pos != null and player is AudioStreamPlayer2D:
+		player.global_position = pos
 
-	if pitch_randomness > 0.0:
-		sfx_player.pitch_scale = randf_range(1.0 - pitch_randomness, 1.0 + pitch_randomness)
+	player.play()
 
-	parent.add_child(sfx_player)
-	sfx_player.play()
-	
-	sfx_player.connect("finished", Callable(sfx_player, "queue_free"))
+	# Try to get length; fallback to 1.0s if not available
+	var length := 1.0
+	if stream != null and stream.has_method("get_length"):
+		length = float(stream.get_length())
 
+	# wait and free the player (async helper)
+	_free_player_later(player, length + 0.05)
+
+
+# async helper
+func _free_player_later(player: Node, delay: float) -> void:
+	await get_tree().create_timer(delay).timeout
+	if is_instance_valid(player):
+		player.queue_free()
 
 func _on_game_state_changed(state: String):
 	match state:
@@ -106,3 +111,15 @@ func _on_game_state_changed(state: String):
 		"GAME_OVER":
 			if music_player.stream != death_music:
 				_fade_to_music(death_music, 0.25)
+
+# so nothing leaks
+func _exit_tree():
+	if is_instance_valid(music_player):
+		music_player.queue_free()
+	music_player = null
+	
+	# all audio stream must queued free before closing the game
+	for child in get_children():
+		if child is AudioStreamPlayer2D:
+			child.stop()
+			child.queue_free()

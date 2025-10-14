@@ -11,6 +11,11 @@ func _ready():
 	quit_button.pressed.connect(on_quit_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	leaderboard_button.pressed.connect(_on_lb_pressed)
+	
+	if not GlobalConfig.menus_enabled or OS.has_feature("headless"):
+		GameManager.state = "PLAYING"
+		GameManager.change_scene()
+
 
 func on_start_pressed():
 	if GameManager.cutscene_enabled:

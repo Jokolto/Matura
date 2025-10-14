@@ -1,36 +1,52 @@
 import logging
 
 
-
+# changed to be configurable with multiple instances possible for experiments
 class ServerConfig:
-    HOST = "localhost"
-    PORT = 9000
-    BUFFER_SIZE = 2048
+    def __init__(
+        self,
+        host="localhost",
+        port=9000,
+        buffer_size=2048,
+        learning_rate=0.1,
+        discount_factor=0.9,
+        epsilon=0.1,
+        mutation_prob=0.05,
+        mutation_range=0.1
+    ):
+        self.HOST = host
+        self.PORT = port
+        self.BUFFER_SIZE = buffer_size
+        self.LEARNING_RATE = learning_rate
+        self.DISCOUNT_FACTOR = discount_factor
+        self.EPSILON = epsilon
+        self.MUTATION_PROB = mutation_prob
+        self.MUTATION_RANGE = mutation_range
 
-    # Q-learning constants
-    LEARNING_RATE = 0.1
-    DISCOUNT_FACTOR = 0.9
-    EPSILON = 0.1
 
-
+# same thing, also no classmethods now.
 class RewardConfig:
-    REWARDS = {    # not constant btw
-        "TOOK_DAMAGE": -1.0,
-        "TIME_ALIVE": 0.05,
-        "HIT_PLAYER": 15.0,
-        "RETREATED": -2.0,
-        "WASTED_MOVEMENT": -1.0,
-        "MOVED_CLOSER": 1.0,
-        "MISSED": 0,
-    }
+    def __init__(self, rewards=None):
+        self.REWARDS = {
+            "TOOK_DAMAGE": -5,
+            "TIME_ALIVE": 0.0,
+            "HIT_PLAYER": 10,
+            "RETREATED": -0.2,
+            "WASTED_MOVEMENT": -0.05,
+            "MOVED_CLOSER": 0.05,
+            "MISSED": -0.2,
+            "DIED": -5,
+            "STUCK": -1,
+            "DODGED_BULLET": 6
+        }
+        if rewards:
+            self.REWARDS.update(rewards)
+            
+    def get(self, name: str):
+        return self.REWARDS.get(name, None)
 
-    @classmethod
-    def get(cls, name: str):
-        return cls.REWARDS.get(name, None)
-
-    @classmethod
-    def update_rewards(cls, new_rewards: dict):
-        cls.REWARDS.update(new_rewards)
+    def update_rewards(self, new_rewards: dict):
+        self.REWARDS.update(new_rewards)
 
 
 class Logger:

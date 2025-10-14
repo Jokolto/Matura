@@ -88,7 +88,13 @@ func set_button_rarity_style(button: Button, rarity: String) -> void:
 	#button.add_theme_stylebox_override("hover", stylebox)
 
 func _on_rest_time_end():
-	show_upgrade_panel()
+	if GlobalConfig.items_enabled:
+		show_upgrade_panel()
+	else:
+		if not upgrade_selected.is_connected(GameManager.hud._on_upgrade_selected.bind(null)):
+			upgrade_selected.connect(GameManager.hud._on_upgrade_selected.bind(null))
+		_on_upgrade_selected()
+		
 
 
 func _on_upgrade_selected():

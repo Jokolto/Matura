@@ -2606,7 +2606,7 @@ tile_map_data = PackedByteArray("AAA7AB4AAAAGAAQAAAA7AB0AAAAGAAQAAAA7ABwAAAAGAAQ
 tile_set = SubResource("TileSet_1p3tx")
 
 [node name="Spawners" type="Node2D" parent="Objects"]
-position = Vector2(1410, 1412)
+position = Vector2(1412, 1439)
 script = ExtResource("6_8m46x")
 
 [node name="EnemySpawner2" parent="Objects/Spawners" instance=ExtResource("3_iwmw6")]
@@ -2684,7 +2684,7 @@ script = ExtResource("6_f1o80")
 
 [node name="Player" parent="Entities" instance=ExtResource("1_cp1lv")]
 z_index = 2
-position = Vector2(3357, 2533)
+position = Vector2(3385, 2482)
 
 [node name="Camera2D" type="Camera2D" parent="Entities/Player"]
 zoom = Vector2(0.8, 0.8)

@@ -1,9 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://c25l3kxm6g3wn"]
+[gd_scene load_steps=13 format=3 uid="uid://c25l3kxm6g3wn"]
 
 [ext_resource type="Script" path="res://scenes/GUI/hud/hud.gd" id="1_k5gjg"]
 [ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_ua7wc"]
 [ext_resource type="PackedScene" uid="uid://ddwv0va7wls5j" path="res://scenes/GUI/hud/item_panel.tscn" id="3_v1w2q"]
 [ext_resource type="Shader" path="res://scenes/GUI/hud/dmgoverlay.gdshader" id="4_djpvi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_j8lak"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tqsci"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vkr40"]
 bg_color = Color(1, 0, 0, 1)
@@ -12,8 +20,14 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 
+[sub_resource type="LabelSettings" id="LabelSettings_mpbsg"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_qmv3t"]
-font_size = 32
+font_size = 40
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r0u0p"]
 atlas = ExtResource("2_ua7wc")
@@ -28,6 +42,9 @@ shader_parameter/tint = Vector4(1, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_q2f3x"]
 font_size = 48
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.898039)
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_k5gjg")
@@ -52,6 +69,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/EnemiesVBoxContainer/MarginContainer"]
 layout_mode = 2
 text = "Enemies: -1/-1"
+label_settings = SubResource("LabelSettings_j8lak")
 horizontal_alignment = 1
 
 [node name="EnemiesCountBar" type="ProgressBar" parent="MarginContainer/EnemiesVBoxContainer/MarginContainer"]
@@ -65,6 +83,7 @@ show_percentage = false
 [node name="Label" type="Label" parent="MarginContainer/EnemiesVBoxContainer"]
 layout_mode = 2
 text = "Wave: -1"
+label_settings = SubResource("LabelSettings_tqsci")
 horizontal_alignment = 1
 
 [node name="StatusVBoxContainer" type="VBoxContainer" parent="MarginContainer"]
@@ -86,19 +105,20 @@ show_percentage = false
 [node name="Label" type="Label" parent="MarginContainer/StatusVBoxContainer/MarginContainer"]
 layout_mode = 2
 text = "-1/-1"
+label_settings = SubResource("LabelSettings_mpbsg")
 horizontal_alignment = 1
 
 [node name="GunMarginContainer" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(100, 70)
 anchors_preset = -1
-anchor_left = 0.911
-anchor_top = 0.893
+anchor_left = 0.906
+anchor_top = 0.88
 anchor_right = 0.971
 anchor_bottom = 0.985
-offset_left = 45.9199
-offset_top = 20.04
-offset_right = 146.12
-offset_bottom = 138.8
+offset_left = 4.31995
+offset_top = -2.60004
+offset_right = 171.12
+offset_bottom = 155.8
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(0.3, 0.3)
@@ -106,14 +126,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="GunMarginContainer"]
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 2
 text = "Ammo 3/40"
 label_settings = SubResource("LabelSettings_qmv3t")
 
 [node name="TextureRect" type="TextureRect" parent="GunMarginContainer"]
 z_index = 2
+custom_minimum_size = Vector2(220, 170)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 texture = SubResource("AtlasTexture_r0u0p")
 expand_mode = 5
 stretch_mode = 5
@@ -165,3 +189,10 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Wave End"
 label_settings = SubResource("LabelSettings_q2f3x")
+
+[node name="fps" type="Label" parent="."]
+offset_left = 1232.0
+offset_top = 9.0
+offset_right = 1272.0
+offset_bottom = 32.0
+text = "60"

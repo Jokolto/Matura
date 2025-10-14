@@ -24,19 +24,19 @@ func _ready() -> void:
 		equip_weapon()
 
 
-func _physics_process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if is_instance_valid(player):
 		var pos = player.global_position
-		dir = (player.global_position - global_position).normalized()	
+		move_dir = (player.global_position - global_position).normalized()	
 		weapon_holder._aim_weapon(pos)
 			
-	super._process(_delta)
+	super._process(delta)
 	
 	
 	if player_inside_contact_range:
 		_deal_damage(player)
 	
-	_update_animation(dir)
+	_update_animation(move_dir)
 
 
 func equip_weapon(new_weapon_res = default_weapon_res): # very similar to same name method of player, maybe i should do weapon component later to reduce duplication of code.

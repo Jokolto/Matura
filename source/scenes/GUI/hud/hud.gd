@@ -17,6 +17,8 @@ extends CanvasLayer
 
 @onready var wave_end_label = $Label
 
+@onready var fps_label = $fps
+
 var player = null # set by level node
 var ItemManager = null # set by level node
 
@@ -35,6 +37,12 @@ func _ready() -> void:
 	wave_label.text = "Rest time"
 	enemies_bar_container.visible = false
 	
+	if GlobalConfig.DEBBUGGING:
+		fps_label.visible = true	
+
+func _process(_delta: float) -> void:
+	if GlobalConfig.DEBBUGGING:
+		fps_label.text = str(int(Engine.get_frames_per_second())) 
 	
 func set_item_manager(manager):
 	ItemManager = manager
@@ -120,6 +128,8 @@ func _on_player_weapon_equiped(gun_stats):
 	
 func _on_player_shoot(gun):
 	ammo_label.text = "%d / %d" % [gun.ammo, gun.stats.ammo]
+	if GlobalConfig.infinite_ammo_ranged:
+		ammo_label.text = "∞ / ∞"
 
 func _on_player_healed(_value):
 	set_health(player.hp, player.max_hp)
