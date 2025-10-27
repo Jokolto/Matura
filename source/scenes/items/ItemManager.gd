@@ -10,7 +10,7 @@ var gun_pool: Array[GunData] = []
 @export var melee_resources_paths: ResourceGroup
 
 var rarity_distribution: Dictionary = {1 : 0.6,  2 : 0.25,  3 : 0.1, 4 : 0.05} 
-var gun_wave_n = -1 # after this wave player gets a gun
+var gun_wave_n = -1 # after this wave player gets a gun // outdated
 
 func _ready() -> void:
 	items_resources_paths.load_all_into(item_pool)

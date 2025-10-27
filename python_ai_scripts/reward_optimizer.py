@@ -1,4 +1,4 @@
-# gpt all the way. this script is not used in the final submission
+# gpt all the way. this script is not used really
 import random
 import copy
 from typing import List, Dict
