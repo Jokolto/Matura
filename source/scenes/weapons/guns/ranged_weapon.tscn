@@ -30,7 +30,7 @@ shoot_sound_volume_db = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwhkk"]
 atlas = ExtResource("3_jgaaf")
-region = Rect2(-0.227226, 118.102, 12.4876, 9.5434)
+region = Rect2(-0.227226, 118.102, 12.4876, 10.0359)
 
 [node name="RangedWeapon" instance=ExtResource("1_n4pyr")]
 scale = Vector2(0.5, 0.5)
