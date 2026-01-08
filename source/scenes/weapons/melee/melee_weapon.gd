@@ -75,6 +75,9 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 			damage = (stats.attack_damage + holder.damage_flat_boost) * holder.damage_multiplier
 			if randf() <= holder.crit_chance:
 				damage *= holder.crit_damage_mul
+			if randf() <= (holder.crit_chance - 1):
+				damage *= holder.crit_damage_mul
+			
 		else:
 			damage = stats.attack_damage * holder.ranged_damage_multiplier
 			
@@ -87,9 +90,10 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 			
 			elif body is Enemy and holder is Player:  # Player hitting Enemy
 				body.take_damage(damage)
+				holder.heal(damage*holder.life_steal)
 				if stats.knockback > 0:
 					var dir = (body.global_position - global_position).normalized()
-					body.velocity += dir * stats.knockback
+					body.knockback_velocity = dir * stats.knockback
 			elif body is Enemy and holder is Enemy and EntitiesManager.friendly_fire: # Enemy vs Enemy
 				body.take_damage(damage)
 			elif body.get_parent() is Gate:
