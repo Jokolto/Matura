@@ -60,7 +60,12 @@ func _on_body_entered(body: Node2D) -> void:
 				hit_entities.append(body.enemy_id)
 				if randf() <= shooter.crit_chance:
 					damage *= shooter.crit_damage_mul
+					
+				if randf() <= (shooter.crit_chance - 1):
+					damage *= shooter.crit_damage_mul
+					
 				body.take_damage(damage)
+				shooter.heal(damage * shooter.life_steal)
 				if piercing >= 1:
 					piercing -= 1
 					return

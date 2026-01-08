@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://chjn8laaqdqeq"]
+
+[ext_resource type="PackedScene" uid="uid://6pv123nbk3i4" path="res://scenes/items/pickup.tscn" id="1_pgn21"]
+[ext_resource type="Texture2D" uid="uid://v7u01s3vf0ay" path="res://assets/sprites/weapons/1.png" id="2_bonl7"]
+[ext_resource type="Script" path="res://scenes/items/ammo.gd" id="2_kadku"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42wka"]
+atlas = ExtResource("2_bonl7")
+region = Rect2(32, 36, 23, 12)
+
+[node name="ammo" instance=ExtResource("1_pgn21")]
+script = ExtResource("2_kadku")
+
+[node name="Area2D" parent="." index="0"]
+scale = Vector2(4, 2)
+
+[node name="Sprite2D" parent="." index="1"]
+scale = Vector2(3, 3)
+texture = SubResource("AtlasTexture_42wka")

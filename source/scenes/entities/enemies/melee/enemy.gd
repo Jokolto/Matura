@@ -1,6 +1,8 @@
 class_name Enemy extends CharacterBody2D
 
 @export var stats: Resource = preload("res://resources/enemies/general_enemy.tres")
+@export var heal_pickup = preload("res://scenes/items/heal.tscn")
+@export var ammo_pickup = preload("res://scenes/items/ammo.tscn")
 
 @onready var body_sprite = $AnimatedSprite2D
 @onready var contact_damage_area = $Area2D
@@ -34,7 +36,8 @@ var knockback_decay := 800.0
 # Weapon variables. It is expanded in ranged enemy subclass.
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
-var weapon_drop_chance: float = 0.2 # 20 percent
+
+
 
 # for state calculation
 var current_state = ""
@@ -99,10 +102,11 @@ func _process(delta: float) -> void:
 	# Attacking with contact damage
 	if player_inside_contact_range and contact_damage > 0:
 		_deal_damage(player)
-		if player.contact_damage:
-			take_damage(player.contact_damage)
 		add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"])
 	
+	# Player contact damage
+	if player_inside_contact_range and player.contact_damage:
+		take_damage(player.contact_damage)
 	
 	if dodged_this_frame:
 		add_reward_event(GlobalConfig.RewardEvents["DODGED_BULLET"])
@@ -140,8 +144,15 @@ func die():
 	calculate_fitness()
 	enemy_death.emit(self)
 	add_reward_event(GlobalConfig.RewardEvents["DIED"])
-	if weapon_instance and pickup_node and randf() <= weapon_drop_chance:
+	if randf() <= EntitiesManager.heal_drop_chance:
+		call_deferred("drop_pickup", heal_pickup)
+		
+	if enemy_type == GlobalConfig.EnemyTypes.Ranged and randf() <= EntitiesManager.ammo_drop_chance: # only ranged guys can drop ammo (for logical reasons)
+		call_deferred("drop_pickup", ammo_pickup)
+	
+	if weapon_instance and pickup_node and randf() <= EntitiesManager.weapon_drop_chance: #and weapon_instance.weapon_name != 'stick'
 		call_deferred('drop_current_weapon')   # gives some bs warning without call deferred
+		
 	elif weapon_instance:
 		weapon_instance.queue_free()
 	
@@ -358,7 +369,11 @@ func set_pickup_node(pickup_n):
 func drop_current_weapon():
 	var drop = weapon_instance
 	drop.get_parent().remove_child(drop)
-	pickup_node.add_child(drop)
-	drop.global_position = global_position + Vector2.RIGHT.rotated(rotation) * 16
+	pickup_node.get_node("weapons").add_child(drop) 
+	drop.global_position = global_position + Vector2.RIGHT.rotated(rotation) * 32
 	drop.enter_pickup_state()
 	
+func drop_pickup(pickup_scene: PackedScene):
+	var drop = pickup_scene.instantiate()
+	pickup_node.add_child(drop)
+	drop.global_position = global_position + Vector2(randf_range(10, 20), randf_range(10, 20))

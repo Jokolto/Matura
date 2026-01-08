@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7huy50o6nv3g"]
+
+[ext_resource type="PackedScene" uid="uid://6pv123nbk3i4" path="res://scenes/items/pickup.tscn" id="1_lrok6"]
+[ext_resource type="Texture2D" uid="uid://02xgc8udg6dm" path="res://assets/sprites/Ninja Adventure - Asset Pack/Items/Potion/Medipack.png" id="2_pjgcy"]
+[ext_resource type="Script" path="res://scenes/items/heal.gd" id="2_qqwm4"]
+
+[node name="Heal" instance=ExtResource("1_lrok6")]
+script = ExtResource("2_qqwm4")
+
+[node name="Area2D" parent="." index="0"]
+scale = Vector2(3, 3)
+
+[node name="Sprite2D" parent="." index="1"]
+scale = Vector2(5, 5)
+texture = ExtResource("2_pjgcy")

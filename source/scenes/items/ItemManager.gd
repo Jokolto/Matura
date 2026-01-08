@@ -30,16 +30,31 @@ func apply_item(item: ItemData):
 		"max_hp":
 			player.max_hp += player.max_hp * item.effect_value
 			player.hp += player.hp * item.effect_value
+			player.heal_effect += item.effect_value / 2
 		"move_speed":
 			player.move_speed += player.move_speed * item.effect_value
+			player.dodge_chance += item.effect_value / 4
 		"damage_multiply":
 			player.damage_multiplier += item.effect_value
 		"crit_chance":
 			player.crit_chance += item.effect_value
-		"clock":
-			EntitiesManager.enemy_speed_mul -= item.effect_value
+			player.crit_damage_mul += item.effect_value * 2
 		"contact_damage":
 			player.contact_damage += item.effect_value
+			player.damage_reduction += item.effect_value / 4
+		"heal_wave":
+			EntitiesManager.player_heal_after_wave_percentage += item.effect_value
+		"weaker_enemies":
+			EntitiesManager.enemy_dmg_mul -= item.effect_value
+			EntitiesManager.enemy_hp_mul -= item.effect_value	
+			EntitiesManager.enemy_speed_mul -= item.effect_value	
+		"better_luck":
+			EntitiesManager.weapon_drop_chance += item.effect_value
+			EntitiesManager.heal_drop_chance += item.effect_value
+			EntitiesManager.ammo_drop_chance += item.effect_value
+		"lifesteal":
+			player.life_steal += item.effect_value
+			player.damage_multiplier -= item.effect_value
 		_:
 			print("Unknown upgrade type: ", item.effect)
 		

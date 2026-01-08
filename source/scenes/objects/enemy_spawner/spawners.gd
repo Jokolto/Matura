@@ -47,8 +47,8 @@ func set_player(player_scene):
 func set_enemies_node(node):
 	enemies_node = node
 	
-func set_pickups_node(node):
-	pickup_node = node
+func set_pickups_node(picknode):
+	pickup_node = picknode
 
 func set_projectiles_node(node):
 	projectiles_node = node

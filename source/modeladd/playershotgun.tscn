@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://nj6gl4xi85pd"]
+
+[ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_hjj80"]
+[ext_resource type="PackedScene" uid="uid://dnr53mb5l1cp5" path="res://scenes/weapons/guns/ranged_weapon.tscn" id="2_qdx60"]
+[ext_resource type="Resource" uid="uid://c770pty4kvkv" path="res://resources/weapons/guns/shotgun.tres" id="3_3mjbp"]
+
+[node name="Player" instance=ExtResource("1_hjj80")]
+
+[node name="CollisionShape2D" parent="." index="0"]
+visible = false
+
+[node name="AnimatedSprite2D" parent="." index="1"]
+animation = &"idle"
+
+[node name="RangedWeapon" parent="Weaponholder" index="0" instance=ExtResource("2_qdx60")]
+position = Vector2(2, -6)
+stats = ExtResource("3_3mjbp")

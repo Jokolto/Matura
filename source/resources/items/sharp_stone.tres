@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cle5t7ixrghfj"]
+
+[ext_resource type="Texture2D" uid="uid://e6pekt2ajkmg" path="res://assets/sprites/items/lucky_stone.png" id="1_hroe7"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="2_3cuwf"]
+
+[resource]
+script = ExtResource("2_3cuwf")
+name = "Lucky stone"
+description = "Enemies drop stuff more often with strange looking stone"
+rarity = 4
+icon = ExtResource("1_hroe7")
+effect = "better_luck"
+effect_value = 0.07

@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_u80xv")
-name = "Quicker fingers"
+name = "Finger training"
 description = "Attack Speed + 20%, makes your weapons automatic"
 rarity = 2
 icon = ExtResource("1_ws1ro")

@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1_n38v5")
-name = "Better Heart"
-description = "Max HP + 20%"
+name = "Cardio workout"
+description = "Max HP + 20%, Heal Effectivness + 10 %"
 rarity = 1
 icon = ExtResource("1_fnwmo")
 effect = "max_hp"

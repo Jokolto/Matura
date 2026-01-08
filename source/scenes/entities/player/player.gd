@@ -10,11 +10,12 @@ class_name Player
 @export var damage_multiplier: float = 1
 @export var damage_flat_boost: float = 0
 @export var crit_chance: float = 0.0
-@export var crit_damage_mul: float = 2
+@export var crit_damage_mul: float = 1.2
 @export var contact_damage: float = 0
 @export var life_steal: float = 0
 @export var damage_reduction: float = 0
 @export var dodge_chance: float = 0
+@export var heal_effect: float = 1
 
 var move_dir: Vector2
 
@@ -28,7 +29,7 @@ var stones_throw_amount: int = 0
 var aim_vector: Vector2
 var weapon_scene: PackedScene # will be assigned automatically from resource
 var default_weapon_res: Resource = preload("res://resources/weapons/melee/stick.tres")
-@export var nearby_pickups: Array[Weapon] = []  
+@export var nearby_pickups: Array = []  
 
 # starting weapons of player for experiments
 var gun_res: Resource = preload("res://resources/weapons/guns/handgun.tres")
@@ -48,6 +49,8 @@ var invulnerable_period: float = 0.2
 var projectiles_node: Node = null
 var enemies_node: Node = null
 var pickups_node: Node = null
+var mobile_control_node: Node = null
+var ui_node: Node = null
 
 var weapon_instance: Weapon = null
 var weapon_res: Resource = null
@@ -85,20 +88,29 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _process(_delta: float) -> void:
-	if not GlobalConfig.bot_player:
-		aim_vector = get_global_mouse_position()
+	_handle_pickups()
+	if not GlobalConfig.auto_aim:
+		if GameManager.is_mobile:
+			aim_vector = global_position + mobile_control_node.get_aim_vector() * 100
+		else:
+			aim_vector = get_global_mouse_position()
 		weapon_holder._aim_weapon(aim_vector)
-		_handle_weapon_use(aim_vector)
-		_handle_pickups()
 	else:
 		var closest_enemy = enemies_node.get_distance_and_angle_to_closest_enemy_from(self)[2] 
 		if is_instance_valid(closest_enemy):
 			aim_vector = closest_enemy.global_position
 			weapon_holder._aim_weapon(aim_vector)
-			if weapon_instance and weapon_instance.is_ready():
-				weapon_instance.use_weapon(aim_vector)
-				if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
-					shot.emit(weapon_instance)
+			
+	if GlobalConfig.bot_player or (GameManager.is_mobile and mobile_control_node.get_aim_vector()): # auto shoot condition 
+		if weapon_instance and weapon_instance.is_ready():
+			weapon_instance.use_weapon(aim_vector)
+			if weapon_instance.weapon_type == GlobalConfig.WeaponType['RANGED']:
+				shot.emit(weapon_instance)
+		return
+	
+	if not GameManager.is_mobile: # a bit dumb, but necessary condition
+		_handle_weapon_use(aim_vector)
+	
 
 # some unnecesary setters, introspectively looking.	
 func set_projectiles_node(node: Node):
@@ -109,6 +121,12 @@ func set_enemies_node(node: Node):
 
 func set_pickups_node(node: Node):
 	pickups_node = node
+
+func set_mob_control_node(node: Node):
+	mobile_control_node = node
+
+func set_ui_node(node: Node):
+	ui_node = node
 
 func _handle_pickups():
 	if nearby_pickups.size() > 0:
@@ -158,7 +176,11 @@ func _update_animation(input_vec: Vector2) -> void:
 
 func take_damage(damage: float) -> void:
 	if vulnerable and damage > 0:
-		hp -= damage
+		if randf() < dodge_chance:
+			ui_node.show_damage_ui(damage, global_position, true)
+			return
+		hp -= (damage - damage*damage_reduction)
+		#ui_node.show_damage_ui(damage, global_position)
 		damaged.emit(damage)
 		$Timers/InvulnerabilityTimer.start(invulnerable_period)
 		AudioManager.play_sfx(hurt_sound)
@@ -189,6 +211,10 @@ func _equip_weapon(res: Resource = null):
 	sprite.texture = weapon_res.sprite
 	weapon_equipped.emit(res)
 
+func reload():
+	if weapon_instance.weapon_type == GlobalConfig.EnemyTypes.Ranged:
+		weapon_instance.ammo = weapon_instance.max_ammo
+
 func _on_dash_timer_timeout() -> void:
 	is_dashing = false
 	dash_velocity = Vector2.ZERO
@@ -196,12 +222,14 @@ func _on_dash_timer_timeout() -> void:
 func _on_invulnerability_timer_timeout() -> void:
 	vulnerable = true
 
-func heal(heal_value: int):
+func heal(heal_value: float):
 	var healable_hp = max_hp - hp
-	if healable_hp <= 0:
+	if healable_hp <= 0 or heal_value <= 0:
 		return
 
-	var actual_heal = min(heal_value, healable_hp)
+	var actual_heal = min(heal_value*heal_effect, healable_hp)
+	ui_node.show_damage_ui(-actual_heal, global_position)
+	
 	hp += actual_heal
 	healed.emit(actual_heal)
 

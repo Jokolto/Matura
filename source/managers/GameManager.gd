@@ -1,6 +1,8 @@
 extends Node
 #enum GameState { MENU, PLAYING, PAUSED, GAME_OVER }
 
+var is_mobile := OS.has_feature("web_android") or OS.has_feature("web_ios")
+
 var Scenes = {
 	"MENU": preload("res://scenes/GUI/menus/main_menu.tscn"),
 	"PLAYING": preload("res://scenes/level/level.tscn"),
@@ -48,7 +50,7 @@ func _init() -> void:
 	
 	if GlobalConfig.config in ['base', 'ga_only']:
 		GlobalConfig.no_q_learning = true
-		
+
 func _ready() -> void:
 	state = "MENU"
 	state_changed.emit(state)
@@ -57,6 +59,7 @@ func _ready() -> void:
 		tutorial_enabled = false
 		cutscene_enabled = false
 	
+
 	
 	
 

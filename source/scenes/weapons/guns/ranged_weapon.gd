@@ -7,10 +7,12 @@ extends Weapon
 var bullet_scene: PackedScene = preload("res://scenes/weapons/bullets/bullet.tscn")
 var final_damage: float = 0.0
 var ammo: int
+var max_ammo: int
 
 func _ready():
 	super._ready()
 	weapon_type = GlobalConfig.EnemyTypes.Ranged
+	max_ammo = stats.ammo
 	ammo = stats.ammo
 
 func use_weapon(target_pos: Vector2) -> void:
@@ -72,3 +74,6 @@ func _spawn_bullet(target_pos: Vector2) -> void:
 		bullet.stored_action = stored_action
 		projectiles_node.add_child(bullet)
 		
+func reload():
+	ammo = max_ammo
+	

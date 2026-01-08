@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=4 uid="uid://dxsq06ltwf83t"]
+[gd_scene load_steps=56 format=4 uid="uid://dxsq06ltwf83t"]
 
 [ext_resource type="PackedScene" uid="uid://yx2fv6w22r1u" path="res://scenes/entities/player/player.tscn" id="1_cp1lv"]
 [ext_resource type="Script" path="res://scenes/level/level.gd" id="1_tbp78"]
@@ -22,6 +22,7 @@
 [ext_resource type="Script" path="res://scenes/level/world_boundary.gd" id="14_hvyhn"]
 [ext_resource type="Script" path="res://scenes/level/pickups.gd" id="15_2bsd3"]
 [ext_resource type="PackedScene" uid="uid://cvljv2xvw80qv" path="res://scenes/weapons/melee/melee_weapon.tscn" id="15_gu2a5"]
+[ext_resource type="PackedScene" uid="uid://um6l14ctpayl" path="res://scenes/GUI/mobile_controls.tscn" id="23_q6q7r"]
 [ext_resource type="PackedScene" uid="uid://btwyoixtrfuwu" path="res://scenes/GUI/hud/tutorial_panel.tscn" id="25_2d74r"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x1otp"]
@@ -2611,7 +2612,7 @@ script = ExtResource("6_8m46x")
 
 [node name="EnemySpawner2" parent="Objects/Spawners" instance=ExtResource("3_iwmw6")]
 z_index = 1
-position = Vector2(785, 985)
+position = Vector2(782, 985)
 rotation = 1.5708
 scale = Vector2(0.343808, 0.84)
 
@@ -2669,7 +2670,9 @@ shape = SubResource("RectangleShape2D_gi3fr")
 position = Vector2(1000, 1002)
 script = ExtResource("15_2bsd3")
 
-[node name="MeleeWeapon" parent="Objects/Pickups" instance=ExtResource("15_gu2a5")]
+[node name="weapons" type="Node2D" parent="Objects/Pickups"]
+
+[node name="MeleeWeapon" parent="Objects/Pickups/weapons" instance=ExtResource("15_gu2a5")]
 position = Vector2(2360, 1285)
 
 [node name="Damagable" type="Node2D" parent="Objects"]
@@ -2687,7 +2690,6 @@ z_index = 2
 position = Vector2(3385, 2482)
 
 [node name="Camera2D" type="Camera2D" parent="Entities/Player"]
-zoom = Vector2(0.8, 0.8)
 limit_left = 0
 limit_top = 800
 limit_right = 7100
@@ -2715,6 +2717,8 @@ visible = false
 [node name="TutorialPanel" parent="UI" instance=ExtResource("25_2d74r")]
 process_mode = 2
 visible = false
+
+[node name="MobileControls" parent="UI" instance=ExtResource("23_q6q7r")]
 
 [node name="Indicators" type="Node2D" parent="UI"]
 

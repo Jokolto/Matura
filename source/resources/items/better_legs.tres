@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_yjxbu")
-name = "Better Legs"
-description = "Move Speed + 25%"
+name = "Leg day"
+description = "Move Speed + 20%, Dodge Chance + 5 %"
 rarity = 1
 icon = ExtResource("1_utk81")
 effect = "move_speed"
-effect_value = 0.25
+effect_value = 0.2

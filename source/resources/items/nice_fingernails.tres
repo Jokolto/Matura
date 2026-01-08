@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cqcwq2k4q8yix"]
+
+[ext_resource type="Texture2D" uid="uid://yrpfkess7oqa" path="res://assets/sprites/items/ugly_nails.png" id="1_jh4m6"]
+[ext_resource type="Script" path="res://scenes/items/ItemData.gd" id="2_q04q2"]
+
+[resource]
+script = ExtResource("2_q04q2")
+name = "Pretty nails"
+description = "your cute nails make enemies weaker (by 10 %)"
+rarity = 3
+icon = ExtResource("1_jh4m6")
+effect = "weaker_enemies"
+effect_value = 0.1

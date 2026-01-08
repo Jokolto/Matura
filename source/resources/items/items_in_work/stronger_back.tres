@@ -7,7 +7,7 @@
 script = ExtResource("1_8aq1x")
 name = "Stronger Back"
 description = "[Melee Only] Knockback + 20 %"
-rarity = 4
+rarity = 3
 icon = ExtResource("1_owxun")
 effect = "knockback"
 effect_value = 0.2

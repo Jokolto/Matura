@@ -18,6 +18,7 @@ var is_lying_on_floor: bool = false
 var stored_state: String = ""
 var stored_action: String = "use_weapon"
 var projectiles_node: Node = null
+var weapon_name: String = ''
 
 func _ready():
 	if get_holder() is CharacterBody2D:
@@ -45,6 +46,7 @@ func store_state(state, action):
 
 func import_res_stats(res: Resource) -> void:
 	stats = res
+	weapon_name = stats.name
 
 func use_weapon(_direction_or_target_pos: Vector2) -> void:
 	# To be overridden in child classes

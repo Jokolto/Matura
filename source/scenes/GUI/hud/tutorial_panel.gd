@@ -28,8 +28,30 @@ var tutorial_texts := {
 				"""
 }
 
+var tutorial_texts_mobile := {
+	"move": 	"""
+	Oh no, it seems you were teleported straight into goblin's camp (how unfortunate!). Let's see if there is anything laying on floor to help you escape. 
+	
+	Use Right joystick to move. Use dash button (arrow) to dash.
+				""",
+	
+	"pickup":	"""
+	Oh what a nice looking stick! It for sure can deal insane damages to that gate, so you can escape! Try hitting the gate with the stick.
+	
+	Press grab button (hand), you need to be close to pickup to be able to grab them.
+				""",
+				
+	"gate": 	"""
+	It seems, tree branches are not the best weapons. Maybe goblins have some real weapons. They do not seem to want to give you their weapons though (how unfriendly!).
+	
+	Get some weapons from goblins and get stronger to break the gate and escape.
+				"""
+}
+
 func _ready() -> void:
 	GameManager.tutorials_amount = len(tutorial_texts)
+	if GameManager.is_mobile:
+		tutorial_texts = tutorial_texts_mobile
 
 func show_tutorial_piece(key: String) -> void:
 	if key in tutorial_texts and not shown_tutorials.has(key) and GameManager.tutorial_enabled:

@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_macud")
-name = "6 pack"
-description = "Deal more damage on contact with enemies"
+name = "Abs training"
+description = "Reduce incoming damage by + 5% ; Deal damage on contact"
 rarity = 2
 icon = ExtResource("1_plmrl")
 effect = "contact_damage"
-effect_value = 0.3
+effect_value = 0.2

@@ -2,27 +2,28 @@ extends Node
 # Uses dictionaries and consts instead of classes since classes work funny in gdscript
 
 # Python or not python, that is the question
-var USE_PYTHON_SERVER = true  # must be true for experimenting 
-var DEBBUGGING = true # disables some stuff if true (tutorial, cutscene) enables ctr K to kill all enemies
+var USE_PYTHON_SERVER = false  # must be true for experimenting 
+var DEBBUGGING = false # disables some stuff if true (tutorial, cutscene) enables ctr K to kill all enemies
 
 # For experimentation
-var EXPERIMENTING = true   # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv. also enables some of below parameter automatically
-var bot_player = true       # makes player not controlable, and replace with generic behavior defined in player.gd
+var EXPERIMENTING = false   # alternative name could be COLLECTING_DATA. If true collects data and sends to python to save in csv. also enables some of below parameter automatically
+var bot_player = false       # makes player not controlable, and replace with generic behavior defined in player.gd
 var no_q_learning = false    # makes enemies chose their actions randomly instead of using q learning. used for base config
 var wave_time_threshold = 30    # seconds after which all enemies are killed in wave to ensure experiments are running forward. Used only when experimenting
-var infinite_ammo_ranged = true
-var no_weapon_variation = true  # makes all enemies spawn just with some default weapon defined in next line
+var infinite_ammo_ranged = false
+var no_weapon_variation = false  # makes all enemies spawn just with some default weapon defined in next line
 var path_to_default_weapon_resource = "res://resources/weapons/guns/handgun.tres"
 #var path_to_default_weapon_resource = "res://resources/weapons/melee/stick.tres"
 var player_health = 999999    # overwrite player health, making player immortal (almost). Only used when experimenting
-var player_starts_with_weapon = true # specific weapon is defined in level.gd
+var player_starts_with_weapon = false # specific weapon is defined in level.gd
 
-var menus_enabled = false      # skips main menu to go to main gameplay loop
-var items_enabled = false       # skips upgrade panel
-var enemy_stat_scaling = false   # specific stat increase set in Entitiesmanager, this disables it.
-var enemy_amount_per_wave_increase = false   # normally each wave 10 percent more enemies is spawned with base amount 4. To change base go to Entitiesmanager 
+var menus_enabled = true      # skips main menu to go to main gameplay loop
+var items_enabled = true       # skips upgrade panel
+var enemy_stat_scaling = true   # specific stat increase set in Entitiesmanager, this disables it.
+var enemy_amount_per_wave_increase = true   # normally each wave 10 percent more enemies is spawned with base amount 4. To change base go to Entitiesmanager 
 var waves_amount = -1      # runs for this amount of waves and leaves. is actually set through python. this is defined in Gamemanager init
-#
+
+var auto_aim = false # set true if on mobile device
 
 enum EnemyTypes {Melee, Ranged, Generic}
 enum WeaponType {MELEE, RANGED}
