@@ -1,6 +1,6 @@
 # Implementierung eines Roguelike-Videospiels mit adaptiven Gegnern
 ## Das Ziel
-Das Ziel dieser Maturaarbeit ist die Schaffung eines Top-down Action-Shooter, bei dem Gegner in Wellen erscheinen und während des Spiels lernen. Jede neue Welle wird aus den erfolgreichsten Gegnern der letzten Welle gebildet (mithilfe des Reinforcement Learning Algorithmus). Der Spieler kann sich bewegen, schiessen und ausweichen. Nach einer bestimmten Anzahl von Wellen erhält der Spieler Power-ups. Das Ziel des Spiels ist es, die Gegner zu neutralisieren, Gegenstände zu sammeln und generell stark genug zu werden, um ein Tor zu zerstören und aus der „Arena“ zu entkommen.
+Das Ziel dieser Maturaarbeit ist die Schaffung eines Top-down Action-Shooter, bei dem Gegner in Wellen erscheinen und während des Spiels lernen. Jede neue Welle wird aus den erfolgreichsten Gegnern der letzten Welle gebildet (mithilfe des Genetischen Algorithmus und des Reinforcement Learning Algorithmus). Der Spieler kann sich bewegen, schiessen und ausweichen. Nach einer bestimmten Anzahl von Wellen erhält der Spieler Power-ups. Das Ziel des Spiels ist es, die Gegner zu neutralisieren, Gegenstände zu sammeln und generell stark genug zu werden, um ein Tor zu zerstören und aus der „Arena“ zu entkommen.
 
 ## Das Spiel spielen
 Es gibt 3 Möglichkeiten, das Spiel zu spielen:
