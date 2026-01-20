@@ -34,7 +34,7 @@ func _process(_delta: float) -> void:
 		AiClient.handle_pending_messages()
 		
 		# 4. Pull latest actions dictionary
-		actions = AiClient.get_latest_actions()
+		actions = AiClient.get_latest_actions() 
 		Logger.log("Got actions from server: %s" % [actions], "DEBUG")
 	else:
 		# or 4. get action directly from message
@@ -201,8 +201,9 @@ func kill_all():
 		enemy.take_damage(99999)
 
 func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:
-	var min_distance = INF
+	var min_distance = 1e9
 	var closest: Enemy = null
+	var angle = 0
 	for other_enemy in get_alive_enemies():
 		if other_enemy and other_enemy != entity:
 			var dist = entity.global_position.distance_to(other_enemy.global_position)
@@ -212,10 +213,9 @@ func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:
 			
 	if closest:
 		var to_ally = (closest.global_position - entity.global_position).normalized()
-		var angle = entity.move_dir.angle_to(to_ally)  # in radians
-		return [min_distance, angle, closest]
-	
-	return [-1.0, -1.0, null]
+		angle = entity.move_dir.angle_to(to_ally)  # in radians
+		
+	return [min_distance, angle, closest]
 
 func _on_wave_end(fitness_per_enemy):
 	var fitness_msg = create_fitness_msg(fitness_per_enemy)

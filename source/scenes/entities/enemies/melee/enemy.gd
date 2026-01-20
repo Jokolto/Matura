@@ -40,19 +40,30 @@ var weapon_res: Resource = null
 
 
 # for state calculation
-var current_state = ""
+var current_state = {
+		"weapon_type": 0.0, 
+		"player_weapon_type": 0.0,
+		"pos_x": 0.0,
+		"pos_y": 0.0,
+		"dist_to_player": 0.0,
+		"angle_to_player": 0.0,
+		"bullet_dist": 0.0,
+		"bullet_angle": 0.0,
+		"dist_ally": 0.0,
+		"angle_ally": 0.0
+	}
 var last_action = ""
 var event_buffer := []
-var last_dist_to_player: float = INF
+var last_dist_to_player: float = 1e9
 var last_bullet: Bullet = null
-var last_dist_to_bullet: float = INF
+var last_dist_to_bullet: float = 1e9
 
 # for fitness calculation
 var fitness: float = 0.0
 var life_time_sec: float = 0
 var damage_dealt: float = 0
 var dodged_bullets: int = 0
-var min_dist_to_player: float = INF
+var min_dist_to_player: float = 1e9
 
 var fitness_damage_priority_formula = func(life_time, dmg_dealt, dodged_b, _min_distance): # earlier it used min distance as negative paramater
 	return dmg_dealt * 7.0 + life_time * 0.2 + 1 * dodged_b
@@ -98,18 +109,18 @@ func _process(delta: float) -> void:
 		if valid_actions.has("use_weapon"):
 			valid_actions.remove_at(valid_actions.find("use_weapon"))
 	
-	current_state = get_state() # returns something like "d20a90bd0ba0"
+	current_state = get_state()
 	# Attacking with contact damage
 	if player_inside_contact_range and contact_damage > 0:
 		_deal_damage(player)
-		add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"])
+		add_reward_event(GlobalConfig.RewardEvents["HIT_PLAYER"], current_state, last_action)
 	
 	# Player contact damage
 	if player_inside_contact_range and player.contact_damage:
 		take_damage(player.contact_damage)
 	
 	if dodged_this_frame:
-		add_reward_event(GlobalConfig.RewardEvents["DODGED_BULLET"])
+		add_reward_event(GlobalConfig.RewardEvents["DODGED_BULLET"], current_state, last_action)
 		dodged_this_frame = false
 		
 	
@@ -131,7 +142,7 @@ func take_damage(amount: float) -> void:
 	dodged_this_frame = false
 	health -= amount
 	ui.show_damage_ui(amount, global_position)
-	add_reward_event(GlobalConfig.RewardEvents["TOOK_DAMAGE"])
+	add_reward_event(GlobalConfig.RewardEvents["TOOK_DAMAGE"], current_state, last_action)
 	if health <= 0:
 		die()
 		
@@ -143,7 +154,7 @@ func die():
 	body_sprite.play("death")
 	calculate_fitness()
 	enemy_death.emit(self)
-	add_reward_event(GlobalConfig.RewardEvents["DIED"])
+	add_reward_event(GlobalConfig.RewardEvents["DIED"], current_state, last_action)
 	if randf() <= EntitiesManager.heal_drop_chance:
 		call_deferred("drop_pickup", heal_pickup)
 		
@@ -193,20 +204,20 @@ func execute_action(action: String):
 	match action:
 		"move_forward":
 			ai_velocity = move_dir * move_speed
-			add_reward_event(GlobalConfig.RewardEvents["MOVED_CLOSER"])
+			add_reward_event(GlobalConfig.RewardEvents["MOVED_CLOSER"], current_state, last_action)
 		"retreat":
 			ai_velocity = -move_dir * move_speed
-			add_reward_event(GlobalConfig.RewardEvents["RETREATED"])
+			add_reward_event(GlobalConfig.RewardEvents["RETREATED"], current_state, last_action)
 		"strafe_left":
 			ai_velocity = move_dir.rotated(-PI/2) * move_speed
-			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
+			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"], current_state, last_action)
 		"strafe_right":
 			ai_velocity = move_dir.rotated(PI/2) * move_speed
-			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"])
+			add_reward_event(GlobalConfig.RewardEvents["WASTED_MOVEMENT"], current_state, last_action)
 		"use_weapon":
 			if weapon_instance and weapon_instance.is_ready():
-				weapon_instance.use_weapon(shooting_move_dir)
 				weapon_instance.store_state(current_state, action)
+				weapon_instance.use_weapon(shooting_move_dir)
 		_:
 			ai_velocity = Vector2.ZERO
 
@@ -219,37 +230,35 @@ func execute_action(action: String):
 		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * get_process_delta_time())
 
 	last_action = action
-	var current_dist_to_player = global_position.distance_to(player.global_position)
-	if last_action == "move_forward" and current_dist_to_player == last_dist_to_player:
-		add_reward_event(GlobalConfig.RewardEvents["STUCK"])
+	#var current_dist_to_player = global_position.distance_to(player.global_position)
+	#if last_action == "move_forward" and current_dist_to_player == last_dist_to_player:
+		#add_reward_event(GlobalConfig.RewardEvents["STUCK"])
 
-# a lot of magical numbers, that were found by trial and error
-func get_state() -> String:
-	var pos_x = floor(global_position.x / 500.0)
-	var pos_y = floor(global_position.y / 500.0)
-	var dist_not_batch = global_position.distance_to(player.global_position)
-	last_dist_to_player = dist_not_batch
-	if min_dist_to_player > dist_not_batch:
-		min_dist_to_player = dist_not_batch
-	var dist = floor(dist_not_batch / 500.0)   # 400 is aproximately 1/5 of the map
-	var angle = round(global_position.angle_to_point(player.global_position) / (PI / 2)) # 4 possible angles, divided by quadrants
+# for deep q learning
+func get_state():
+	var pos_x = global_position.x
+	var pos_y = global_position.y
+	var dist = global_position.distance_to(player.global_position)
+	last_dist_to_player = dist
+	if min_dist_to_player > dist:
+		min_dist_to_player = dist
+	var angle = global_position.angle_to_point(player.global_position)
 	
 	var dist_and_angle_to_ally = enemies_node.get_distance_and_angle_to_closest_enemy_from(self) # also closest enemy instance at index 2
-	var dist_ally = floor(dist_and_angle_to_ally[0] / 400)
-	var angle_ally = (dist_and_angle_to_ally[1] / 400)
+	var dist_ally = dist_and_angle_to_ally[0]
+	var angle_ally = dist_and_angle_to_ally[1]
 	
 	var relative_move_dir = get_relative_sector(global_position, player.global_position, player.aim_vector)
 	var nearest_bullet = projectiles_node.get_nearest_player_bullet_to_pos(global_position) as Bullet
-	var bullet_dist = 2 
-	var bullet_angle = -1  # no bullets flying
+	var bullet_dist = 1e9
+	var bullet_angle = 0  # no bullets flying
 	if is_instance_valid(nearest_bullet):
-		bullet_dist = floor(global_position.distance_to(nearest_bullet.global_position) / 50.0) # Here short distance is quite important, therefore 200 which is 1/10 of map
-		bullet_angle = round(global_position.angle_to_point(nearest_bullet.global_position) / (PI / 2))
-		bullet_dist = clamp(bullet_dist, 0, 2)  
-		bullet_angle = clamp(bullet_angle, -1, 3)
+		bullet_dist = global_position.distance_to(nearest_bullet.global_position) # Here short distance is quite important, therefore 200 which is 1/10 of map
+		bullet_angle = global_position.angle_to_point(nearest_bullet.global_position)
 		if is_instance_valid(last_bullet) and last_bullet.is_inside_tree() and nearest_bullet.bullet_id == last_bullet.bullet_id:
-			var dodge_condition = bullet_dist > last_dist_to_bullet and last_dist_to_bullet == 0
-			if dodge_condition and not nearest_bullet.dodged: # and not ... might be unnecessary, it also makes that bullet can be dodged only by one enemy
+			var dodge_threshold = 50
+			var dodge_condition = bullet_dist > last_dist_to_bullet and last_dist_to_bullet < dodge_threshold
+			if dodge_condition and not nearest_bullet.dodged: # pretty bad condition for dodge, butcant find better. Bullet can be dodged only by one enemy
 				dodged_bullets += 1
 				dodged_this_frame = true
 				nearest_bullet.dodged = true
@@ -258,27 +267,25 @@ func get_state() -> String:
 		nearest_bullet.last_dist_to_enemy = bullet_dist
 		last_bullet = nearest_bullet
 	
-	 # clamp makes only 5 parameters possible for the state, you could think of it as 0 - close, 1 - medium... distances. anything bigger than 4 is 4, so long dist
-	dist = clamp(dist, 0, 2)
-	angle = clamp(angle, 0, 3)
-	dist_ally = clamp(dist_ally, -1, 2)
-	angle_ally = clamp(angle_ally, -1, 3)
-	
 	var weapon_type = -1   # no weapon means -1 in state
 	if is_instance_valid(weapon_instance):
 		weapon_type = weapon_instance.weapon_type  # distinguish between melee and ranged
 	var player_weapon_type = -1
 	if is_instance_valid(player.weapon_instance):
 		player_weapon_type = player.weapon_instance.weapon_type
-	# unused: px{px}py{py}
-	return "wt{wt}pw{pw}d{d}a{a}bd{bd}ba{ba}ad{ad}".format({
-		"wt": weapon_type, "pw": player_weapon_type, 
-		#"px": pos_x, "py": pos_y,
-		"d": dist, "a": relative_move_dir, 
-		"bd": bullet_dist, "ba": bullet_angle, 
-		#"ad": dist_ally, "aa": angle_ally 
-		})
-	
+	return {
+		"weapon_type": weapon_type, 
+		"player_weapon_type": player_weapon_type,
+		"pos_x": pos_x,
+		"pos_y": pos_y,
+		"dist_to_player": dist,
+		"angle_to_player": angle,
+		"bullet_dist": bullet_dist,
+		"bullet_angle": bullet_angle,
+		"dist_ally": dist_ally,
+		"angle_ally": angle_ally
+	}
+
 	
 func get_events():
 	var unset = get_unsent_events()
@@ -286,7 +293,7 @@ func get_events():
 	return unset
 
 
-func add_reward_event(event_type: String, state_to_reward = current_state, action_to_reward = last_action) -> void:
+func add_reward_event(event_type: String, state_to_reward, action_to_reward) -> void:
 	event_buffer.append({
 		"event_type": event_type,
 		"state_to_reward": state_to_reward,

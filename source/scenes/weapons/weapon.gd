@@ -15,7 +15,7 @@ var weapon_type: GlobalConfig.EnemyTypes = GlobalConfig.EnemyTypes.Melee  # Defa
 var is_lying_on_floor: bool = false
 
 # for enemies
-var stored_state: String = ""
+var stored_state: Dictionary
 var stored_action: String = "use_weapon"
 var projectiles_node: Node = null
 var weapon_name: String = ''

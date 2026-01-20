@@ -22,10 +22,10 @@ var hit_entities = []
 
 # enemy specific (could have made enemy-bullet subclass, but i am too lazy)
 var hit_player = false
-var shot_at_state = ""
+var shot_at_state: Dictionary
 var stored_action = "use_weapon"
 var dodged = false
-var last_dist_to_enemy: float = INF
+var last_dist_to_enemy: float = 1e9
 
 func _ready() -> void: 
 	# match does not work with types in gdscript, hence if elif...
@@ -45,6 +45,8 @@ func _process(delta: float) -> void:
 	
 	if global_position.distance_to(shot_at_pos) >= shooting_range:
 		projectiles_node.proj_amount -= 1
+		if is_instance_valid(shooter) and shooter is Enemy:
+			shooter.add_reward_event("MISSED", shot_at_state, stored_action)
 		queue_free()
 	
 
@@ -79,7 +81,7 @@ func _on_body_entered(body: Node2D) -> void:
 				body.take_damage(damage)
 				hit_player = true
 				
-			if body is Enemy and EntitiesManager.friendly_fire: # enemy hitting enemy
+			elif body is Enemy and EntitiesManager.friendly_fire: # enemy hitting enemy
 				body.take_damage(damage)
 			
 	elif body.get_parent() is Gate:	

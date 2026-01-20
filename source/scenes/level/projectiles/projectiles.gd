@@ -20,7 +20,7 @@ func get_player_projectiles() -> Array:
 func get_nearest_player_bullet_to_pos(global_pos) -> Node2D:
 	var bullets = get_player_projectiles()
 	var nearest = null
-	var nearest_dist = INF
+	var nearest_dist = 1e9
 
 	for bullet in bullets:
 		var dist = global_pos.distance_to(bullet.global_position)

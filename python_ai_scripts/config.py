@@ -8,11 +8,13 @@ class ServerConfig:
         host="localhost",
         port=9000,
         buffer_size=2048,
+        # hyperparameters
         learning_rate=0.1,
         discount_factor=0.9,
         epsilon=0.1,
         mutation_prob=0.05,
-        mutation_range=0.1
+        mutation_range=0.1,
+        hidden_dim = 64, # amount of hidden neurons
     ):
         self.HOST = host
         self.PORT = port
@@ -22,11 +24,11 @@ class ServerConfig:
         self.EPSILON = epsilon
         self.MUTATION_PROB = mutation_prob
         self.MUTATION_RANGE = mutation_range
+        self.HIDDEN_DIM = hidden_dim
 
 
-# same thing, also no classmethods now.
-class RewardConfig:
-    def __init__(self, rewards=None):
+class QConfig:
+    def __init__(self, rewards=None, states=None, actions=None):
         self.REWARDS = {
             "TOOK_DAMAGE": -5,
             "TIME_ALIVE": 0.0,
@@ -41,8 +43,30 @@ class RewardConfig:
         }
         if rewards:
             self.REWARDS.update(rewards)
+        
+        self.STATE_KEYS = [
+            "weapon_type",
+            "player_weapon_type",
+            "pos_x",
+            "pos_y",
+            "dist_to_player",
+            "angle_to_player",
+            "bullet_dist",
+            "bullet_angle",
+            "dist_ally",
+            "angle_ally"
+        ]
+        if states:
+            self.STATE_KEYS = states
+        self.STATES_DIM = len(self.STATE_KEYS)
+
+        self.ACTIONS =  ["move_forward", "strafe_left", "strafe_right", "retreat", "use_weapon"]
+        if actions:
+            self.ACTIONS = actions
+        self.ACTIONS_DIM = len(self.ACTIONS)
+
             
-    def get(self, name: str):
+    def get_reward(self, name: str):
         return self.REWARDS.get(name, None)
 
     def update_rewards(self, new_rewards: dict):

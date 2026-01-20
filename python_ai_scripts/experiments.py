@@ -76,6 +76,7 @@ def run_single_experiment(repetition, cfg, port, run_id, seed, until_wave, outpu
     logger = start_logger(port, run_id=run_id, config_name=cfg, output_csv=output_csv, seed=seed, 
                           mutation_prob=mutation_prob, mutation_range=mutation_range, 
                           learning_rate=learning_rate, discount_factor=discount_factor, epsilon=epsilon, reward_dict=reward_dict)
+    time.sleep(2) # wait until server starts
     godot = run_godot(run_id, seed, cfg, port, waves_amount=until_wave)
 
     godot.wait()
@@ -120,8 +121,8 @@ def prepare_experiments(output_csv_base, repeats, until_wave, configs, port_base
 # main experiment method. some leak errors after each godot is exited are expected, i solved some of them but due to time not all of them, they are harmless anyway.
 def run_experiments(parallel=False):
     output_csv_base = r'C:\projects\matura\python_ai_scripts\data'
-    repeats = 5  # repeats every config experiment n times to have more consitant data. 22 min for 1 rep with until wave = 15, kill_time = 30 sec. If not parallel.
-    until_wave = 10 # after this closes godot and server to end an experiment.
+    repeats = 1  # repeats every config experiment n times to have more consitant data. 22 min for 1 rep with until wave = 15, kill_time = 30 sec. If not parallel.
+    until_wave = 20 # after this closes godot and server to end an experiment.
     
     learning_rate: float = 0.2
     discount_factor: float = 0.9
@@ -132,12 +133,14 @@ def run_experiments(parallel=False):
     mutation_range = 0.1
 
 
-    configs = [ "base", "q_only",  "ga_only", "gen_q_learning"]
+    configs = [ "base", "q_only",  "ga_only", "gen_q_learning", "deep_q", "gen_deep_q"]
     # what each config does. Config effects work only if EXPERIMENTING in godot is true:
     # base - enemies have random q values without rewards. Implemented in godot with no_q_learning parameter and in python with condition of config
     # q_only - enemies learn intra wave, but not with each wave. Implemented in python server with not filling shared q table
     # ga_only - enemies have random q values without rewards, but best are selected at wave end to be reproduced in next with some mutation. uses no_q_learning parameter in godot and in python with condition of config
-    # gen_q_learning - uses both algorithms, default in release.
+    # gen_q_learning - uses both algorithms, implemented in godot
+    # deepq - same as q_only but uses deep q learning instead of q learning algorithm
+    # gen_deepq - same as gen_q_learning but with deepq.
 
     port_base = 10000
     
@@ -160,5 +163,5 @@ def run_experiments(parallel=False):
     logging.info(f"All experiments finished!")
 
 if __name__ == "__main__":
-    run_experiments(parallel=True)
+    run_experiments(parallel=False)
     

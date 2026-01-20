@@ -12,7 +12,7 @@ var enemies_alive: int = 0
 
 var friendly_fire = false
 
-var base_amount: int = 5 # first wave
+var base_amount: int = 4 # first wave
 var growth_rate: float = 1.1
 var enemy_count_func = func(wave: int) -> int:
 	return floor(base_amount * pow(growth_rate, wave))
@@ -27,9 +27,9 @@ var wave_timer_discrete: int = 0  # sec, is needed for condition, when to record
 var enemy_speed_mul: float = 1 
 var enemy_hp_mul: float = 1
 var enemy_dmg_mul: float = 1
-var weapon_drop_chance: float = 0.30 
-var ammo_drop_chance: float = 0.15
-var heal_drop_chance: float = 0.10
+var weapon_drop_chance: float = 0.0  # standart 0.3 
+var ammo_drop_chance: float = 0.0   # standart 0.15
+var heal_drop_chance: float = 0.0    # standart 0.1
 var player_heal_after_wave_percentage: float = 0.0
 
 var enemy_fitness: Dictionary = {}
