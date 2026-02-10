@@ -121,12 +121,12 @@ def prepare_experiments(output_csv_base, repeats, until_wave, configs, port_base
 # main experiment method. some leak errors after each godot is exited are expected, i solved some of them but due to time not all of them, they are harmless anyway.
 def run_experiments(parallel=False):
     output_csv_base = r'C:\projects\matura\python_ai_scripts\data'
-    repeats = 1  # repeats every config experiment n times to have more consitant data. 22 min for 1 rep with until wave = 15, kill_time = 30 sec. If not parallel.
-    until_wave = 20 # after this closes godot and server to end an experiment.
+    repeats = 3  # repeats every config experiment n times to have more consitant data. 22 min for 1 rep with until wave = 15, kill_time = 30 sec. If not parallel.
+    until_wave = 10 # after this closes godot and server to end an experiment.
     
-    learning_rate: float = 0.2
+    learning_rate: float = 0.1
     discount_factor: float = 0.9
-    epsilon: float = 0.2
+    epsilon: float = 0.05
     reward_dict: dict = {} # empty to use dict from config without change.
       
     mutation_prob = 0.05
@@ -163,5 +163,5 @@ def run_experiments(parallel=False):
     logging.info(f"All experiments finished!")
 
 if __name__ == "__main__":
-    run_experiments(parallel=False)
+    run_experiments(parallel=True)
     

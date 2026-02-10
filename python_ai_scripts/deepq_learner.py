@@ -50,7 +50,15 @@ class DQNLearner:
         self.enemy_id = enemy_id
 
         self.q_net = QNetwork(state_dim, action_dim, hiddem_dim).to(device)
+        self.target_net = QNetwork(state_dim, action_dim, hiddem_dim).to(device)
         self.optimizer = optim.Adam(self.q_net.parameters(), lr=learning_rate)
+
+        self.target_net.load_state_dict(self.q_net.state_dict())
+        self.target_net.eval()
+
+        self.step_count = 0
+        self.target_update_interval = 60  # every 1 sec
+    
 
 
     def choose_action(self, state: dict, valid_action_indices: list):
@@ -66,15 +74,15 @@ class DQNLearner:
                 q_values = self.q_net(state_t)[0]
                 masked_q = q_values.clone()
                 # mask invalid actions
-                for i in range(len(q_values)):
-                    if i not in valid_action_indices:
-                        masked_q[i] = -1e9
-                action_idx = torch.argmax(masked_q).item()
-
+                masked_q = torch.full_like(q_values, -1e9)
+                masked_q[valid_action_indices] = q_values[valid_action_indices]
+                action_idx = masked_q.argmax().item()
 
         return int(action_idx)
 
     def apply_reward(self, reward, new_state, action_idx, state):
+        if self.step_count % self.target_update_interval == 0:
+            self.target_net.load_state_dict(self.q_net.state_dict())
         # logging.info(f"{reward} {action_idx} {state}")
         state_t = torch.tensor(list(state.values()), dtype=torch.float32, device=self.device).unsqueeze(0)
         new_state_t = torch.tensor(list(new_state.values()), dtype=torch.float32, device=self.device).unsqueeze(0)
@@ -84,17 +92,28 @@ class DQNLearner:
         q_sa = q_values[0, action_idx] # scalar -- shape []
 
         # max_a' Q(s',a')
+
+        # double DQN
         with torch.no_grad():
-            max_next_q = self.q_net(new_state_t).max(dim=1)[0] # shape [1]
-            max_next_q = max_next_q.squeeze(0) # shape []
+            # action selection by online net
+            next_action = self.q_net(new_state_t).argmax(dim=1)
+
+            # action evaluation by target net
+            max_next_q = self.target_net(new_state_t)[0, next_action]
+            max_next_q = max_next_q.squeeze(0)
+
+        # normal DQN
+        # with torch.no_grad():
+        #     max_next_q = self.target_net(new_state_t).max(dim=1)[0]
+        #     max_next_q = max_next_q.squeeze(0)
 
 
         target = reward + self.discount_factor * max_next_q
         loss = F.mse_loss(q_sa, target)
 
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
+        self.optimizer.zero_grad()   # reset gradient
+        loss.backward()              # new gradients (backprop)
+        self.optimizer.step()        # update weights
 
     def __repr__(self):
         return f"DQNLearner(enemy_id={self.enemy_id})"
@@ -160,6 +179,7 @@ class SharedDeepQLearner(DQNLearner):
 
         # copy weights ONLY (not optimizer state)
         learner.q_net.load_state_dict(self.q_net.state_dict())
+        learner.target_net.load_state_dict(self.target_net.state_dict())
 
         return learner
     
@@ -177,6 +197,8 @@ class SharedDeepQLearner(DQNLearner):
         with torch.no_grad():
             for p in self.q_net.parameters():
                 p.zero_()
+            
+
 
     def crossover(self, parents):
         self.average_all(parents)

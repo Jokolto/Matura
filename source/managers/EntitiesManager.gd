@@ -12,7 +12,7 @@ var enemies_alive: int = 0
 
 var friendly_fire = false
 
-var base_amount: int = 4 # first wave
+var base_amount: int = 6 # first wave
 var growth_rate: float = 1.1
 var enemy_count_func = func(wave: int) -> int:
 	return floor(base_amount * pow(growth_rate, wave))
@@ -55,7 +55,7 @@ func _process(delta):
 		
 	if (enemies_spawned >= enemies_per_wave) or (wave_timer >= wave_duration and wave_duration > 0):
 		if enemies_alive <= 0:
-			end_wave()
+			#end_wave()
 			return
 		disable_spawning()
 

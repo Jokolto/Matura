@@ -103,7 +103,7 @@ func _process(delta: float) -> void:
 	if velocity > Vector2.ZERO:
 		body_sprite.play("run")
 	
-	if weapon_instance and weapon_instance.is_ready():
+	if weapon_instance and weapon_instance.is_ready() and not valid_actions.has("use_weapon"):
 		valid_actions.append("use_weapon")
 	else:
 		if valid_actions.has("use_weapon"):

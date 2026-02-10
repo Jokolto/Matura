@@ -117,6 +117,7 @@ class AIServer:
             if self.exp_config in ['deep_q', 'gen_deep_q']: # DQNLearner
                 valid_actions_indices = list(range(len(valid_actions)))
                 action_idx = agent.choose_action(state, valid_actions_indices)
+                # print(action_idx, valid_actions_indices, valid_actions)
                 action = valid_actions[action_idx]
             elif self.exp_config == 'base':
                 action = random.choice(valid_actions)
@@ -200,7 +201,7 @@ class AIServer:
             return
         # Expecting `data` to already be a flat dict with all columns
         self.df = pd.concat([self.df, pd.DataFrame([data])], ignore_index=True)
-        # Save every time so you don’t lose data if crash
+        # Save every time to not lose data if crash
         self.df.to_csv(self.csv_file, index=False)
 
     def get_or_create_agent(self, enemy_id: str):

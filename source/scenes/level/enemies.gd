@@ -3,7 +3,7 @@ extends Node2D
 var next_enemy_id = 0
 var next_state_id = 0
 var last_snapshot: int = 0 # sec
-
+var dead_enemies_fitnesses = []
 
 func _ready() -> void:
 	EntitiesManager.wave_end.connect(_on_wave_end)
@@ -12,6 +12,7 @@ func _process(_delta: float) -> void:
 	if GlobalConfig.EXPERIMENTING and GlobalConfig.wave_time_threshold > 0 \
 	 and EntitiesManager.wave_timer >= GlobalConfig.wave_time_threshold:
 		kill_all()
+		EntitiesManager.end_wave()
 	
 	if len(get_alive_enemies()) == 0:
 		return
@@ -104,14 +105,18 @@ func get_death_log(enemy: Enemy) -> Dictionary:
 
 # Collect aggregate snapshot (e.g., called every second)
 func get_wave_snapshot_log() -> Dictionary:
-	var enemies: Array = get_alive_enemies()
-	var n_alive = enemies.size()
-	var mean_fit = 0.0
+	var alive_enemies: Array = get_alive_enemies()
+	var n_alive = alive_enemies.size()
+	var fitnesses = []
 	if n_alive > 0:
-		for enemy: Enemy in enemies:
+		for enemy: Enemy in alive_enemies:
 			enemy.calculate_fitness()
-			mean_fit += enemy.fitness
-		mean_fit /= n_alive
+			fitnesses.append(enemy.fitness)
+			
+	fitnesses += dead_enemies_fitnesses
+	
+	var mean_fit = mean(fitnesses) 
+	var median_fit = median(fitnesses)
 
 	return {
 		"run_id": GlobalConfig.run_id,
@@ -120,7 +125,8 @@ func get_wave_snapshot_log() -> Dictionary:
 		"wave": EntitiesManager.current_wave,
 		"time": EntitiesManager.wave_timer_discrete,
 		"log_type": "wave_snapshot",
-		"mean_fitness_alive": mean_fit,
+		"mean_fitness": mean_fit,
+		"median_fitness": median_fit,
 		"n_alive": n_alive
 	}
 
@@ -199,6 +205,26 @@ func process_actions(actions):
 func kill_all():
 	for enemy: Enemy in get_alive_enemies():
 		enemy.take_damage(99999)
+		
+func median(values: Array) -> float:
+	if values.is_empty():
+		return 0.0
+	var sorted = values.duplicate()
+	sorted.sort()
+	var n = sorted.size()
+	var mid = n / 2
+	if n % 2 == 1:
+		# odd count
+		return float(sorted[mid])
+	else:
+		# even count
+		return (sorted[mid - 1] + sorted[mid]) / 2.0
+
+func mean(values: Array) -> float:
+	var total = 0
+	for value in values:
+		total += value
+	return total/len(values)
 
 func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:
 	var min_distance = 1e9
@@ -222,9 +248,11 @@ func _on_wave_end(fitness_per_enemy):
 	AiClient.send_message_to_server(fitness_msg)
 	Logger.log("Sent fitness data to server: %s" % [fitness_msg], "DEBUG")
 	last_snapshot = 0
+	dead_enemies_fitnesses = []
 
 
 func _on_enemy_death(enemy: Enemy):
 	if GlobalConfig.EXPERIMENTING:
+		dead_enemies_fitnesses.append(enemy.fitness)
 		var msg = create_death_log_msg(enemy)
 		AiClient.send_message_to_server(msg)
