@@ -66,7 +66,7 @@ var dodged_bullets: int = 0
 var min_dist_to_player: float = 1e9
 
 var fitness_damage_priority_formula = func(life_time, dmg_dealt, dodged_b, _min_distance): # earlier it used min distance as negative paramater
-	return dmg_dealt * 7.0 + life_time * 0.2 + 1 * dodged_b
+	return dmg_dealt * 7.0 + life_time * 0.3 + 2.5 * dodged_b
 
 var fitness_survivability_priority = func(life_time, dmg_dealt, dodged_b, _min_distance): 
 	return life_time * 1.0 + dmg_dealt * 0.5 + 5 * dodged_b

@@ -13,14 +13,15 @@ func _process(_delta: float) -> void:
 	 and EntitiesManager.wave_timer >= GlobalConfig.wave_time_threshold:
 		kill_all()
 		EntitiesManager.end_wave()
-	
-	if len(get_alive_enemies()) == 0:
 		return
 	
 	# data collection
-	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete and GlobalConfig.config:
+	if GlobalConfig.EXPERIMENTING and last_snapshot < EntitiesManager.wave_timer_discrete:
 		last_snapshot = EntitiesManager.wave_timer_discrete
 		AiClient.send_message_to_server(create_wave_snapshot_msg())
+	
+	if len(get_alive_enemies()) == 0:
+		return
 	
 	# 1. Gather states for all enemies
 	var states_msg = create_states_msg(get_all_states())
@@ -224,6 +225,9 @@ func mean(values: Array) -> float:
 	var total = 0
 	for value in values:
 		total += value
+		
+	if len(values) == 0:
+		return 0
 	return total/len(values)
 
 func get_distance_and_angle_to_closest_enemy_from(entity) -> Array:

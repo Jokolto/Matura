@@ -148,7 +148,7 @@ def run_experiments(parallel=False):
 
     if parallel:
         logging.info("Running experiments in parallel...")
-        max_workers = min(20, len(experiments))  # prevent overload
+        max_workers = min(6, len(experiments))  # prevent overload
         with ProcessPoolExecutor(max_workers=min(max_workers, len(experiments))) as ex:
             futures = { ex.submit(run_single_experiment, **exp): exp for exp in experiments }
             for fut in as_completed(futures):

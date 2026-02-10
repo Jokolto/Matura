@@ -238,7 +238,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=10000)
     parser.add_argument("--run_id", type=int, default=0)  
-    parser.add_argument("--config", type=str, default='deep_q') 
+    parser.add_argument("--config", type=str, default='q_only') 
     parser.add_argument("--learning_rate", type=float, default=0.2)
     parser.add_argument("--discount_factor", type=float, default=0.9)
     parser.add_argument("--epsilon", type=float, default=0.2)
