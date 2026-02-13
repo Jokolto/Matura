@@ -11,7 +11,7 @@ class ServerConfig:
         # hyperparameters
         learning_rate=0.1,
         discount_factor=0.9,
-        epsilon=0.0,
+        epsilon=0.1,
         mutation_prob=0.05,
         mutation_range=0.1,
         hidden_dim = 32, # amount of neurons in each of hidden layers

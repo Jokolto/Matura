@@ -39,6 +39,7 @@ class DQNLearner:
         mutation_sd,
         device="cpu"
     ):
+        # hyperparameters
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.hidden_dim = hiddem_dim
@@ -49,6 +50,7 @@ class DQNLearner:
         self.device = device
         self.enemy_id = enemy_id
 
+        # Neural nets
         self.q_net = QNetwork(state_dim, action_dim, hiddem_dim).to(device)
         self.target_net = QNetwork(state_dim, action_dim, hiddem_dim).to(device)
         self.optimizer = optim.Adam(self.q_net.parameters(), lr=learning_rate)
@@ -58,7 +60,6 @@ class DQNLearner:
 
         self.step_count = 0
         self.target_update_interval = 60  # every 1 sec
-    
 
 
     def choose_action(self, state: dict, valid_action_indices: list):
@@ -81,9 +82,11 @@ class DQNLearner:
         return int(action_idx)
 
     def apply_reward(self, reward, new_state, action_idx, state):
+        # update target net periodically 
         if self.step_count % self.target_update_interval == 0:
             self.target_net.load_state_dict(self.q_net.state_dict())
-        # logging.info(f"{reward} {action_idx} {state}")
+        
+
         state_t = torch.tensor(list(state.values()), dtype=torch.float32, device=self.device).unsqueeze(0)
         new_state_t = torch.tensor(list(new_state.values()), dtype=torch.float32, device=self.device).unsqueeze(0)
 
@@ -92,7 +95,6 @@ class DQNLearner:
         q_sa = q_values[0, action_idx] # scalar -- shape []
 
         # max_a' Q(s',a')
-
         # double DQN
         with torch.no_grad():
             # action selection by online net
@@ -101,11 +103,6 @@ class DQNLearner:
             # action evaluation by target net
             max_next_q = self.target_net(new_state_t)[0, next_action]
             max_next_q = max_next_q.squeeze(0)
-
-        # normal DQN
-        # with torch.no_grad():
-        #     max_next_q = self.target_net(new_state_t).max(dim=1)[0]
-        #     max_next_q = max_next_q.squeeze(0)
 
 
         target = reward + self.discount_factor * max_next_q
